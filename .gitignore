@@ -1,0 +1,11 @@
+##### Directories #####
+
+.classpath
+.project
+.settings
+target
+
+##### Files #####
+
+*.log
+.attach_pid*
