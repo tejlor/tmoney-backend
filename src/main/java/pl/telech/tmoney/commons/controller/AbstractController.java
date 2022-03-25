@@ -35,8 +35,7 @@ public class AbstractController {
 	String environment;
 
 	protected static final String ID = "[0-9]+";
-	protected static final String REF = "[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}";
-	protected static final String CODE = "[a-zA-Z_\\-]+";
+	protected static final String CODE = "[a-zA-Z0-9_\\-]+";
 	
 	/*
 	 * Configuration needed for using LocalDate class in arguments of constructor methods without @DateTimeFormat annotation.
