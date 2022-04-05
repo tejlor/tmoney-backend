@@ -17,7 +17,7 @@ import pl.telech.tmoney.main.model.entity.Category;
 @FieldDefaults(level = PRIVATE)
 public class CategoryDto extends AbstractDto {
 
-	String name;				
+	String name;	
 	Integer account;			
 	Boolean report;				
 	String defaultName;			

@@ -8,6 +8,8 @@ import pl.telech.tmoney.main.model.entity.Category;
 
 public interface CategoryDAO extends DAO<Category>, JpaSpecificationExecutor<Category> {
 	
+	
 	// ######################### Specifications #########################################################################################################
 		
+
 }
