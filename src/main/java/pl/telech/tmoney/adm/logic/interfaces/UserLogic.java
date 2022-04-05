@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import pl.telech.tmoney.adm.model.entity.User;
 
-public interface AccountLogic {
+public interface UserLogic {
 
 	User getCurrentUser();
 	User loadCurrentUser();

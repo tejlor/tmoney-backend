@@ -43,10 +43,6 @@ public class User extends AbstractEntity implements UserDetails {
 	public User(Integer id) {
 		super(id);
 	}
-
-	public String calcShortName(){
-        return firstName.substring(0, 1) + "." + lastName;
-	}
 	
 	// UserDetails
 	

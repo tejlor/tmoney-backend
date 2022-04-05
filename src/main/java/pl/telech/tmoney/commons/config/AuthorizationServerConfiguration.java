@@ -20,7 +20,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
 import lombok.experimental.FieldDefaults;
-import pl.telech.tmoney.adm.logic.AccountLogicImpl;
+import pl.telech.tmoney.adm.logic.interfaces.UserLogic;
 
 /*
  * Configuration of oAuth 2.0.
@@ -50,7 +50,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     DataSource dataSource;
 	
 	@Autowired
-	AccountLogicImpl accountLogic;
+	UserLogic userLogic;
 
     @Bean
     public TokenStore tokenStore() {
@@ -93,6 +93,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 		endpoints
 			.tokenStore(tokenStore())
-			.authenticationManager(authenticationManager).userDetailsService((UserDetailsService) accountLogic);
+			.authenticationManager(authenticationManager).userDetailsService((UserDetailsService) userLogic);
 	}
 }

@@ -8,17 +8,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.experimental.FieldDefaults;
-import pl.telech.tmoney.adm.logic.AccountLogicImpl;
+import pl.telech.tmoney.adm.logic.interfaces.UserLogic;
 import pl.telech.tmoney.adm.model.dto.UserDto;
 import pl.telech.tmoney.commons.controller.AbstractController;
 
 @RestController
-@RequestMapping("/accounts")
+@RequestMapping("/users")
 @FieldDefaults(level = PRIVATE)
-public class AccountController extends AbstractController {
+public class UserController extends AbstractController {
 
 	@Autowired
-	AccountLogicImpl accountLogic;
+	UserLogic userLogic;
 	
 	/*
 	 * Returns current user.
@@ -26,6 +26,6 @@ public class AccountController extends AbstractController {
 	@RequestMapping(value = "/current", method = GET)
 	public UserDto getCurrentUser() {
 		
-		return new UserDto(accountLogic.loadCurrentUser());
+		return new UserDto(userLogic.loadCurrentUser());
 	}
 }

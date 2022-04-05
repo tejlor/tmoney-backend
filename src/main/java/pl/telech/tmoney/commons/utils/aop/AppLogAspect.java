@@ -7,14 +7,11 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import lombok.extern.slf4j.Slf4j;
-import pl.telech.tmoney.adm.model.entity.User;
 import pl.telech.tmoney.commons.config.filter.RequestWrapper;
 import pl.telech.tmoney.commons.model.exception.NotFoundException;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
@@ -72,20 +69,19 @@ public class AppLogAspect {
 	}
 	
 	private String getRequestData() throws IOException{
-		String userName = getUserFromContext();
 		RequestWrapper request = getRequestFromContext(); 
 		if(request == null)
 			return "";
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append("[").append(userName).append("] ")
-			.append(request.getMethod()).append(" ").append(request.getRequestURI());
 		
-		if(request.getQueryString() != null)
+		if(request.getQueryString() != null) {
 			sb.append("?").append(request.getQueryString());
+		}
 					
-		if (request.getMethod().equalsIgnoreCase("POST") || request.getMethod().equalsIgnoreCase("PUT"))
+		if (request.getMethod().equalsIgnoreCase("POST") || request.getMethod().equalsIgnoreCase("PUT")) {
 			sb.append("\nBODY:\n").append(request.getBody());
+		}
 		
 		return sb.toString();
 	}
@@ -119,23 +115,6 @@ public class AppLogAspect {
 		}
 		
 		return sb.toString();
-	}
-	
-	private String getUserFromContext() {
-		try {
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			Object principal = authentication.getPrincipal();
-			if (principal instanceof User) {
-				return ((User) principal).calcShortName();
-			}
-			else {
-				return "?";
-			}
-		}
-		catch (Exception e) {
-			log.warn("Principal is null: " + e.getMessage());
-			return "?";
-		}
 	}
 	
 	private RequestWrapper getRequestFromContext(){

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.adm.logic.helper.interfaces.SimpleTokenEndpoint;
-import pl.telech.tmoney.adm.logic.interfaces.AccountLogic;
+import pl.telech.tmoney.adm.logic.interfaces.UserLogic;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
 
 /*
@@ -28,7 +28,7 @@ import pl.telech.tmoney.commons.model.exception.TMoneyException;
 public class SimpleTokenEndpointImpl implements SimpleTokenEndpoint {
 		
 	@Autowired
-	AccountLogic accountLogic;
+	UserLogic userLogic;
 	@Autowired
 	AuthorizationServerTokenServices tokenServices;
 	@Autowired
@@ -48,7 +48,7 @@ public class SimpleTokenEndpointImpl implements SimpleTokenEndpoint {
 		String username = parameters.get("username");
 		String password = parameters.get("password");
 
-		UserDetails user = accountLogic.loadUserByUsername(username);
+		UserDetails user = userLogic.loadUserByUsername(username);
 		if(!user.isEnabled())
 			throw new TMoneyException("Your account is inactive.");
 		

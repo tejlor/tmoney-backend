@@ -22,7 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import lombok.experimental.FieldDefaults;
-import pl.telech.tmoney.adm.logic.AccountLogicImpl;
+import pl.telech.tmoney.adm.logic.interfaces.UserLogic;
 import pl.telech.tmoney.commons.utils.Sha1PasswordEncoder;
 import pl.telech.tmoney.commons.utils.TUtils;
 
@@ -38,12 +38,12 @@ public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	String environment;
 	
 	@Autowired
-	AccountLogicImpl accountLogic;
+	UserLogic userLogic;
 	
 	@Bean
 	public AuthenticationProvider authProvider() {
 	    var authProvider = new DaoAuthenticationProvider();
-	    authProvider.setUserDetailsService((UserDetailsService) accountLogic);
+	    authProvider.setUserDetailsService((UserDetailsService) userLogic);
 	    authProvider.setPasswordEncoder(passwordEncoder());
 	    return authProvider;
 	}

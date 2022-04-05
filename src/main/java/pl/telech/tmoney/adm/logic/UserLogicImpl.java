@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import pl.telech.tmoney.adm.dao.UserDAO;
-import pl.telech.tmoney.adm.logic.interfaces.AccountLogic;
+import pl.telech.tmoney.adm.logic.interfaces.UserLogic;
 import pl.telech.tmoney.adm.model.entity.User;
 import pl.telech.tmoney.commons.logic.AbstractLogicImpl;
 
@@ -22,7 +22,7 @@ import pl.telech.tmoney.commons.logic.AbstractLogicImpl;
 @Service
 @Transactional
 @FieldDefaults(level = PRIVATE)
-public class AccountLogicImpl extends AbstractLogicImpl<User> implements AccountLogic, UserDetailsService {
+public class UserLogicImpl extends AbstractLogicImpl<User> implements UserLogic, UserDetailsService {
 
 	@Value("${tmoney.auth.clientName}")
 	String clientName;
@@ -32,7 +32,7 @@ public class AccountLogicImpl extends AbstractLogicImpl<User> implements Account
 	UserDAO dao;
 	
 	
-	public AccountLogicImpl(UserDAO dao) {
+	public UserLogicImpl(UserDAO dao) {
 		super(dao);
 		this.dao = dao;
 	}

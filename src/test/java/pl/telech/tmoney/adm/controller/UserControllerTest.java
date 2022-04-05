@@ -17,10 +17,10 @@ import pl.telech.tmoney.utils.BaseTest;
 
 @RunWith(SpringRunner.class)
 @FieldDefaults(level = PRIVATE)
-public class AccountControllerTest extends BaseTest {
+public class UserControllerTest extends BaseTest {
 
 	@Autowired
-	AccountController accountController;
+	UserController userController;
 	
 	@Test
 	@Transactional
@@ -28,7 +28,7 @@ public class AccountControllerTest extends BaseTest {
 		// given
 		flush();
 		// when
-		UserDto result = accountController.getCurrentUser();	
+		UserDto result = userController.getCurrentUser();	
 		flushAndClear();
 		// then
 		assertThat(result).isNotNull();

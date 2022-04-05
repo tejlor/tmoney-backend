@@ -4,10 +4,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import lombok.experimental.FieldDefaults;
-import pl.telech.tmoney.adm.logic.interfaces.AccountLogic;
 import pl.telech.tmoney.commons.dao.interfaces.DAO;
 import pl.telech.tmoney.commons.logic.interfaces.AbstractLogic;
 import pl.telech.tmoney.commons.model.entity.AbstractEntity;
@@ -16,9 +13,6 @@ import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 public abstract class AbstractLogicImpl<T extends AbstractEntity> implements AbstractLogic<T> {
 
 	DAO<T> dao;
-	
-	@Autowired
-	AccountLogic accountLogic;
 	
 		
 	public AbstractLogicImpl(DAO<T> dao){
