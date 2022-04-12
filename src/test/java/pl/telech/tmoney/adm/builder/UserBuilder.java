@@ -2,6 +2,8 @@ package pl.telech.tmoney.adm.builder;
 
 import static lombok.AccessLevel.PRIVATE;
 
+import javax.persistence.EntityManager;
+
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
@@ -30,5 +32,10 @@ public class UserBuilder extends AbstractBuilder<User> {
 		obj.setEmail(email);
 		obj.setPassword(password);
 		return obj;	
+	}
+
+	@Override
+	public void persistDependences(EntityManager em) {
+		
 	}
 }

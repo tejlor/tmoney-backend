@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,6 +31,7 @@ import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 @Table(name = "entry", schema = "public")
 public class Entry extends AbstractEntity {
 	
+	@Setter(AccessLevel.PRIVATE)
     @Column(insertable = false, updatable = false)
     Integer accountId;
 	
@@ -40,6 +42,7 @@ public class Entry extends AbstractEntity {
 	@Column(nullable = false)
 	LocalDate date;				// entry date
 	
+	@Setter(AccessLevel.PRIVATE)
     @Column(insertable = false, updatable = false)
     Integer categoryId;
 	
@@ -60,11 +63,21 @@ public class Entry extends AbstractEntity {
 	BigDecimal balance;			// balance in current account
 	
 	@Column(nullable = false)
-	BigDecimal balanceOverAll;	// balance in whole portfolio
+	BigDecimal balanceOverall;	// balance in whole portfolio
 				
 
 	public Entry(Integer id) {
 		super(id);
+	}
+	
+	public void setAccount(Account account) {
+		this.account = account;
+		this.accountId = account != null ? account.getId() : null;
+	}
+	
+	public void setCategory(Category category) {
+		this.category = category;
+		this.categoryId = category != null ? category.getId() : null;
 	}
 
 }

@@ -45,7 +45,7 @@ public class Account extends AbstractEntity {
 	Integer orderNo;			// account order at front
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
-	@OrderBy("date ASC, id ASC")
+	@OrderBy("date DESC, id ASC")
     List<Entry> entries;        // entries
 
 

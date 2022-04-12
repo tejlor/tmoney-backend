@@ -13,9 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import lombok.experimental.FieldDefaults;
+import pl.telech.tmoney.commons.model.exception.TMoneyException;
 import pl.telech.tmoney.main.builder.CategoryBuilder;
+import pl.telech.tmoney.main.builder.EntryBuilder;
 import pl.telech.tmoney.main.model.dto.CategoryDto;
 import pl.telech.tmoney.main.model.entity.Category;
+import pl.telech.tmoney.main.model.entity.Entry;
 import pl.telech.tmoney.utils.BaseTest;
 
 @RunWith(SpringRunner.class)
@@ -97,6 +100,36 @@ public class CategoryControllerTest extends BaseTest {
 		assertCategory(result, updatedCategory, true);
 	}
 	
+	@Test
+	@Transactional
+	public void delete() {	
+		// given
+		Category category = setupCategory("Samochód");
+		flush();
+		
+		// when
+		controller.delete(category.getId());	
+		flushAndClear();
+		
+		// then
+		Category deletedCategory = load(Category.class, category.getId());
+		assertThat(deletedCategory).isNull();
+	}
+	
+	@Test
+	@Transactional
+	public void delete_error() {	
+		// given
+		Category category = setupCategory("Samochód");
+		Entry entry = setupEntry(category);
+		flush();
+		
+		// when then
+		expectException(() -> controller.delete(category.getId()), 
+				TMoneyException.class, String.format("Cannot delete! Category %s is used in 1 entries: [%d].", category.getName(), entry.getId())
+		);
+	}
+	
 	// ################################### PRIVATE #########################################################################
 	
 	private void assertCategory(CategoryDto dto, Category model, boolean withId) {
@@ -114,6 +147,12 @@ public class CategoryControllerTest extends BaseTest {
 	private Category setupCategory(String name) {
 		return new CategoryBuilder()
 			.name(name)
+			.save(entityManager);
+	}
+	
+	private Entry setupEntry(Category category) {
+		return new EntryBuilder()
+			.category(category)
 			.save(entityManager);
 	}
 	

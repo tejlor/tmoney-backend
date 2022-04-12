@@ -4,6 +4,8 @@ import static lombok.AccessLevel.PRIVATE;
 
 import java.math.BigDecimal;
 
+import javax.persistence.EntityManager;
+
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
@@ -33,5 +35,10 @@ public class CategoryBuilder extends AbstractBuilder<Category> {
 		obj.setDefaultAmount(defaultAmount);
 		obj.setDefaultDescription(defaultDescription);
 		return obj;	
+	}
+
+	@Override
+	public void persistDependences(EntityManager em) {
+		
 	}
 }

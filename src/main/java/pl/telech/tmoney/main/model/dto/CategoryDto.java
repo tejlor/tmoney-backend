@@ -25,7 +25,7 @@ public class CategoryDto extends AbstractDto {
 	String defaultDescription;	
 	
 	
-	public CategoryDto(Category model){
+	public CategoryDto(Category model) {
 		super(model);	
 	}
 

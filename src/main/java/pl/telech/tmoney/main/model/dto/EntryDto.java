@@ -20,26 +20,34 @@ import pl.telech.tmoney.main.model.entity.Entry;
 @FieldDefaults(level = PRIVATE)
 public class EntryDto extends AbstractDto {
 
-    Integer accountId;
-	Account account;			
+	AccountDto account;			
 	LocalDate date;				
-    Integer categoryId;
-	Category category;			
+	CategoryDto category;			
 	String name;				
 	BigDecimal amount;			 
 	String description;			
 	BigDecimal balance;
-	BigDecimal balanceOverAll;
+	BigDecimal balanceOverall;
 	
 	
 	public EntryDto(Entry model){
 		super(model);	
+		account = new AccountDto(model.getAccount());
+		category = new CategoryDto(model.getCategory());
 	}
 
 	@Override
 	public Entry toModel() {
 		var model = new Entry();
 		fillModel(model);
+		
+		if(account != null) {
+			model.setAccount(new Account(account.getId()));
+		}
+		if(category != null) {
+			model.setCategory(new Category(category.getId()));
+		}
+		
 		return model;
 	}
 	

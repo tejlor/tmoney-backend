@@ -9,4 +9,10 @@ public interface EntryLogic extends AbstractLogic<Entry> {
 
 	List<Entry> loadByCategoryId(int categoryId);
 
+	Entry create(Entry _entry);
+
+	Entry update(int id, Entry _entry);
+
+	void delete(int id);
+
 }

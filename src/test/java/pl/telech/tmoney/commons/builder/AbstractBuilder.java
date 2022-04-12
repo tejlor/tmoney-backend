@@ -17,15 +17,18 @@ public abstract class AbstractBuilder<T extends AbstractEntity> {
 	Integer id;
 	
 	public abstract T build();
+	public abstract void persistDependences(EntityManager em);
 	
 	public T save(EntityManager em) {
 		var result = build();
+		persistDependences(em);
 		em.persist(result);
 		return result;
 	}
 	
 	public T saveAndReload(EntityManager em) {
 		var result = build();
+		persistDependences(em);
 		em.persist(result);
 		em.flush();
 		em.refresh(result);

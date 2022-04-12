@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.commons.logic.AbstractLogicImpl;
+import pl.telech.tmoney.commons.utils.TUtils;
 import pl.telech.tmoney.main.dao.EntryDAO;
 import pl.telech.tmoney.main.logic.interfaces.EntryLogic;
 import pl.telech.tmoney.main.model.entity.Entry;
@@ -30,6 +31,59 @@ public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLog
 		return dao.findByCategoryId(categoryId);
 	}
 	
+	@Override
+	public Entry create(Entry _entry) {
+		validate(_entry);
+		
+		var entry = new Entry();	
+		entry.setAccount(_entry.getAccount());
+		entry.setDate(_entry.getDate());
+		entry.setCategory(_entry.getCategory());
+		entry.setName(_entry.getName());
+		entry.setAmount(_entry.getAmount());
+		entry.setDescription(_entry.getDescription());
+		calculateAndFillBalances(entry);
+		
+		return save(entry);
+	}
+	
+	@Override
+	public Entry update(int id, Entry _entry) {
+		validate(_entry);
+		
+		Entry entry = loadById(id);
+		TUtils.assertEntityExists(entry);
+		
+		entry.setAccount(_entry.getAccount());
+		entry.setDate(_entry.getDate());
+		entry.setCategory(_entry.getCategory());
+		entry.setName(_entry.getName());
+		entry.setAmount(_entry.getAmount());
+		entry.setDescription(_entry.getDescription());
+		
+		return save(entry);
+	}
+	
+	@Override
+	public void delete(int id) {
+		Entry entry = loadById(id);
+		TUtils.assertEntityExists(entry);
+				
+		delete(entry);
+	}
+	
 	// ################################### PRIVATE #########################################################################
 	
+	private void validate(Entry entry) {
+		
+	}
+	
+	private void calculateAndFillBalances(Entry entry) {
+		Entry lastAccountEntry = dao.findLastByAccountBeforeDate(entry.getAccountId(), entry.getDate());
+		entry.setBalance(lastAccountEntry.getBalance().add(entry.getAmount()));
+		
+		Entry lastEntry = dao.findLastBeforeDate(entry.getDate());
+		entry.setBalanceOverall(lastEntry.getBalanceOverall().add(entry.getAmount()));
+	}
+		
 }
