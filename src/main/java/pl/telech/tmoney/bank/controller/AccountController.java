@@ -1,0 +1,84 @@
+package pl.telech.tmoney.bank.controller;
+
+import static lombok.AccessLevel.PRIVATE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import lombok.experimental.FieldDefaults;
+import pl.telech.tmoney.bank.logic.interfaces.AccountLogic;
+import pl.telech.tmoney.bank.model.dto.AccountDto;
+import pl.telech.tmoney.bank.model.dto.AccountWithLastEntryDto;
+import pl.telech.tmoney.bank.model.dto.EntryDto;
+import pl.telech.tmoney.commons.controller.AbstractController;
+import pl.telech.tmoney.commons.utils.TUtils;
+
+@RestController
+@RequestMapping("/bank-accounts")
+@FieldDefaults(level = PRIVATE)
+public class AccountController extends AbstractController {
+
+	@Autowired
+	AccountLogic accountLogic;
+	
+	/*
+	 * Returns all accounts.
+	 */
+	@RequestMapping(value = "", method = GET)
+	public List<AccountDto> getAll() {
+		
+		return AccountDto.toDtoList(accountLogic.loadAll());
+	}
+	
+	/*
+	 * Returns active accounts with last entries.
+	 */
+	@RequestMapping(value = "/summary", method = GET)
+	public List<AccountWithLastEntryDto> getSummary() {	
+		return accountLogic.getAccountSummaryList().stream()
+			.map(pair -> new AccountWithLastEntryDto(
+					new AccountDto(pair.getKey()), 
+					new EntryDto(pair.getValue())))
+			.collect(Collectors.toList());
+	}
+	
+	/*
+	 * Returns account by id.
+	 */
+	@RequestMapping(value = "/{id:" + ID + "}", method = GET)
+	public AccountDto getById(int id) {
+		
+		return new AccountDto(accountLogic.loadById(id));
+	}
+	
+	/*
+	 * Creates new account.
+	 */
+	@RequestMapping(value = "", method = POST)
+	public AccountDto create(
+			@RequestBody AccountDto account) {
+		
+		return new AccountDto(accountLogic.create(account.toModel()));
+	}
+	
+	/*
+	 * Updates account.
+	 */
+	@RequestMapping(value = "/{id:" + ID + "}", method = PUT)
+	public AccountDto update(
+			@PathVariable int id,
+			@RequestBody AccountDto account) {
+		
+		TUtils.assertDtoId(id, account);
+		return new AccountDto(accountLogic.update(id, account.toModel()));
+	}
+}

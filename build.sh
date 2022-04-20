@@ -15,7 +15,7 @@ function start {
 	java -jar target/tmoney.jar --spring.profiles.active=dev
 }
 
-function start {
+function prod {
 	java -jar target/tmoney.jar --spring.profiles.active=prod
 }
 
