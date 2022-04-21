@@ -19,7 +19,8 @@ public class AccountBuilder extends AbstractBuilder<Account> {
 	String name = "Dom";				
 	Boolean active = true;			
 	String color = "255.214,102";				
-	Integer orderNo = 1;	
+	String orderNo = "1.1";	
+	String icon = "fa-user";
 	
 	@Override
 	public Account build() {
@@ -30,6 +31,7 @@ public class AccountBuilder extends AbstractBuilder<Account> {
 		obj.setActive(active);
 		obj.setColor(color);
 		obj.setOrderNo(orderNo);
+		obj.setIcon(icon);
 		return obj;	
 	}
 

@@ -23,7 +23,7 @@ import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 @NoArgsConstructor
 @FieldNameConstants
 @FieldDefaults(level = PRIVATE)
-@Table(name = "category", schema = "public")
+@Table(name = "category", schema = "bank")
 public class Category extends AbstractEntity {
 		
 	@Column(length = 100, nullable = false)

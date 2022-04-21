@@ -14,7 +14,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.builder.AccountBuilder;
-import pl.telech.tmoney.bank.controller.AccountController;
 import pl.telech.tmoney.bank.model.dto.AccountDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.utils.BaseTest;

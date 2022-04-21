@@ -66,7 +66,6 @@ public class AccountLogicImpl extends AbstractLogicImpl<Account> implements Acco
 	@Override
 	public List<Pair<Account, Entry>> getAccountSummaryList() {
 		return dao.findActive().stream()
-			.filter(account -> !account.getCode().equals(Account.SUMMARY))
 			.map(account -> Pair.of(account, entryLogic.loadLastByAccount(account.getId())))
 			.collect(Collectors.toList());
 	}

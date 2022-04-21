@@ -17,7 +17,6 @@ import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.builder.AccountBuilder;
 import pl.telech.tmoney.bank.builder.CategoryBuilder;
 import pl.telech.tmoney.bank.builder.EntryBuilder;
-import pl.telech.tmoney.bank.controller.EntryController;
 import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;

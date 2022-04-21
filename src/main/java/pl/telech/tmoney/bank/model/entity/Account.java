@@ -26,11 +26,9 @@ import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 @NoArgsConstructor
 @FieldNameConstants
 @FieldDefaults(level = PRIVATE)
-@Table(name = "account", schema = "public")
+@Table(name = "account", schema = "bank")
 public class Account extends AbstractEntity {
-	
-	public static final String SUMMARY = "SUMMARY";
-	
+		
 	@Column(length = 10, nullable = false)
 	String code;				// technical code
 	
@@ -43,8 +41,11 @@ public class Account extends AbstractEntity {
 	@Column(length = 100) 
 	String color;				// color in rgb format
 	
-	@Column
-	Integer orderNo;			// account order at front
+	@Column(length = 3)
+	String orderNo;				// account order at front in format X.X - [row].[column]
+	
+	@Column(length = 50)
+	String icon;				// account icon 
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
 	@OrderBy("date DESC, id ASC")

@@ -28,7 +28,7 @@ import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 @NoArgsConstructor
 @FieldNameConstants
 @FieldDefaults(level = PRIVATE)
-@Table(name = "entry", schema = "public")
+@Table(name = "entry", schema = "bank")
 public class Entry extends AbstractEntity {
 	
 	@Setter(AccessLevel.PRIVATE)

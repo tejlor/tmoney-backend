@@ -4,11 +4,12 @@ import static lombok.AccessLevel.PRIVATE;
 
 import lombok.Value;
 import lombok.experimental.FieldDefaults;
+import pl.telech.tmoney.commons.model.interfaces.Loggable;
 
 @Value
 @FieldDefaults(level = PRIVATE)
-public class AccountWithLastEntryDto {
+public class AccountWithEntryDto implements Loggable {
 	
 	AccountDto account;
-	EntryDto lastEntry;
+	EntryDto entry;
 }

@@ -20,7 +20,8 @@ public class AccountDto extends AbstractDto {
 	String name;
 	Boolean active;
 	String color;
-	Integer orderNo;
+	String orderNo;
+	String icon;
 	
 	
 	public AccountDto(Account model){

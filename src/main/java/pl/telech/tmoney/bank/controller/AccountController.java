@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.logic.interfaces.AccountLogic;
 import pl.telech.tmoney.bank.model.dto.AccountDto;
-import pl.telech.tmoney.bank.model.dto.AccountWithLastEntryDto;
+import pl.telech.tmoney.bank.model.dto.AccountWithEntryDto;
 import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.commons.controller.AbstractController;
 import pl.telech.tmoney.commons.utils.TUtils;
@@ -43,9 +43,9 @@ public class AccountController extends AbstractController {
 	 * Returns active accounts with last entries.
 	 */
 	@RequestMapping(value = "/summary", method = GET)
-	public List<AccountWithLastEntryDto> getSummary() {	
+	public List<AccountWithEntryDto> getSummary() {	
 		return accountLogic.getAccountSummaryList().stream()
-			.map(pair -> new AccountWithLastEntryDto(
+			.map(pair -> new AccountWithEntryDto(
 					new AccountDto(pair.getKey()), 
 					new EntryDto(pair.getValue())))
 			.collect(Collectors.toList());

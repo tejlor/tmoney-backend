@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.builder.CategoryBuilder;
 import pl.telech.tmoney.bank.builder.EntryBuilder;
-import pl.telech.tmoney.bank.controller.CategoryController;
 import pl.telech.tmoney.bank.model.dto.CategoryDto;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
