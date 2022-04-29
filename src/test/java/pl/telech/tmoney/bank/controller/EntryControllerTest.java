@@ -30,7 +30,7 @@ public class EntryControllerTest extends BaseTest {
 	@Autowired
 	EntryController controller;
 	
-	@Test
+	/*@Test
 	@Transactional
 	public void getAll() {	
 		// given
@@ -50,7 +50,7 @@ public class EntryControllerTest extends BaseTest {
 		assertEntry(result.get(0), entry0, Mode.GET);
 		assertEntry(result.get(1), entry1, Mode.GET);
 		assertEntry(result.get(2), entry2, Mode.GET);
-	}
+	}*/
 	
 	@Test
 	@Transactional

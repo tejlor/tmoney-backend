@@ -5,14 +5,21 @@ import static lombok.AccessLevel.PRIVATE;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.dao.EntryDAO;
+import pl.telech.tmoney.bank.logic.interfaces.AccountLogic;
+import pl.telech.tmoney.bank.logic.interfaces.CategoryLogic;
 import pl.telech.tmoney.bank.logic.interfaces.EntryLogic;
+import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.commons.logic.AbstractLogicImpl;
+import pl.telech.tmoney.commons.model.exception.TMoneyException;
+import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.commons.utils.TUtils;
 
 @Service
@@ -22,9 +29,22 @@ public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLog
 	
 	EntryDAO dao;
 	
+	@Autowired
+	AccountLogic accountLogic;
+	
 	public EntryLogicImpl(EntryDAO dao) {
 		super(dao);
 		this.dao = dao;
+	}
+	
+	@Override
+	public Pair<List<Entry>, Integer> loadAll(String accountCode, TableParams params) {
+		Account account = accountLogic.loadByCode(accountCode);
+		if(account == null) {
+			throw new TMoneyException("Account with code " + accountCode + " doesn't exist");
+		}
+		
+		return dao.findTableByAccountId(account.getId(), params);
 	}
 	
 	@Override

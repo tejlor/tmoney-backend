@@ -10,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedAttributeNode;
 import javax.persistence.Table;
 
 import lombok.AccessLevel;
@@ -29,6 +31,9 @@ import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 @FieldNameConstants
 @FieldDefaults(level = PRIVATE)
 @Table(name = "entry", schema = "bank")
+@NamedEntityGraph(name = "category",
+	attributeNodes = @NamedAttributeNode("category")
+)
 public class Entry extends AbstractEntity {
 	
 	@Setter(AccessLevel.PRIVATE)

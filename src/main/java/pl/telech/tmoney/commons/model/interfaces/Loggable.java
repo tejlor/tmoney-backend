@@ -33,16 +33,29 @@ public interface Loggable {
 				
 				field.setAccessible(true);
 				Object obj = field.get(this);
+				sb.append(TConstants.INDENT[depth] + field.getName() + ": ");
 				if (obj instanceof Loggable) {
-					sb.append(TConstants.INDENT[depth] + field.getName() + ":\n");
+					sb.append("\n");
 					sb.append(((Loggable) obj).toFullString(depth + 1));
 				}
-				else if(obj instanceof List){
-					sb.append(TConstants.INDENT[depth] + field.getName() + ": ");
-					sb.append("list of " + ((List<?>)obj).size() + " elements\n");
+				else if(obj instanceof List) {
+					List<?> list = (List<?>) obj;
+					if(list.size() > 0){
+						sb.append("list of ").append(list.size()).append(" elements, first:\n");
+						Object firstEl = list.get(0);
+						if(firstEl instanceof Loggable){
+							sb.append(((Loggable) firstEl).toFullString(1));
+						}
+						else {
+							sb.append(firstEl.toString());
+						}
+					}
+					else {
+						sb.append("Empty List");
+					}
 				}
 				else {
-					sb.append(TConstants.INDENT[depth] + field.getName() + ": " + obj + "\n");
+					sb.append(obj + "\n");
 				}
 			}
 			catch (IllegalArgumentException | IllegalAccessException e) {

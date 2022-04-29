@@ -54,10 +54,20 @@ public class AccountController extends AbstractController {
 	/*
 	 * Returns account by id.
 	 */
-	@RequestMapping(value = "/{id:" + ID + "}", method = GET)
+	@RequestMapping(value = "/id/{id:" + ID + "}", method = GET)
 	public AccountDto getById(int id) {
 		
 		return new AccountDto(accountLogic.loadById(id));
+	}
+	
+	/*
+	 * Returns account by code.
+	 */
+	@RequestMapping(value = "/{code:" + CODE + "}", method = GET)
+	public AccountDto getByCode(
+			@PathVariable String code) {
+		
+		return new AccountDto(accountLogic.loadByCode(code));
 	}
 	
 	/*

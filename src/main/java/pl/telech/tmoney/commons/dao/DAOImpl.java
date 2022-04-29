@@ -34,13 +34,11 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	public T findOne(Specification<T> ...spec) {
         return findOne(null, spec);
     }
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	public T findOne(String entityGraphName, Specification<T> ...spec) {
         TypedQuery<T> query = getQuery(conjunction(spec), Sort.unsorted());
         if(entityGraphName != null)

@@ -35,6 +35,11 @@ public class AccountLogicImpl extends AbstractLogicImpl<Account> implements Acco
 	}
 	
 	@Override
+	public Account loadByCode(String code) {
+		return dao.findByCode(code);
+	}
+	
+	@Override
 	public Account create(Account _account) {
 		validate(_account);
 		

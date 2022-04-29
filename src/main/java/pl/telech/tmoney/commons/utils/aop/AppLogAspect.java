@@ -34,7 +34,6 @@ public class AppLogAspect {
 	@Pointcut("@annotation(pl.telech.tmoney.commons.utils.aop.AppLogOmit)")
 	public void isAppLogOmit() {}
 
-
 	@Around("controllerPublicMethods() && !isAppLogOmit()")
 	public Object logRequest(ProceedingJoinPoint jp) throws Throwable {	
 		long startTime = System.currentTimeMillis();
@@ -74,6 +73,7 @@ public class AppLogAspect {
 			return "";
 		
 		StringBuilder sb = new StringBuilder();
+		sb.append(request.getMethod()).append(" ").append(request.getRequestURI());
 		
 		if(request.getQueryString() != null) {
 			sb.append("?").append(request.getQueryString());
@@ -99,7 +99,7 @@ public class AppLogAspect {
 			if(list.size() > 0){
 				sb.append("  List of ").append(list.size()).append(" elements, first:\n");
 				Object firstEl = list.get(0);
-				if(firstEl instanceof Loggable){
+				if(firstEl instanceof Loggable) {
 					sb.append(((Loggable) firstEl).toFullString(1));
 				}
 				else {

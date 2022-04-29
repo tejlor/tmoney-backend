@@ -16,6 +16,8 @@ import pl.telech.tmoney.commons.dao.interfaces.DAO;
 
 public interface AccountDAO extends DAO<Account>, JpaSpecificationExecutor<Account> {
 		
+	Account findByCode(String code);
+	
 	default List<Account> findActive() {
 		return findAll(BY_ORDER_NO, isActive());
 	}
