@@ -59,7 +59,8 @@ public class EntryController extends AbstractController {
 	 * Returns entry by id.
 	 */
 	@RequestMapping(value = "/{id:" + ID + "}", method = GET)
-	public EntryDto getById(int id) {
+	public EntryDto getById(
+			@PathVariable int id) {
 		
 		return new EntryDto(entryLogic.loadById(id));
 	}

@@ -4,6 +4,7 @@ import static lombok.AccessLevel.PRIVATE;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,16 @@ public class CategoryController extends AbstractController {
 	public List<CategoryDto> getAll() {
 		
 		return CategoryDto.toDtoList(categoryLogic.loadAll());
+	}
+	
+	/*
+	 * Returns by account id.
+	 */
+	@RequestMapping(value = "/{code:" + CODE + "}", method = GET)
+	public List<CategoryDto> getByAccountCode(
+			@PathVariable String code) {
+		
+		return sort(CategoryDto.toDtoList(categoryLogic.loadByAccountCode(code)));
 	}
 	
 	/*

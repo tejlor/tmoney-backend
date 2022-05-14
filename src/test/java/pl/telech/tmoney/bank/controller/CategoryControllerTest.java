@@ -13,11 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import lombok.experimental.FieldDefaults;
-import pl.telech.tmoney.bank.builder.CategoryBuilder;
-import pl.telech.tmoney.bank.builder.EntryBuilder;
+import pl.telech.tmoney.bank.helper.CategoryHelper;
+import pl.telech.tmoney.bank.helper.EntryHelper;
 import pl.telech.tmoney.bank.model.dto.CategoryDto;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
+import pl.telech.tmoney.commons.enums.Mode;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
 import pl.telech.tmoney.utils.BaseTest;
 
@@ -28,13 +29,18 @@ public class CategoryControllerTest extends BaseTest {
 	@Autowired
 	CategoryController controller;
 	
+	@Autowired
+	CategoryHelper categoryHelper;
+	@Autowired
+	EntryHelper entryHelper;
+	
 	@Test
 	@Transactional
 	public void getAll() {	
 		// given
-		Category category0 = setupCategory("Samochód");
-		Category category1 = setupCategory("Zakupy");
-		Category category2 = setupCategory("Praca");
+		Category category0 = categoryHelper.save("Samochód");
+		Category category1 = categoryHelper.save("Zakupy");
+		Category category2 = categoryHelper.save("Praca");
 		flush();
 		
 		// when
@@ -44,16 +50,22 @@ public class CategoryControllerTest extends BaseTest {
 		// then
 		assertThat(result).isNotNull();
 		assertThat(result).hasSize(3);
-		assertCategory(result.get(0), category0, true);
-		assertCategory(result.get(1), category1, true);
-		assertCategory(result.get(2), category2, true);
+		categoryHelper.assertEqual(result.get(0), category0, Mode.GET);
+		categoryHelper.assertEqual(result.get(1), category1, Mode.GET);
+		categoryHelper.assertEqual(result.get(2), category2, Mode.GET);
+	}
+	
+	@Test
+	@Transactional
+	public void getByAccountCode() {
+		
 	}
 	
 	@Test
 	@Transactional
 	public void getById() {	
 		// given
-		Category category = setupCategory("Samochód");
+		Category category = categoryHelper.save("Samochód");
 		flush();
 		
 		// when
@@ -62,7 +74,7 @@ public class CategoryControllerTest extends BaseTest {
 		
 		// then
 		assertThat(result).isNotNull();
-		assertCategory(result, category, true);
+		categoryHelper.assertEqual(result, category, Mode.GET);
 	}
 	
 	@Test
@@ -72,20 +84,20 @@ public class CategoryControllerTest extends BaseTest {
 		flush();
 		
 		// when
-		Category category = buildCategory("Samochód");
+		Category category = categoryHelper.build("Samochód");
 		CategoryDto result = controller.create(new CategoryDto(category));	
 		flushAndClear();
 		
 		// then
 		assertThat(result).isNotNull();
-		assertCategory(result, category, false);
+		categoryHelper.assertEqual(result, category, Mode.CREATE);
 	}
 	
 	@Test
 	@Transactional
 	public void update() {	
 		// given
-		Category category = setupCategory("Samochód");
+		Category category = categoryHelper.save("Samochód");
 		flush();
 		
 		// when
@@ -97,14 +109,14 @@ public class CategoryControllerTest extends BaseTest {
 		// then
 		assertThat(result).isNotNull();
 		Category updatedCategory = load(Category.class, category.getId());
-		assertCategory(result, updatedCategory, true);
+		categoryHelper.assertEqual(result, updatedCategory, Mode.UPDATE);
 	}
 	
 	@Test
 	@Transactional
 	public void delete() {	
 		// given
-		Category category = setupCategory("Samochód");
+		Category category = categoryHelper.save("Samochód");
 		flush();
 		
 		// when
@@ -120,46 +132,14 @@ public class CategoryControllerTest extends BaseTest {
 	@Transactional
 	public void delete_error() {	
 		// given
-		Category category = setupCategory("Samochód");
-		Entry entry = setupEntry(category);
+		Category category = categoryHelper.save("Samochód");
+		Entry entry = entryHelper.save("Zakupy", category);
 		flush();
 		
 		// when then
 		expectException(() -> controller.delete(category.getId()), 
 				TMoneyException.class, String.format("Cannot delete! Category %s is used in 1 entries: [%d].", category.getName(), entry.getId())
 		);
-	}
-	
-	// ################################### PRIVATE #########################################################################
-	
-	private void assertCategory(CategoryDto dto, Category model, boolean withId) {
-		if(withId) {
-			assertThat(dto.getId()).isEqualTo(model.getId());
-		}
-		assertThat(dto.getName()).isEqualTo(model.getName());
-		assertThat(dto.getAccount()).isEqualTo(model.getAccount());
-		assertThat(dto.getReport()).isEqualTo(model.getReport());
-		assertThat(dto.getDefaultName()).isEqualTo(model.getDefaultName());
-		assertThat(dto.getDefaultAmount()).isEqualByComparingTo(model.getDefaultAmount());
-		assertThat(dto.getDefaultDescription()).isEqualTo(model.getDefaultDescription());
-	}
-	
-	private Category setupCategory(String name) {
-		return new CategoryBuilder()
-			.name(name)
-			.save(entityManager);
-	}
-	
-	private Entry setupEntry(Category category) {
-		return new EntryBuilder()
-			.category(category)
-			.save(entityManager);
-	}
-	
-	private Category buildCategory(String name) {
-		return new CategoryBuilder()
-			.name(name)
-			.build();
 	}
 	
 }

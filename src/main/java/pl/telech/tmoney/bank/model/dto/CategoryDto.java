@@ -15,7 +15,7 @@ import pl.telech.tmoney.commons.model.dto.AbstractDto;
 @Getter @Setter
 @NoArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class CategoryDto extends AbstractDto {
+public class CategoryDto extends AbstractDto implements Comparable<CategoryDto> {
 
 	String name;	
 	Integer account;			
@@ -38,5 +38,10 @@ public class CategoryDto extends AbstractDto {
 	
 	public static List<CategoryDto> toDtoList(List<Category> list){
 		return toDtoList(Category.class, CategoryDto.class, list);
+	}
+
+	@Override
+	public int compareTo(CategoryDto other) {
+		return name.compareToIgnoreCase(other.name);
 	}
 }

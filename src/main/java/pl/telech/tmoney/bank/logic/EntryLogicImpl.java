@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.dao.EntryDAO;
 import pl.telech.tmoney.bank.logic.interfaces.AccountLogic;
-import pl.telech.tmoney.bank.logic.interfaces.CategoryLogic;
 import pl.telech.tmoney.bank.logic.interfaces.EntryLogic;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Entry;

@@ -11,8 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.dao.CategoryDAO;
+import pl.telech.tmoney.bank.logic.interfaces.AccountLogic;
 import pl.telech.tmoney.bank.logic.interfaces.CategoryLogic;
 import pl.telech.tmoney.bank.logic.interfaces.EntryLogic;
+import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.commons.logic.AbstractLogicImpl;
@@ -25,11 +27,21 @@ import pl.telech.tmoney.commons.utils.TUtils;
 public class CategoryLogicImpl extends AbstractLogicImpl<Category> implements CategoryLogic {
 	
 	@Autowired
+	AccountLogic accountLogic;
+	@Autowired
 	EntryLogic entryLogic;
 	
 	
 	public CategoryLogicImpl(CategoryDAO dao) {
 		super(dao);
+	}
+	
+	@Override
+	public List<Category> loadByAccountCode(String accountCode) {
+		Account account = accountLogic.loadByCode(accountCode);
+		return loadAll().stream()
+			.filter(a -> (a.getAccount() & 1 << account.getId()) != 0)
+			.collect(Collectors.toList());
 	}
 		
 	@Override

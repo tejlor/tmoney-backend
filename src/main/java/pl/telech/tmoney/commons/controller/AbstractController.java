@@ -5,6 +5,8 @@ import static lombok.AccessLevel.PRIVATE;
 import java.beans.PropertyEditorSupport;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import pl.telech.tmoney.commons.model.dto.AbstractDto;
 import pl.telech.tmoney.commons.model.exception.NotFoundException;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
 import pl.telech.tmoney.commons.model.shared.ApiError;
@@ -36,6 +39,11 @@ public class AbstractController {
 
 	protected static final String ID = "[0-9]+";
 	protected static final String CODE = "[a-zA-Z0-9_\\-]+";
+	
+	protected <T extends AbstractDto & Comparable<T>> List<T> sort(List<T> list) {
+		Collections.sort(list);
+		return list;
+	}
 	
 	/*
 	 * Configuration needed for using LocalDate class in arguments of constructor methods without @DateTimeFormat annotation.
