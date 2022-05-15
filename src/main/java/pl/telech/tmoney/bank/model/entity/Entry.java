@@ -23,7 +23,7 @@ import lombok.experimental.FieldNameConstants;
 import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 
 /*
- * Entry.
+ * Entry (row in table).
  */
 @Entity
 @Getter @Setter
@@ -31,10 +31,12 @@ import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 @FieldNameConstants
 @FieldDefaults(level = PRIVATE)
 @Table(name = "entry", schema = "bank")
-@NamedEntityGraph(name = "category",
-	attributeNodes = @NamedAttributeNode("category")
+@NamedEntityGraph(name = Entry.WITH_CATEGORY,
+	attributeNodes = @NamedAttributeNode(Entry.Fields.category)
 )
 public class Entry extends AbstractEntity {
+	
+	public static final String WITH_CATEGORY = "withCategory";
 	
 	@Setter(AccessLevel.PRIVATE)
     @Column(insertable = false, updatable = false)
@@ -42,10 +44,10 @@ public class Entry extends AbstractEntity {
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "accountId")
-	Account account;			// account
+	Account account;				// account
 	
 	@Column(nullable = false)
-	LocalDate date;				// entry date
+	LocalDate date;					// entry date
 	
 	@Setter(AccessLevel.PRIVATE)
     @Column(insertable = false, updatable = false)
@@ -53,22 +55,22 @@ public class Entry extends AbstractEntity {
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "categoryId")
-	Category category;			// category
+	Category category;				// category
 	
 	@Column(length = 100, nullable = false)
-	String name;				// entry name
+	String name;					// entry name
 	
 	@Column(nullable = false)
-	BigDecimal amount;			// entry amount 
+	BigDecimal amount;				// entry amount 
 	
 	@Column(length = 255)
-	String description;			// entry description
+	String description;				// entry description
 	
 	@Column(nullable = false)
-	BigDecimal balance;			// balance in current account
+	BigDecimal balance;				// balance in current account
 	
 	@Column(nullable = false)
-	BigDecimal balanceOverall;	// balance in whole portfolio
+	BigDecimal balanceOverall;		// balance in whole portfolio
 				
 
 	public Entry(Integer id) {

@@ -61,6 +61,14 @@ public class EntryHelper {
 			.account(account)
 			.save(entityManager);
 	}
+
+	public Entry save(String name, Account account, String amount) {
+		return new EntryBuilder()
+			.name(name)
+			.account(account)
+			.amount(new BigDecimal(amount))
+			.save(entityManager);
+	}
 	
 	public Entry save(String name, Account account, String amount, String balance, String balanceOverall) {
 		return new EntryBuilder()

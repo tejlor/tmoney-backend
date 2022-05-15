@@ -24,7 +24,7 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 	
 	default Pair<List<Entry>, Integer> findTableByAccountId(int accountId, TableParams tableParams){
 		return findAllWithCount(
-				"category",
+				Entry.WITH_CATEGORY,
 				tableParams.getPage(),
 				tableParams.getFilter() != null ? isLike(tableParams.getFilter()) : null,
 				belongsToAccount(accountId)

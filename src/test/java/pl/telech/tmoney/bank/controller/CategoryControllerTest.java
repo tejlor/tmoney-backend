@@ -13,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import lombok.experimental.FieldDefaults;
+import pl.telech.tmoney.bank.helper.AccountHelper;
 import pl.telech.tmoney.bank.helper.CategoryHelper;
 import pl.telech.tmoney.bank.helper.EntryHelper;
 import pl.telech.tmoney.bank.model.dto.CategoryDto;
+import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.commons.enums.Mode;
@@ -29,6 +31,8 @@ public class CategoryControllerTest extends BaseTest {
 	@Autowired
 	CategoryController controller;
 	
+	@Autowired
+	AccountHelper accountHelper;
 	@Autowired
 	CategoryHelper categoryHelper;
 	@Autowired
@@ -58,7 +62,22 @@ public class CategoryControllerTest extends BaseTest {
 	@Test
 	@Transactional
 	public void getByAccountCode() {
+		// given
+		Account account = accountHelper.save("Konto bankowe", "BANK");
+		Category category0 = categoryHelper.save("Samochód", 1 << account.getId());
+		Category category1 = categoryHelper.save("Zakupy", 1 << account.getId());
+		categoryHelper.save("Praca", 1 << (account.getId() + 1));
+		flush();
 		
+		// when
+		List<CategoryDto> result = controller.getByAccountCode(account.getCode());	
+		flushAndClear();
+		
+		// then
+		assertThat(result).isNotNull();
+		assertThat(result).hasSize(2);
+		categoryHelper.assertEqual(result.get(0), category0, Mode.GET);
+		categoryHelper.assertEqual(result.get(1), category1, Mode.GET);
 	}
 	
 	@Test

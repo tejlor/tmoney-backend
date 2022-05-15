@@ -4,6 +4,7 @@ import static lombok.AccessLevel.PRIVATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -21,6 +22,9 @@ import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.commons.enums.Mode;
+import pl.telech.tmoney.commons.model.dto.TableDataDto;
+import pl.telech.tmoney.commons.model.dto.TableDataDto.TableInfoDto;
+import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.utils.BaseTest;
 
 @RunWith(SpringRunner.class)
@@ -41,22 +45,41 @@ public class EntryControllerTest extends BaseTest {
 	@Transactional
 	public void getAll() {	
 		// given
-		Account account = accountHelper.save("Konto bankowe");
-		Entry entry0 = entryHelper.save("Zakupy", account);
-		Entry entry1 = entryHelper.save("ZUS", account);
-		Entry entry2 = entryHelper.save("Fryzjer", account);
+		Account account = accountHelper.save("Konto bankowe", "BANK");
+		entryHelper.save("Zakupy", account);
+		entryHelper.save("Zus", account);
+		entryHelper.save("VAT-7", account);
+		entryHelper.save("Leasing", account);
+		entryHelper.save("OneDrive", account);
+		entryHelper.save("Benzyna", account);
+		entryHelper.save("Autostrada", account);
+		entryHelper.save("Czapka N", account);
 		flush();
 		
-//		// when
-//		List<EntryDto> result = controller.getAll();	
-//		flushAndClear();
-//		
-//		// then
-//		assertThat(result).isNotNull();
-//		assertThat(result).hasSize(3);
-//		assertEntry(result.get(0), entry0, Mode.GET);
-//		assertEntry(result.get(1), entry1, Mode.GET);
-//		assertEntry(result.get(2), entry2, Mode.GET);
+		// when
+		TableDataDto<EntryDto> result = controller.getAll("BANK", 1, 2, "z", "name", true);	
+		flushAndClear();
+		
+		// then
+		assertThat(result).isNotNull();
+
+		TableParams tableParams = result.getTableParams();
+		assertThat(tableParams.getPageNo()).isEqualTo(1);
+		assertThat(tableParams.getPageSize()).isEqualTo(2);
+		assertThat(tableParams.getFilter()).isEqualTo("z");
+		assertThat(tableParams.getSortBy()).isEqualTo("name");
+		assertThat(tableParams.isSortAsc()).isEqualTo(true);
+		
+		TableInfoDto tableInfo = result.getTableInfo();
+		assertThat(tableInfo.getPageCount()).isEqualTo(2);
+		assertThat(tableInfo.getRowCount()).isEqualTo(4);
+		assertThat(tableInfo.getRowStart()).isEqualTo(3);
+		assertThat(tableInfo.getRowEnd()).isEqualTo(4);
+		
+		List<EntryDto> rows = result.getRows();
+		assertThat(rows).hasSize(2);
+		assertThat(rows.get(0).getName()).isEqualTo("Zakupy");
+		assertThat(rows.get(1).getName()).isEqualTo("Zus");
 	}
 	
 	@Test
@@ -104,13 +127,7 @@ public class EntryControllerTest extends BaseTest {
 	public void update() {	
 		// given
 		Account bankAccount = accountHelper.save("Konto bankowe");
-		Account homeAccount = accountHelper.save("Dom");
-		entryHelper.save("Entry B1", bankAccount, "20.00",  "20.00",  "20.00"); 
-		entryHelper.save("Entry H1", homeAccount, "40.00",  "40.00",  "60.00"); 
-		Entry entry = entryHelper.save("Entry B2", bankAccount, "30.00",  "50.00",  "90.00");
-		entryHelper.save("Entry H2", homeAccount, "10.00",  "50.00", "100.00"); 
-		entryHelper.save("Entry B3", bankAccount, "50.00", "100.00", "150.00");
-		entryHelper.save("Entry H3", homeAccount, "60.00", "110.00", "210.00");
+		Entry entry = entryHelper.save("Zakupy", bankAccount, "30.00");
 		flush();
 		
 		// when
@@ -122,9 +139,8 @@ public class EntryControllerTest extends BaseTest {
 		
 		// then
 		assertThat(result).isNotNull();
-		Entry entryB2 = load(Entry.class, entry.getId());
-		assertThat(entryB2.getDescription()).isEqualTo(dto.getDescription());
-		assertThat(entryB2.getAmount()).isEqualTo(dto.getAmount());
+		assertThat(result.getDescription()).isEqualTo(dto.getDescription());
+		assertThat(result.getAmount()).isEqualTo(dto.getAmount());
 	}
 	
 	@Test
