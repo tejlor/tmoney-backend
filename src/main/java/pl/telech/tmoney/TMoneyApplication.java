@@ -7,7 +7,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import pl.telech.tmoney.commons.dao.DAOImpl;
 
-
 @SpringBootApplication
 @EnableScheduling
 @EnableJpaRepositories(basePackages = "pl.telech.tmoney.*.dao", repositoryBaseClass = DAOImpl.class)
