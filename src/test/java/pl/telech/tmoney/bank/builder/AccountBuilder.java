@@ -18,7 +18,7 @@ public class AccountBuilder extends AbstractBuilder<Account> {
 	String code = "HOME";
 	String name = "Dom";				
 	Boolean active = true;			
-	String color = "255,214,102";				
+	String color = "#45ffc9";				
 	String orderNo = "1.1";	
 	String icon = "fa-user";
 	

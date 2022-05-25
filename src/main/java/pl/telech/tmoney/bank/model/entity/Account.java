@@ -38,8 +38,11 @@ public class Account extends AbstractEntity {
 	@Column(nullable = false)
 	Boolean active;				// if account is active and should be visible at front
 	
-	@Column(length = 100) 
-	String color;				// color in rgb format
+	@Column(length = 7) 
+	String color;				// color in #000000 format
+	
+	@Column(length = 7) 
+	String lightColor;			// light color for backgorund in #000000 format
 	
 	@Column(length = 3)
 	String orderNo;				// account order at front in format X.X - [row].[column]

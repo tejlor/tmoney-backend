@@ -20,6 +20,7 @@ public class AccountDto extends AbstractDto {
 	String name;
 	Boolean active;
 	String color;
+	String lightColor;
 	String orderNo;
 	String icon;
 	

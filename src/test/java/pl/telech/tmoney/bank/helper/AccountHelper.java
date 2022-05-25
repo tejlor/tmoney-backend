@@ -27,6 +27,7 @@ public class AccountHelper {
 		assertThat(dto.getName()).isEqualTo(model.getName());
 		assertThat(dto.getActive()).isEqualTo(model.getActive());
 		assertThat(dto.getColor()).isEqualTo(model.getColor());
+		assertThat(dto.getLightColor()).isEqualTo(model.getLightColor());
 		assertThat(dto.getOrderNo()).isEqualTo(model.getOrderNo());
 	}
 	
