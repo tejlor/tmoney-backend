@@ -97,4 +97,14 @@ public class EntryController extends AbstractController {
 		
 		entryLogic.delete(id);
 	}
+	
+	/*
+	 * Updates alla balances.
+	 */
+	@RequestMapping(value = "/updateBalances", method = POST)
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void updateBalances() {
+		
+		entryLogic.updateBalances();
+	}
 }

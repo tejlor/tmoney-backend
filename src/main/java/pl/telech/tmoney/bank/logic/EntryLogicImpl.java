@@ -97,6 +97,11 @@ public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLog
 		return dao.findLastByAccountBeforeDate(accountId, LocalDate.now());
 	}
 	
+	@Override
+	public void updateBalances() {
+		dao.updateBalances();
+	}
+	
 	// ################################### PRIVATE #########################################################################
 	
 	private void validate(Entry entry) {

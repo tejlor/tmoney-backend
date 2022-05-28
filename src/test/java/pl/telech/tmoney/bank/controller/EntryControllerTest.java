@@ -160,4 +160,10 @@ public class EntryControllerTest extends BaseTest {
 		assertThat(deletedEntry).isNull();
 	}
 	
+	@Test
+	@Transactional
+	public void updateBalances() {			
+		// no test in H2 database
+	}
+	
 }
