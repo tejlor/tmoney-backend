@@ -44,6 +44,9 @@ public class Account extends AbstractEntity {
 	@Column(length = 7) 
 	String lightColor;			// light color for backgorund in #000000 format
 	
+	@Column(length = 7) 
+	String darkColor;			// dark color for text in #000000 format
+	
 	@Column(length = 3)
 	String orderNo;				// account order at front in format X.X - [row].[column]
 	

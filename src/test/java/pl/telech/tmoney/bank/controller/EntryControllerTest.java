@@ -57,7 +57,7 @@ public class EntryControllerTest extends BaseTest {
 		flush();
 		
 		// when
-		TableDataDto<EntryDto> result = controller.getAll("BANK", 1, 2, "z", "name", true);	
+		TableDataDto<EntryDto> result = controller.getAll("BANK", 1, 2, "z", "name ASC");	
 		flushAndClear();
 		
 		// then
@@ -67,8 +67,7 @@ public class EntryControllerTest extends BaseTest {
 		assertThat(tableParams.getPageNo()).isEqualTo(1);
 		assertThat(tableParams.getPageSize()).isEqualTo(2);
 		assertThat(tableParams.getFilter()).isEqualTo("z");
-		assertThat(tableParams.getSortBy()).isEqualTo("name");
-		assertThat(tableParams.isSortAsc()).isEqualTo(true);
+		assertThat(tableParams.getSortBy()).isEqualTo("name ASC");
 		
 		TableInfoDto tableInfo = result.getTableInfo();
 		assertThat(tableInfo.getPageCount()).isEqualTo(2);

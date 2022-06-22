@@ -44,10 +44,9 @@ public class EntryController extends AbstractController {
 		@RequestParam(required = false) Integer pageNo,
 		@RequestParam(required = false) Integer pageSize,
 		@RequestParam(required = false) String filter,
-		@RequestParam(required = false) String sortBy,
-		@RequestParam(required = false) Boolean sortAsc){
+		@RequestParam(required = false) String sortBy){
 		
-		var tableParams = new TableParams(pageNo, pageSize, filter, sortBy, sortAsc);		
+		var tableParams = new TableParams(pageNo, pageSize, filter, sortBy);		
 		Pair<List<Entry>, Integer> result = entryLogic.loadAll(accountCode, tableParams); 	
 		var table = new TableDataDto<EntryDto>(tableParams);
 		table.setRows(EntryDto.toDtoList(result.getKey()));
@@ -99,7 +98,7 @@ public class EntryController extends AbstractController {
 	}
 	
 	/*
-	 * Updates alla balances.
+	 * Updates all balances.
 	 */
 	@RequestMapping(value = "/updateBalances", method = POST)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)

@@ -37,15 +37,16 @@ public class AccountControllerTest extends BaseTest {
 	
 	@Test
 	@Transactional
-	public void getAll() {	
+	public void getActive() {	
 		// given
 		Account account0 = accountHelper.save("Konto bankowe");
 		Account account1 = accountHelper.save("Dom");
 		Account account2 = accountHelper.save("Konto maklerskie");
+		Account account3 = accountHelper.save("Konto w innycm banku", false);
 		flush();
 		
 		// when
-		List<AccountDto> result = controller.getAll();	
+		List<AccountDto> result = controller.getActive();	
 		flushAndClear();
 		
 		// then

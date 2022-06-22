@@ -8,18 +8,23 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.logic.interfaces.CategoryLogic;
 import pl.telech.tmoney.bank.model.dto.CategoryDto;
+import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.commons.controller.AbstractController;
+import pl.telech.tmoney.commons.model.dto.TableDataDto;
+import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.commons.utils.TUtils;
 
 @RestController
@@ -31,31 +36,41 @@ public class CategoryController extends AbstractController {
 	CategoryLogic categoryLogic;
 	
 	/*
-	 * Returns all categories.
+	 * Returns all categories for table.
 	 */
-	@RequestMapping(value = "", method = GET)
-	public List<CategoryDto> getAll() {
+	@RequestMapping(value = "/table", method = GET)
+	public TableDataDto<CategoryDto> getTable(
+		@RequestParam(required = false) Integer pageNo,
+		@RequestParam(required = false) Integer pageSize,
+		@RequestParam(required = false) String filter,
+		@RequestParam(required = false) String sortBy) {
 		
-		return CategoryDto.toDtoList(categoryLogic.loadAll());
-	}
-	
-	/*
-	 * Returns by account id.
-	 */
-	@RequestMapping(value = "/{code:" + CODE + "}", method = GET)
-	public List<CategoryDto> getByAccountCode(
-			@PathVariable String code) {
-		
-		return sort(CategoryDto.toDtoList(categoryLogic.loadByAccountCode(code)));
+		var tableParams = new TableParams(pageNo, pageSize, filter, sortBy);		
+		Pair<List<Category>, Integer> result = categoryLogic.loadTable(tableParams); 	
+		var table = new TableDataDto<CategoryDto>(tableParams);
+		table.setRows(CategoryDto.toDtoList(result.getKey()));
+		table.setCount(result.getValue());		
+		return table;
 	}
 	
 	/*
 	 * Returns category by id.
 	 */
 	@RequestMapping(value = "/{id:" + ID + "}", method = GET)
-	public CategoryDto getById(int id) {
+	public CategoryDto getById(
+			@PathVariable int id) {
 		
 		return new CategoryDto(categoryLogic.loadById(id));
+	}
+	
+	/*
+	 * Returns category by account code.
+	 */
+	@RequestMapping(value = "/account/{code:" + CODE + "}", method = GET)
+	public List<CategoryDto> getByAccountCode(
+			@PathVariable String code) {
+		
+		return sort(CategoryDto.toDtoList(categoryLogic.loadByAccountCode(code)));
 	}
 	
 	/*
@@ -86,8 +101,9 @@ public class CategoryController extends AbstractController {
 	@RequestMapping(value = "/{id:" + ID + "}", method = DELETE)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void delete(
-			@PathVariable int id) {
+			@PathVariable int id,
+			@RequestParam(required = false) Integer newCategoryId) {
 		
-		categoryLogic.delete(id);
+		categoryLogic.delete(id, newCategoryId);
 	}
 }

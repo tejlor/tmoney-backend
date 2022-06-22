@@ -2,10 +2,14 @@ package pl.telech.tmoney.commons.model.shared;
 
 import static lombok.AccessLevel.PRIVATE;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -23,16 +27,14 @@ public class TableParams implements Loggable {
 	int pageSize;
 	String filter;
 	String sortBy;
-	boolean sortAsc;
 	
 	public TableParams() {
 		pageNo = 0;
 		pageSize = 10;
-		sortBy = "name";
-		sortAsc = true;
+		sortBy = "name ASC";
 	}
 	
-	public TableParams(Integer pageNo, Integer pageSize, String filter, String sortBy, Boolean sortAsc) {
+	public TableParams(Integer pageNo, Integer pageSize, String filter, String sortBy) {
 		this();
 
 		if(pageNo != null)
@@ -44,16 +46,23 @@ public class TableParams implements Loggable {
 		if(!TUtils.isEmpty(filter))
 			this.filter = filter.toLowerCase();
 		
-		if(sortBy != null && sortBy.length() > 0)
+		if(!TUtils.isEmpty(sortBy))
 			this.sortBy = sortBy;
 		
-		if(sortAsc != null)
-			this.sortAsc = sortAsc;	
 	}
 	
 	@JsonIgnore
-	public Sort getSort() {
-		return Sort.by(sortAsc ? Direction.ASC : Direction.DESC, sortBy);
+	public Sort getSort() {	
+		return Sort.by(
+			Arrays.stream(sortBy.split(","))
+				.map(col -> {
+					String[] arr = col.trim().split(" ");
+					String column = arr[0];
+					Direction direction = arr.length > 1 ? Direction.fromString(arr[1]) : Direction.ASC;
+					return new Order(direction, column);
+				})
+				.collect(Collectors.toList())
+		);
 	}
 	
 	@JsonIgnore

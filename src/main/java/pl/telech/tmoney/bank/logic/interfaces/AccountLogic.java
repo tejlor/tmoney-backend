@@ -18,4 +18,6 @@ public interface AccountLogic extends AbstractLogic<Account> {
 
 	Account loadByCode(String code);
 
+	List<Account> loadActive();
+
 }
