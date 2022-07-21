@@ -38,12 +38,17 @@ public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLog
 	
 	@Override
 	public Pair<List<Entry>, Integer> loadAll(String accountCode, TableParams params) {
-		Account account = accountLogic.loadByCode(accountCode);
-		if(account == null) {
-			throw new TMoneyException("Account with code " + accountCode + " doesn't exist");
+		Integer accountId = null;
+		
+		if(accountCode != null) {
+			Account account = accountLogic.loadByCode(accountCode);
+			if(account == null) {
+				throw new TMoneyException("Account with code " + accountCode + " doesn't exist");
+			}
+			accountId = account.getId();
 		}
 		
-		return dao.findTableByAccountId(account.getId(), params);
+		return dao.findTableByAccountId(accountId, params);
 	}
 	
 	@Override
@@ -95,6 +100,11 @@ public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLog
 	@Override
 	public Entry loadLastByAccount(int accountId) {
 		return dao.findLastByAccountBeforeDate(accountId, LocalDate.now());
+	}
+	
+	@Override
+	public void updateBalances() {
+		dao.updateBalances();
 	}
 	
 	// ################################### PRIVATE #########################################################################

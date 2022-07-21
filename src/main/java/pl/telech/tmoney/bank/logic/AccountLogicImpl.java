@@ -40,6 +40,11 @@ public class AccountLogicImpl extends AbstractLogicImpl<Account> implements Acco
 	}
 	
 	@Override
+	public List<Account> loadActive() {
+		return dao.findActive();
+	}
+	
+	@Override
 	public Account create(Account _account) {
 		validate(_account);
 		
@@ -48,6 +53,8 @@ public class AccountLogicImpl extends AbstractLogicImpl<Account> implements Acco
 		account.setName(_account.getName());
 		account.setActive(_account.getActive());
 		account.setColor(_account.getColor());
+		account.setLightColor(_account.getLightColor());
+		account.setDarkColor(_account.getDarkColor());
 		account.setOrderNo(_account.getOrderNo());
 		
 		return save(account);

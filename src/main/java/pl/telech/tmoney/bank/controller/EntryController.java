@@ -34,20 +34,19 @@ public class EntryController extends AbstractController {
 
 	@Autowired
 	EntryLogic entryLogic;
-		
+			
 	/*
 	 * Returns children of element for table.
 	 */
-	@RequestMapping(value = "table/{code:" + CODE + "}", method = GET)
-	public TableDataDto<EntryDto> getAll(
-		@PathVariable(name = "code") String accountCode,
+	@RequestMapping(value = {"table/", "table/{code:" + CODE + "}"}, method = GET)
+	public TableDataDto<EntryDto> getTable(
+		@PathVariable(name = "code", required = false) String accountCode,
 		@RequestParam(required = false) Integer pageNo,
 		@RequestParam(required = false) Integer pageSize,
 		@RequestParam(required = false) String filter,
-		@RequestParam(required = false) String sortBy,
-		@RequestParam(required = false) Boolean sortAsc){
+		@RequestParam(required = false) String sortBy){
 		
-		var tableParams = new TableParams(pageNo, pageSize, filter, sortBy, sortAsc);		
+		var tableParams = new TableParams(pageNo, pageSize, filter, sortBy);		
 		Pair<List<Entry>, Integer> result = entryLogic.loadAll(accountCode, tableParams); 	
 		var table = new TableDataDto<EntryDto>(tableParams);
 		table.setRows(EntryDto.toDtoList(result.getKey()));
@@ -96,5 +95,15 @@ public class EntryController extends AbstractController {
 			@PathVariable int id) {
 		
 		entryLogic.delete(id);
+	}
+	
+	/*
+	 * Updates all balances.
+	 */
+	@RequestMapping(value = "/updateBalances", method = POST)
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void updateBalances() {
+		
+		entryLogic.updateBalances();
 	}
 }

@@ -5,6 +5,7 @@ import static lombok.AccessLevel.PRIVATE;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +20,15 @@ import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.commons.logic.AbstractLogicImpl;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
+import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.commons.utils.TUtils;
 
 @Service
 @Transactional
 @FieldDefaults(level = PRIVATE)
 public class CategoryLogicImpl extends AbstractLogicImpl<Category> implements CategoryLogic {
+	
+	CategoryDAO dao;
 	
 	@Autowired
 	AccountLogic accountLogic;
@@ -34,6 +38,12 @@ public class CategoryLogicImpl extends AbstractLogicImpl<Category> implements Ca
 	
 	public CategoryLogicImpl(CategoryDAO dao) {
 		super(dao);
+		this.dao = dao;
+	}
+	
+	@Override
+	public Pair<List<Category>, Integer> loadTable(TableParams params) {
+		return dao.findTable(params);
 	}
 	
 	@Override
@@ -77,20 +87,25 @@ public class CategoryLogicImpl extends AbstractLogicImpl<Category> implements Ca
 	}
 	
 	@Override
-	public void delete(int id) {
+	public void delete(int id, Integer newCategoryId) {
 		Category category = loadById(id);
 		TUtils.assertEntityExists(category);
 		
 		List<Entry> entries = entryLogic.loadByCategoryId(id);
 		if(!entries.isEmpty()) {
-			var msg = String.format("Cannot delete! Category %s is used in %d entries: %s.", 
-					category.getName(), 
-					entries.size(),
-					entries.stream()
-						.map(e -> e.getId().toString())
-						.collect(Collectors.joining(",", "[", "]")
-			));
-			throw new TMoneyException(msg);
+			if(newCategoryId != null) {
+				dao.changeCategory(id,  newCategoryId);
+			}
+			else {
+				var msg = String.format("Cannot delete! Category %s is used in %d entries: %s.", 
+						category.getName(), 
+						entries.size(),
+						entries.stream()
+							.map(e -> e.getId().toString())
+							.collect(Collectors.joining(",", "[", "]")
+				));
+				throw new TMoneyException(msg);
+			}
 		}
 		
 		delete(category);

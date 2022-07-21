@@ -55,10 +55,9 @@ public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().anyRequest().permitAll();
-	/*		.anonymous().disable()
+		http.anonymous().disable()
 			.authorizeRequests()
-			.antMatchers("/oauth/token").permitAll();*/
+			.antMatchers("/oauth/token").permitAll();
     }	
 
 	@Bean

@@ -27,12 +27,21 @@ public class AccountHelper {
 		assertThat(dto.getName()).isEqualTo(model.getName());
 		assertThat(dto.getActive()).isEqualTo(model.getActive());
 		assertThat(dto.getColor()).isEqualTo(model.getColor());
+		assertThat(dto.getLightColor()).isEqualTo(model.getLightColor());
+		assertThat(dto.getDarkColor()).isEqualTo(model.getDarkColor());
 		assertThat(dto.getOrderNo()).isEqualTo(model.getOrderNo());
 	}
 	
 	public Account save(String name) {
 		return new AccountBuilder()
 			.name(name)
+			.save(entityManager);
+	}
+	
+	public Account save(String name, boolean active) {
+		return new AccountBuilder()
+			.name(name)
+			.active(active)
 			.save(entityManager);
 	}
 	

@@ -31,12 +31,12 @@ public class AccountController extends AbstractController {
 	AccountLogic accountLogic;
 	
 	/*
-	 * Returns all accounts.
+	 * Returns active accounts.
 	 */
 	@RequestMapping(value = "", method = GET)
-	public List<AccountDto> getAll() {
+	public List<AccountDto> getActive() {
 		
-		return AccountDto.toDtoList(accountLogic.loadAll());
+		return AccountDto.toDtoList(accountLogic.loadActive());
 	}
 	
 	/*

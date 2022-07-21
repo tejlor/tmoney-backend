@@ -10,6 +10,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.bank.model.entity.Entry.Fields;
@@ -22,12 +24,12 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 	
 	List<Entry> findByCategoryId(int id);
 	
-	default Pair<List<Entry>, Integer> findTableByAccountId(int accountId, TableParams tableParams){
+	default Pair<List<Entry>, Integer> findTableByAccountId(Integer accountId, TableParams tableParams){
 		return findAllWithCount(
-				Entry.WITH_CATEGORY,
+				Entry.GRAPH_WITH_CATEGORY,
 				tableParams.getPage(),
 				tableParams.getFilter() != null ? isLike(tableParams.getFilter()) : null,
-				belongsToAccount(accountId)
+				accountId != null ? belongsToAccount(accountId): null
 				);
 	}
 	
@@ -43,6 +45,10 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 				isBefore(date))
 			.get(0);
 	}
+	
+	@Modifying
+	@Query(value = "CALL bank.updateBalances()", nativeQuery = true)
+	void updateBalances();
 		
 	// ######################### Specifications #########################################################################################################
 		

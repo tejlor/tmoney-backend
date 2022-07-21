@@ -22,4 +22,6 @@ public interface EntryLogic extends AbstractLogic<Entry> {
 
 	Pair<List<Entry>, Integer> loadAll(String accountCode, TableParams params);
 
+	void updateBalances();
+
 }
