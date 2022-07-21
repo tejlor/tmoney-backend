@@ -43,7 +43,7 @@ public class EntryControllerTest extends BaseTest {
 	
 	@Test
 	@Transactional
-	public void getAll() {	
+	public void getTable() {	
 		// given
 		Account account = accountHelper.save("Konto bankowe", "BANK");
 		entryHelper.save("Zakupy", account);
@@ -57,7 +57,48 @@ public class EntryControllerTest extends BaseTest {
 		flush();
 		
 		// when
-		TableDataDto<EntryDto> result = controller.getAll("BANK", 1, 2, "z", "name ASC");	
+		TableDataDto<EntryDto> result = controller.getTable("BANK", 1, 2, "z", "name ASC");	
+		flushAndClear();
+		
+		// then
+		assertThat(result).isNotNull();
+
+		TableParams tableParams = result.getTableParams();
+		assertThat(tableParams.getPageNo()).isEqualTo(1);
+		assertThat(tableParams.getPageSize()).isEqualTo(2);
+		assertThat(tableParams.getFilter()).isEqualTo("z");
+		assertThat(tableParams.getSortBy()).isEqualTo("name ASC");
+		
+		TableInfoDto tableInfo = result.getTableInfo();
+		assertThat(tableInfo.getPageCount()).isEqualTo(2);
+		assertThat(tableInfo.getRowCount()).isEqualTo(4);
+		assertThat(tableInfo.getRowStart()).isEqualTo(3);
+		assertThat(tableInfo.getRowEnd()).isEqualTo(4);
+		
+		List<EntryDto> rows = result.getRows();
+		assertThat(rows).hasSize(2);
+		assertThat(rows.get(0).getName()).isEqualTo("Zakupy");
+		assertThat(rows.get(1).getName()).isEqualTo("Zus");
+	}
+	
+	@Test
+	@Transactional
+	public void getTable_accountIsNull() {	
+		// given
+		Account account1 = accountHelper.save("Konto bankowe", "BANK");
+		Account account2 = accountHelper.save("Dom", "HOME");
+		entryHelper.save("Zakupy", account2);
+		entryHelper.save("Zus", account1);
+		entryHelper.save("VAT-7", account1);
+		entryHelper.save("Leasing", account1);
+		entryHelper.save("OneDrive", account1);
+		entryHelper.save("Benzyna", account2);
+		entryHelper.save("Autostrada", account1);
+		entryHelper.save("Czapka N", account2);
+		flush();
+		
+		// when
+		TableDataDto<EntryDto> result = controller.getTable(null, 1, 2, "z", "name ASC");	
 		flushAndClear();
 		
 		// then

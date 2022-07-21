@@ -34,5 +34,10 @@
         <appender-ref ref="RollingFile" />
         <appender-ref ref="Console" />
     </logger>
+    
+    <logger name="org.flywaydb" level="info" >
+        <appender-ref ref="RollingFile" />
+        <appender-ref ref="Console" />
+    </logger>
  
 </configuration>

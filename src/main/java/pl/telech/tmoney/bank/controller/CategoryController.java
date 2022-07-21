@@ -54,6 +54,15 @@ public class CategoryController extends AbstractController {
 	}
 	
 	/*
+	 * Returns all categories.
+	 */
+	@RequestMapping(value = "", method = GET)
+	public List<CategoryDto> getAll() {
+		
+		return sort(CategoryDto.toDtoList(categoryLogic.loadAll()));
+	}
+	
+	/*
 	 * Returns category by id.
 	 */
 	@RequestMapping(value = "/{id:" + ID + "}", method = GET)

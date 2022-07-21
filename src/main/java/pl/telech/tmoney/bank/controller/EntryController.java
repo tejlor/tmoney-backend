@@ -34,13 +34,13 @@ public class EntryController extends AbstractController {
 
 	@Autowired
 	EntryLogic entryLogic;
-		
+			
 	/*
 	 * Returns children of element for table.
 	 */
-	@RequestMapping(value = "table/{code:" + CODE + "}", method = GET)
-	public TableDataDto<EntryDto> getAll(
-		@PathVariable(name = "code") String accountCode,
+	@RequestMapping(value = {"table/", "table/{code:" + CODE + "}"}, method = GET)
+	public TableDataDto<EntryDto> getTable(
+		@PathVariable(name = "code", required = false) String accountCode,
 		@RequestParam(required = false) Integer pageNo,
 		@RequestParam(required = false) Integer pageSize,
 		@RequestParam(required = false) String filter,

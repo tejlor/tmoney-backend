@@ -59,6 +59,13 @@
 			<version>2.3.3.RELEASE</version>
 		</dependency>
 		
+		<!-- Flyway -->
+		
+		<dependency>
+		   <groupId>org.flywaydb</groupId>
+		   <artifactId>flyway-core</artifactId>
+		</dependency>
+		
 		<!-- Swagger UI -->
 		
 		<dependency>

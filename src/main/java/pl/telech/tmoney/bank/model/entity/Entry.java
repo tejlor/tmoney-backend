@@ -31,12 +31,12 @@ import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 @FieldNameConstants
 @FieldDefaults(level = PRIVATE)
 @Table(name = "entry", schema = "bank")
-@NamedEntityGraph(name = Entry.WITH_CATEGORY,
+@NamedEntityGraph(name = Entry.GRAPH_WITH_CATEGORY,
 	attributeNodes = @NamedAttributeNode(Entry.Fields.category)
 )
 public class Entry extends AbstractEntity {
 	
-	public static final String WITH_CATEGORY = "withCategory";
+	public static final String GRAPH_WITH_CATEGORY = "withCategory";
 	
 	@Setter(AccessLevel.PRIVATE)
     @Column(insertable = false, updatable = false)
