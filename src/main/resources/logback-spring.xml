@@ -30,7 +30,7 @@
         <appender-ref ref="Console" />
     </root>
  
-    <logger name="pl.telech.tmoney" level="trace" additivity="false">
+    <logger name="pl.telech.tmoney" level="trace">
         <appender-ref ref="RollingFile" />
         <appender-ref ref="Console" />
     </logger>
