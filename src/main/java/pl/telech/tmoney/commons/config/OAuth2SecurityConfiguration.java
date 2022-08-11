@@ -4,6 +4,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +25,6 @@ import org.springframework.web.filter.CorsFilter;
 import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.adm.logic.interfaces.UserLogic;
 import pl.telech.tmoney.commons.utils.Sha1PasswordEncoder;
-import pl.telech.tmoney.commons.utils.TUtils;
 
 /*
  * Configuration of oAuth 2.0.
@@ -61,12 +61,10 @@ public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }	
 
 	@Bean
+	@ConditionalOnProperty(name = "tmoney.environment", havingValue = "DEV")
 	public FilterRegistrationBean<CorsFilter> corsFilter() {	
 		var config = new CorsConfiguration();
 		config.setAllowCredentials(true);
-		if(!TUtils.isProd(environment)){
-			config.addAllowedOrigin("*");
-		}
 		config.addAllowedHeader("*");
 		config.addAllowedMethod("GET");
 		config.addAllowedMethod("POST");
