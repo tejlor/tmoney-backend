@@ -190,6 +190,10 @@ public class TUtils {
 	public static boolean isProd(String environment){
 		return environment.equals("PROD");
 	}
+	
+	public static boolean isJUnit(String environment){
+		return environment.equals("JUNIT");
+	}
 
 	/*
 	 * Checks if object id in body is the same as id in url (update methods - PUT).

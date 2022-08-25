@@ -65,6 +65,7 @@ public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public FilterRegistrationBean<CorsFilter> corsFilter() {	
 		var config = new CorsConfiguration();
 		config.setAllowCredentials(true);
+		config.addAllowedOrigin("*");
 		config.addAllowedHeader("*");
 		config.addAllowedMethod("GET");
 		config.addAllowedMethod("POST");

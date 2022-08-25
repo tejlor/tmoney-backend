@@ -44,6 +44,27 @@ public class CategoryControllerTest extends BaseTest {
 	
 	@Test
 	@Transactional
+	public void getAll() {	
+		// given
+		Category category1 = categoryHelper.save("Zakupy");
+		Category category2 = categoryHelper.save("Podatki");
+		Category category3 = categoryHelper.save("Samochód");
+		flush();
+		
+		// when
+		List<CategoryDto> result = controller.getAll();	
+		flushAndClear();
+		
+		// then
+		assertThat(result).isNotNull();
+		assertThat(result).hasSize(3);
+		categoryHelper.assertEqual(result.get(0), category2, Mode.GET);
+		categoryHelper.assertEqual(result.get(1), category3, Mode.GET);
+		categoryHelper.assertEqual(result.get(2), category1, Mode.GET);
+	}
+	
+	@Test
+	@Transactional
 	public void getTable() {	
 		// given
 		categoryHelper.save("Zakupy");

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,9 @@ import pl.telech.tmoney.commons.utils.TUtils;
 public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLogic {
 	
 	EntryDAO dao;
+	
+	@Value("${tmoney.environment}")
+	String environment;
 	
 	@Autowired
 	AccountLogic accountLogic;
@@ -69,7 +73,10 @@ public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLog
 		entry.setDescription(_entry.getDescription());
 		calculateAndFillBalances(entry);
 		
-		return save(entry);
+		entry = saveAndFlush(entry);
+		updateBalances();
+		reload(entry);
+		return entry;
 	}
 	
 	@Override
@@ -86,7 +93,10 @@ public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLog
 		entry.setAmount(_entry.getAmount());
 		entry.setDescription(_entry.getDescription());
 		
-		return save(entry);
+		entry = saveAndFlush(entry);
+		updateBalances();
+		reload(entry);
+		return entry;
 	}
 	
 	@Override
@@ -95,6 +105,7 @@ public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLog
 		TUtils.assertEntityExists(entry);
 				
 		delete(entry);
+		updateBalances();
 	}
 	
 	@Override
@@ -104,7 +115,9 @@ public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLog
 	
 	@Override
 	public void updateBalances() {
-		dao.updateBalances();
+		if (!TUtils.isJUnit(environment)) {
+			dao.updateBalances();
+		}
 	}
 	
 	// ################################### PRIVATE #########################################################################
