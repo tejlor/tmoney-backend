@@ -40,6 +40,14 @@ public abstract class AbstractLogicImpl<T extends AbstractEntity> implements Abs
 	protected T save(T entity){
 		return dao.save(entity);
 	}
+	
+	protected T saveAndFlush(T entity){
+		return dao.saveAndFlush(entity);
+	}
+	
+	protected void reload(T entity){
+		dao.reload(entity);
+	}
 
 	protected void delete(T entity) {
 		dao.delete(entity);

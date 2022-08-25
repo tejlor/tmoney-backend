@@ -115,4 +115,9 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
 	public void detach(T entity) {
         entityManager.detach(entity);
     }
+	
+	@Override
+	public void reload(T entity) {
+        entityManager.refresh(entity);
+    }
 }

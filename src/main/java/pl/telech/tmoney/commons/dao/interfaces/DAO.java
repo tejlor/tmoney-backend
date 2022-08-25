@@ -43,4 +43,6 @@ public interface DAO<T extends AbstractEntity> extends JpaRepository<T, Integer>
 	Pair<List<T>, Integer> findAllWithCount(String entityGraphName, Pageable page, Specification<T> ...spec);
 
 	void detach(T entity);
+
+	void reload(T entity);
 }

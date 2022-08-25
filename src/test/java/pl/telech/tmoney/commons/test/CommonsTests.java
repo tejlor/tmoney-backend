@@ -53,7 +53,7 @@ public class CommonsTests {
 					.map(m -> m.getName())
 					.collect(Collectors.toSet());
 			
-			assertThat(testMethods).containsAll(controllerMethods);
+			assertThat(testMethods).as(controller.getName()).containsAll(controllerMethods);
 		}
 	}
 }
