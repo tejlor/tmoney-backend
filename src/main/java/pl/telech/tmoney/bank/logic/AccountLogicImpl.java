@@ -2,6 +2,7 @@ package pl.telech.tmoney.bank.logic;
 
 import static lombok.AccessLevel.PRIVATE;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,13 +77,25 @@ public class AccountLogicImpl extends AbstractLogicImpl<Account> implements Acco
 	}
 	
 	@Override
-	public List<Pair<Account, Entry>> getAccountSummaryList() {
-		return dao.findActive().stream()
-			.map(account -> Pair.of(account, entryLogic.loadLastByAccount(account.getId())))
-			.collect(Collectors.toList());
+	public List<Pair<Account, Entry>> getAccountSummaries(String accountCode) {	
+		List<String> accountCodes = accountCode != null
+				? Collections.singletonList(accountCode)
+				: dao.findActive().stream().map(Account::getCode).collect(Collectors.toList());
+		
+		return getAccountSummaries(accountCodes);
 	}
 	
 	// ################################### PRIVATE #########################################################################
+	
+	private List<Pair<Account, Entry>> getAccountSummaries(List<String> accountCodes) {
+		return accountCodes.stream()
+				.map(code -> {
+					var account = dao.findByCode(code);
+					var entry = entryLogic.loadLastByAccount(account.getId());
+					return Pair.of(account, entry);
+				})
+				.collect(Collectors.toList());
+	}
 	
 	private void validate(Account account) {
 		

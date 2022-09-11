@@ -17,7 +17,7 @@ import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.helper.AccountHelper;
 import pl.telech.tmoney.bank.helper.EntryHelper;
 import pl.telech.tmoney.bank.model.dto.AccountDto;
-import pl.telech.tmoney.bank.model.dto.AccountWithEntryDto;
+import pl.telech.tmoney.bank.model.dto.AccountSummaryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.commons.enums.Mode;
@@ -33,7 +33,7 @@ public class AccountControllerTest extends BaseTest {
 	@Autowired
 	AccountHelper accountHelper;
 	@Autowired
-	EntryHelper eentryHelper;
+	EntryHelper entryHelper;
 	
 	@Test
 	@Transactional
@@ -42,7 +42,7 @@ public class AccountControllerTest extends BaseTest {
 		Account account0 = accountHelper.save("Konto bankowe");
 		Account account1 = accountHelper.save("Dom");
 		Account account2 = accountHelper.save("Konto maklerskie");
-		Account account3 = accountHelper.save("Konto w innycm banku", false);
+		Account account3 = accountHelper.save("Konto w innym banku", false);
 		flush();
 		
 		// when
@@ -61,16 +61,39 @@ public class AccountControllerTest extends BaseTest {
 	@Transactional
 	public void getSummary() {
 		// given
-		Account account0 = accountHelper.save("Konto bankowe");
-		Account account1 = accountHelper.save("Dom");		
-		eentryHelper.save("Zakupy", LocalDate.of(2020, 5, 12), account0);
-		eentryHelper.save("Fryzjer", LocalDate.of(2020, 7, 12), account1);
-		Entry entry0 = eentryHelper.save("ZUS", LocalDate.of(2020, 5, 13),account0);
-		Entry entry1 = eentryHelper.save("Zakupy", LocalDate.of(2020, 7, 13),account1);
+		Account account0 = accountHelper.save("Konto bankowe", "BANK");
+		Account account1 = accountHelper.save("Dom", "HOME");		
+		entryHelper.save("Zakupy", LocalDate.of(2020, 5, 12), account0);
+		entryHelper.save("Fryzjer", LocalDate.of(2020, 7, 12), account1);
+		Entry entry0 = entryHelper.save("ZUS", LocalDate.of(2020, 5, 13), account0);
+		Entry entry1 = entryHelper.save("Zakupy", LocalDate.of(2020, 7, 13), account1);
 		flush();
 		
 		// when
-		List<AccountWithEntryDto> result = controller.getSummary();	
+		List<AccountSummaryDto> result = controller.getSummary("HOME");	
+		flushAndClear();
+		
+		// then
+		assertThat(result).isNotNull();
+		assertThat(result).hasSize(1);
+		accountHelper.assertEqual(result.get(0).getAccount(), account1, Mode.GET);
+		entryHelper.assertEqual(result.get(0).getEntry(), entry1, Mode.GET);
+	}
+	
+	@Test
+	@Transactional
+	public void getSummary_all() {
+		// given
+		Account account0 = accountHelper.save("Konto bankowe", "BANK");
+		Account account1 = accountHelper.save("Dom", "HOME");		
+		entryHelper.save("Zakupy", LocalDate.of(2020, 5, 12), account0);
+		entryHelper.save("Fryzjer", LocalDate.of(2020, 7, 12), account1);
+		Entry entry0 = entryHelper.save("ZUS", LocalDate.of(2020, 5, 13), account0);
+		Entry entry1 = entryHelper.save("Zakupy", LocalDate.of(2020, 7, 13), account1);
+		flush();
+		
+		// when
+		List<AccountSummaryDto> result = controller.getSummary(null);	
 		flushAndClear();
 		
 		// then
@@ -78,8 +101,8 @@ public class AccountControllerTest extends BaseTest {
 		assertThat(result).hasSize(2);
 		accountHelper.assertEqual(result.get(0).getAccount(), account0, Mode.GET);
 		accountHelper.assertEqual(result.get(1).getAccount(), account1, Mode.GET);
-		eentryHelper.assertEqual(result.get(0).getEntry(), entry0, Mode.GET);
-		eentryHelper.assertEqual(result.get(1).getEntry(), entry1, Mode.GET);
+		entryHelper.assertEqual(result.get(0).getEntry(), entry0, Mode.GET);
+		entryHelper.assertEqual(result.get(1).getEntry(), entry1, Mode.GET);
 	}
 	
 	@Test

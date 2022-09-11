@@ -14,10 +14,11 @@ public interface AccountLogic extends AbstractLogic<Account> {
 
 	Account update(int id, Account _account);
 
-	List<Pair<Account, Entry>> getAccountSummaryList();
 
 	Account loadByCode(String code);
 
 	List<Account> loadActive();
+
+	List<Pair<Account, Entry>> getAccountSummaries(String accountCode);
 
 }
