@@ -8,7 +8,7 @@ import pl.telech.tmoney.commons.model.interfaces.Loggable;
 
 @Value
 @FieldDefaults(level = PRIVATE)
-public class AccountWithEntryDto implements Loggable {
+public class AccountSummaryDto implements Loggable {
 	
 	AccountDto account;
 	EntryDto entry;

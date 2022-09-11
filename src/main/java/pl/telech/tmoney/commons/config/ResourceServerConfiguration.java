@@ -21,7 +21,9 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().anyRequest().authenticated()
+		http.authorizeRequests()
+			.antMatchers("/v2/api-docs/**", "/webjars/springfox-swagger-ui/**", "/swagger-resources/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+			.anyRequest().authenticated()
 			.and()
 			.exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
 	}
