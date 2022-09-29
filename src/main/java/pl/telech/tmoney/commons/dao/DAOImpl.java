@@ -60,25 +60,22 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<T> findAll(Pageable page, Specification<T> ...spec) {
-		 return findAll(null, page, spec);
+	public List<T> findAll(Sort sort, Specification<T> ...spec) {
+		 return findAll(null, sort, spec);
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<T> findAll(String entityGraphName, Specification<T> ...spec) {
-		 return findAll(entityGraphName, null, spec);
+		 return findAll(entityGraphName, Sort.unsorted(), spec);
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<T> findAll(String entityGraphName, Pageable page, Specification<T> ...spec) {
-	    TypedQuery<T> query = getQuery(conjunction(spec), page);
+	public List<T> findAll(String entityGraphName, Sort sort, Specification<T> ...spec) {
+	    TypedQuery<T> query = getQuery(conjunction(spec), sort);
 	    if(entityGraphName != null)
 	    	query.setHint(EntityGraphType.FETCH.getKey(), entityManager.getEntityGraph(entityGraphName));
-	    
-	    query.setFirstResult((int)page.getOffset());
-	    query.setMaxResults(page.getPageSize());
 	    
 	    return query.getResultList();
 	}

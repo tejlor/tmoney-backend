@@ -21,4 +21,6 @@ public interface AccountLogic extends AbstractLogic<Account> {
 
 	List<Pair<Account, Entry>> getAccountSummaries(String accountCode);
 
+	Account getSummaryAccount();
+
 }

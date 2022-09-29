@@ -6,6 +6,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -20,9 +22,11 @@ import pl.telech.tmoney.commons.model.exception.TMoneyException;
 
 public class TUtils {
 	
-	private static final DecimalFormat df = new DecimalFormat("# ### ### ##0,00");
-	private static final DecimalFormat dfCurrency = new DecimalFormat("# ### ### ##0,00 zł");
-	private static final DecimalFormat dfPercent = new DecimalFormat("# ### ### ##0,00 %");
+	private static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,##0.00");
+	private static final DecimalFormat currencyFormat = new DecimalFormat("#,###,###,##0.00 zł");
+	private static final DecimalFormat percentFormat = new DecimalFormat("#,###,###,##0.00 %");
+	
+	private static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		
 	/* ################################################# String #################################################################### */
 
@@ -63,27 +67,27 @@ public class TUtils {
 	}
 	
 	public static String formatDecimal(BigDecimal val){
-		return val != null ? df.format(val) : null;
+		return val != null ? decimalFormat.format(val) : null;
 	}
 	
 	public static String formatDecimal(double val){
-		return df.format(val);
+		return decimalFormat.format(val);
 	}
 	
 	public static String formatCurrency(BigDecimal val){
-		return val != null ? dfCurrency.format(val) : null;
+		return val != null ? currencyFormat.format(val) : null;
 	}
 	
 	public static String formatCurrency(double val){
-		return dfCurrency.format(val);
+		return currencyFormat.format(val);
 	}
 	
 	public static String formatPercent(BigDecimal val){
-		return val != null ? dfPercent.format(val) : null;
+		return val != null ? percentFormat.format(val) : null;
 	}
 	
 	public static String formatPercent(double val){
-		return dfPercent.format(val);
+		return percentFormat.format(val);
 	}
 	
 	public static void fillZeros(BigDecimal[] array){
@@ -120,6 +124,10 @@ public class TUtils {
 	
 	public static LocalDate endOfMonth(LocalDate date){
 		return date.withDayOfMonth(date.lengthOfMonth());
+	}
+	
+	public static String formatDateTime(LocalDateTime dateTime) {
+		return dateTime.format(dateTimeFormat);
 	}
 	
 	public static void assertMonthDate(LocalDate date) {

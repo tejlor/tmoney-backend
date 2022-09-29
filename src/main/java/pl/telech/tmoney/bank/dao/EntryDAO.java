@@ -33,14 +33,22 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 				);
 	}
 	
+	default List<Entry> findByAccountId(Integer accountId){
+		return findAll(
+				Entry.GRAPH_WITH_CATEGORY,
+				getSort(),
+				accountId != null ? belongsToAccount(accountId): null
+				);
+	}
+	
 	default Entry findLastBeforeDate(LocalDate date) {
-		return findAll(getPage(),
+		return findAll(getSortDesc(),
 				isBefore(date))
 			.get(0);
 	}
 	
 	default Entry findLastByAccountBeforeDate(int accountId, LocalDate date) {
-		return findAll(getPage(),
+		return findAll(getSortDesc(),
 				belongsToAccount(accountId),
 				isBefore(date))
 			.get(0);
@@ -73,7 +81,11 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
         };
 	}
 	
-	private Pageable getPage() {
-		return PageRequest.of(0, 1, Sort.by(Direction.DESC, Fields.date, AbstractEntity.Fields.id));
+	private Sort getSort() {
+		return Sort.by(Fields.date, AbstractEntity.Fields.id);
+	}
+	
+	private Sort getSortDesc() {
+		return Sort.by(Direction.DESC, Fields.date, AbstractEntity.Fields.id);
 	}
 }

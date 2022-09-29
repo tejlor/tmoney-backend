@@ -38,9 +38,9 @@ public class EntryController extends AbstractController {
 	/*
 	 * Returns children of element for table.
 	 */
-	@RequestMapping(value = {"table/", "table/{code:" + CODE + "}"}, method = GET)
+	@RequestMapping(value = {"table/", "table/{accountCode:" + CODE + "}"}, method = GET)
 	public TableDataDto<EntryDto> getTable(
-		@PathVariable(name = "code", required = false) String accountCode,
+		@PathVariable(required = false) String accountCode,
 		@RequestParam(required = false) Integer pageNo,
 		@RequestParam(required = false) Integer pageSize,
 		@RequestParam(required = false) String filter,

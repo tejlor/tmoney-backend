@@ -69,6 +69,8 @@ public class AbstractController {
 	@AppLogOmit
 	@ExceptionHandler(TMoneyException.class)
 	public ResponseEntity<ApiError> handleTMoneyException(HttpServletRequest request, TMoneyException e) {
+		log.error(ExceptionUtils.getStackTrace(e));
+		
 		ApiError apiError = new ApiError();
 		apiError.setPath(request.getRequestURI());
 		apiError.setStatusCode(HttpStatus.BAD_REQUEST);

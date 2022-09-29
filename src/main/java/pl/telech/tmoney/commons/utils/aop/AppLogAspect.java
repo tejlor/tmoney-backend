@@ -51,7 +51,7 @@ public class AppLogAspect {
 			throw e;
 		}
 		catch(TMoneyException e) {			
-			sb.append("\n").append(e.toShortString());
+			sb.append("\n").append(e.toString());
 			throw e;
 		}
 		catch(Throwable e){

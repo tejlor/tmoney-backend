@@ -157,6 +157,12 @@
 			<scope>provided</scope>
 		</dependency>
 		
+		<dependency>
+		    <groupId>com.itextpdf</groupId>
+		    <artifactId>itextpdf</artifactId>
+		    <version>5.1.2</version>
+		</dependency>
+		
 		<!-- Tests -->
 		
 		 <dependency>
@@ -225,6 +231,20 @@
 			</plugin>
 
 		</plugins>
+		
+		<resources>	   
+			<resource>
+		      	<directory>src/main/resources</directory>
+		      	<filtering>false</filtering>
+		    </resource> 
+		    <resource>
+		      	<directory>src/main/resources</directory>
+		      	<filtering>true</filtering>
+		      	<includes>
+		      		<include>*.properties</include>
+		      	</includes>
+		    </resource>
+		</resources>
 		
 		<testResources>
 			<testResource>
