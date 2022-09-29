@@ -24,4 +24,6 @@ public interface EntryLogic extends AbstractLogic<Entry> {
 
 	void updateBalances();
 
+	List<Entry> loadAll(String accountCode);
+
 }

@@ -2,10 +2,7 @@ package pl.telech.tmoney.bank.dao;
 
 import java.util.List;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -32,6 +29,6 @@ public interface AccountDAO extends DAO<Account>, JpaSpecificationExecutor<Accou
 	
 	// ######################### Pages #########################################################################################################
 	
-	final Pageable BY_ORDER_NO = PageRequest.of(0, 10, Sort.by(Direction.ASC, Fields.orderNo));
+	final Sort BY_ORDER_NO = Sort.by(Fields.orderNo);
 	
 }

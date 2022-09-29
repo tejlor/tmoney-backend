@@ -25,10 +25,19 @@ import pl.telech.tmoney.commons.utils.TUtils;
 @FieldDefaults(level = PRIVATE)
 public class AccountLogicImpl extends AbstractLogicImpl<Account> implements AccountLogic {
 	
+	static final Account summaryAccount;
+	
 	AccountDAO dao;
 	
 	@Autowired
 	EntryLogic entryLogic;
+	
+	static {
+		summaryAccount = new Account();
+		summaryAccount.setActive(true);
+		summaryAccount.setCode(Account.SUMMARY_CODE);
+		summaryAccount.setName("Podsumowanie");
+	}
 	
 	public AccountLogicImpl(AccountDAO dao) {
 		super(dao);
@@ -38,6 +47,11 @@ public class AccountLogicImpl extends AbstractLogicImpl<Account> implements Acco
 	@Override
 	public Account loadByCode(String code) {
 		return dao.findByCode(code);
+	}
+	
+	@Override
+	public Account getSummaryAccount() {
+		return summaryAccount;
 	}
 	
 	@Override
