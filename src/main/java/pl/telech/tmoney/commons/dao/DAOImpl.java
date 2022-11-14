@@ -35,14 +35,29 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
 	
 	@Override
 	public T findOne(Specification<T> ...spec) {
-        return findOne(null, spec);
+        return findOne(null, null, spec);
     }
 	
 	@Override
 	public T findOne(String entityGraphName, Specification<T> ...spec) {
-        TypedQuery<T> query = getQuery(conjunction(spec), Sort.unsorted());
+        return findOne(entityGraphName, null, spec);
+    }
+	
+	@Override
+	public T findOne(Pageable page, Specification<T> ...spec) {
+        return findOne(null, page, spec);
+    }
+	
+	@Override
+	public T findOne(String entityGraphName, Pageable page, Specification<T> ...spec) {
+        TypedQuery<T> query = getQuery(conjunction(spec), page);
         if(entityGraphName != null)
         	query.setHint(EntityGraphType.FETCH.getKey(), entityManager.getEntityGraph(entityGraphName));
+        
+        if(page.isPaged()) {
+	    	query.setFirstResult((int)page.getOffset());
+	    	query.setMaxResults(page.getPageSize());
+	    }
         
         return query.getSingleResult();
     }
@@ -55,13 +70,19 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<T> findAll(Specification<T> ...spec) {
-	    return findAll(null, null, spec);
+	    return findAll(null, (Sort) null, spec);
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<T> findAll(Sort sort, Specification<T> ...spec) {
 		 return findAll(null, sort, spec);
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<T> findAll(Pageable page, Specification<T> ...spec) {
+		 return findAll(null, page, spec);
 	}
 	
 	@Override
@@ -76,6 +97,21 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
 	    TypedQuery<T> query = getQuery(conjunction(spec), sort);
 	    if(entityGraphName != null)
 	    	query.setHint(EntityGraphType.FETCH.getKey(), entityManager.getEntityGraph(entityGraphName));
+	    
+	    return query.getResultList();
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<T> findAll(String entityGraphName, Pageable page, Specification<T> ...spec) {
+	    TypedQuery<T> query = getQuery(conjunction(spec), page);
+	    if(entityGraphName != null)
+	    	query.setHint(EntityGraphType.FETCH.getKey(), entityManager.getEntityGraph(entityGraphName));
+	    
+	    if(page.isPaged()) {
+	    	query.setFirstResult((int)page.getOffset());
+	    	query.setMaxResults(page.getPageSize());
+	    }
 	    
 	    return query.getResultList();
 	}

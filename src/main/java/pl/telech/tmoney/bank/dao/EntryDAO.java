@@ -1,20 +1,23 @@
 package pl.telech.tmoney.bank.dao;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.bank.model.entity.Entry.Fields;
+import pl.telech.tmoney.bank.model.shared.CategoryAmount;
+import pl.telech.tmoney.bank.model.shared.EntryAmount;
 import pl.telech.tmoney.commons.dao.interfaces.DAO;
 import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 import pl.telech.tmoney.commons.model.shared.TableParams;
@@ -36,23 +39,52 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 	default List<Entry> findByAccountId(Integer accountId){
 		return findAll(
 				Entry.GRAPH_WITH_CATEGORY,
-				getSort(),
+				SortAsc,
 				accountId != null ? belongsToAccount(accountId): null
 				);
 	}
 	
 	default Entry findLastBeforeDate(LocalDate date) {
-		return findAll(getSortDesc(),
-				isBefore(date))
-			.get(0);
+		return findOne(PageRequest.of(0, 1, SortDesc),
+				isBefore(date)
+		);
 	}
 	
 	default Entry findLastByAccountBeforeDate(int accountId, LocalDate date) {
-		return findAll(getSortDesc(),
+		return findOne(PageRequest.of(0, 1, SortDesc),
 				belongsToAccount(accountId),
-				isBefore(date))
-			.get(0);
+				isBefore(date)
+		);
 	}
+		
+	@Query("SELECT SUM(e.amount) "
+			+ "FROM Entry e "
+			+ "WHERE e.accountId = :accountId AND e.date BETWEEN :dateFrom AND :dateTo AND e.amount > 0")
+	BigDecimal findAccountIncome(@Param("accountId") int accountId, @Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
+	
+	@Query("SELECT -SUM(e.amount) "
+			+ "FROM Entry e "
+			+ "WHERE e.accountId = :accountId AND e.date BETWEEN :dateFrom AND :dateTo AND e.amount < 0")
+	BigDecimal findAccountOutcome(@Param("accountId") int accountId, @Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
+	
+	@Query("SELECT new pl.telech.tmoney.bank.model.shared.CategoryAmount(e.category.name, SUM(e.amount)) "
+			+ "FROM Entry e "
+			+ "WHERE e.date BETWEEN :dateFrom AND :dateTo AND e.amount > 0 AND e.category.report = TRUE "
+			+ "GROUP BY e.category.name ")
+	List<CategoryAmount> findSummaryIncome(@Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
+	
+	@Query("SELECT new pl.telech.tmoney.bank.model.shared.CategoryAmount(e.category.name, -SUM(e.amount)) "
+			+ "FROM Entry e "
+			+ "WHERE e.date BETWEEN :dateFrom AND :dateTo AND e.amount < 0 AND e.category.report = TRUE "
+			+ "GROUP BY e.category.name ")
+	List<CategoryAmount> findSummaryOutcome(@Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
+	
+	@Query("SELECT new pl.telech.tmoney.bank.model.shared.EntryAmount(e.date, e.amount) "
+			+ "FROM Entry e "
+			+ "WHERE e.date BETWEEN :dateFrom AND :dateTo AND e.category.report = TRUE")
+	List<EntryAmount> findSummaryChart(@Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
+	
+	
 	
 	@Modifying
 	@Query(value = "CALL bank.updateBalances()", nativeQuery = true)
@@ -77,15 +109,10 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 	
 	private Specification<Entry> isBefore(LocalDate date) {
         return (entry, cq, cb) -> {
-        	return cb.lessThanOrEqualTo(entry.get(Fields.date), date);
+        	return cb.lessThan(entry.get(Fields.date), date);
         };
 	}
 	
-	private Sort getSort() {
-		return Sort.by(Fields.date, AbstractEntity.Fields.id);
-	}
-	
-	private Sort getSortDesc() {
-		return Sort.by(Direction.DESC, Fields.date, AbstractEntity.Fields.id);
-	}
+	static final Sort SortAsc = Sort.by(Fields.date, AbstractEntity.Fields.id);	
+	static final Sort SortDesc = Sort.by(Direction.DESC, Fields.date, AbstractEntity.Fields.id);
 }
