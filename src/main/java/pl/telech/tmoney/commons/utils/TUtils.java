@@ -27,6 +27,9 @@ public class TUtils {
 	private static final DecimalFormat percentFormat = new DecimalFormat("#,###,###,##0.00 %");
 	
 	private static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	
+	public static final DateTimeFormatter yearFormat = DateTimeFormatter.ofPattern("yyyy");
+	public static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd MMM yyyy");
 		
 	/* ################################################# String #################################################################### */
 

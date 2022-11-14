@@ -14,7 +14,7 @@ import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 @FieldDefaults(level = PRIVATE)
 public abstract class AbstractBuilder<T extends AbstractEntity> {
 
-	Integer id;
+	Integer id = null;
 	
 	public abstract T build();
 	public abstract void persistDependences(EntityManager em);

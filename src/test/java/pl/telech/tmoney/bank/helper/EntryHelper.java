@@ -40,6 +40,10 @@ public class EntryHelper {
 		}
 	}
 	
+	public Entry save(EntryBuilder entry) {
+		return entry.save(entityManager);
+	}
+	
 	public Entry save(String name, Account account) {
 		return new EntryBuilder()
 			.name(name)
@@ -74,6 +78,17 @@ public class EntryHelper {
 		return new EntryBuilder()
 			.name(name)
 			.account(account)
+			.amount(new BigDecimal(amount))
+			.balance(new BigDecimal(balance))
+			.balanceOverall(new BigDecimal(balanceOverall))
+			.save(entityManager);
+	}
+	
+	public Entry save(String name, Account account, String date, String amount, String balance, String balanceOverall) {
+		return new EntryBuilder()
+			.name(name)
+			.account(account)
+			.date(LocalDate.parse(date))
 			.amount(new BigDecimal(amount))
 			.balance(new BigDecimal(balance))
 			.balanceOverall(new BigDecimal(balanceOverall))

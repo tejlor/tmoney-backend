@@ -63,6 +63,9 @@ public class TableHeaderFooterEventHelper extends PdfPageEventHelper {
     }
     
     private void initLogo(Document doc) {
+    	if(logoUrl == null) 
+    		return;
+    	
     	try {
 			logo = Image.getInstance(logoUrl);
 		} 
@@ -80,7 +83,8 @@ public class TableHeaderFooterEventHelper extends PdfPageEventHelper {
     
     @Override
     public void onEndPage(PdfWriter writer, Document doc) {
-        createHeader(writer, doc);
+        if(account != null)
+        	createHeader(writer, doc);
         createFooter(writer, doc);
     }
     

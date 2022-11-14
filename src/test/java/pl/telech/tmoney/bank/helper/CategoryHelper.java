@@ -37,6 +37,13 @@ public class CategoryHelper {
 			.save(entityManager);
 	}
 	
+	public Category save(String name, boolean report) {
+		return new CategoryBuilder()
+			.name(name)
+			.report(report)
+			.save(entityManager);
+	}
+	
 	public Category save(String name, int account) {
 		return new CategoryBuilder()
 			.name(name)
