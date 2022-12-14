@@ -1,6 +1,5 @@
 package pl.telech.tmoney.bank.controller;
 
-import static lombok.AccessLevel.PRIVATE;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -11,15 +10,10 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.logic.interfaces.EntryLogic;
+import pl.telech.tmoney.bank.mapper.EntryMapper;
 import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.commons.controller.AbstractController;
@@ -29,9 +23,11 @@ import pl.telech.tmoney.commons.utils.TUtils;
 
 @RestController
 @RequestMapping("/entries")
-@FieldDefaults(level = PRIVATE)
 public class EntryController extends AbstractController {
 
+	@Autowired
+	EntryMapper mapper;
+	
 	@Autowired
 	EntryLogic entryLogic;
 			
@@ -49,7 +45,7 @@ public class EntryController extends AbstractController {
 		var tableParams = new TableParams(pageNo, pageSize, filter, sortBy);		
 		Pair<List<Entry>, Integer> result = entryLogic.loadAll(accountCode, tableParams); 	
 		var table = new TableDataDto<EntryDto>(tableParams);
-		table.setRows(EntryDto.toDtoList(result.getKey()));
+		table.setRows(mapper.toDtoList(result.getKey()));
 		table.setCount(result.getValue());		
 		return table;
 	}
@@ -61,7 +57,7 @@ public class EntryController extends AbstractController {
 	public EntryDto getById(
 			@PathVariable int id) {
 		
-		return new EntryDto(entryLogic.loadById(id));
+		return mapper.toDto(entryLogic.loadById(id));
 	}
 	
 	/*
@@ -71,7 +67,7 @@ public class EntryController extends AbstractController {
 	public EntryDto create(
 			@RequestBody EntryDto entry) {
 		
-		return new EntryDto(entryLogic.create(entry.toModel()));
+		return mapper.toDto(entryLogic.create(entry));
 	}
 	
 	/*
@@ -83,7 +79,7 @@ public class EntryController extends AbstractController {
 			@RequestBody EntryDto entry) {
 		
 		TUtils.assertDtoId(id, entry);
-		return new EntryDto(entryLogic.update(id, entry.toModel()));
+		return mapper.toDto(entryLogic.update(id, entry));
 	}
 	
 	/*

@@ -1,7 +1,5 @@
 package pl.telech.tmoney.bank.logic.pdf;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -19,14 +17,16 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import lombok.SneakyThrows;
-import lombok.experimental.FieldDefaults;
-import pl.telech.tmoney.bank.model.shared.*;
+import pl.telech.tmoney.bank.dao.data.CategoryAmount;
+import pl.telech.tmoney.bank.model.data.AccountReportData;
+import pl.telech.tmoney.bank.model.data.ChartData;
+import pl.telech.tmoney.bank.model.data.ReportData;
+import pl.telech.tmoney.bank.model.data.SummaryReportData;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
 import pl.telech.tmoney.commons.model.shared.FileResult;
 import pl.telech.tmoney.commons.utils.TUtils;
 
 @Component
-@FieldDefaults(level = PRIVATE)
 public class PdfReportGenerator extends AbstractPdfGenerator {
 	   
     @Autowired

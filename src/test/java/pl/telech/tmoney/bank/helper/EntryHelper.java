@@ -95,6 +95,16 @@ public class EntryHelper {
 			.save(entityManager);
 	}
 	
+	public Entry save(String name, LocalDate date, Account account, Category category, BigDecimal amount) { //
+		return new EntryBuilder()
+			.name(name)
+			.date(date)
+			.account(account)
+			.category(category)
+			.amount(amount)
+			.save(entityManager);
+	}
+	
 	public Entry build(String name, Account account, Category category, String amount) {
 		return new EntryBuilder()
 			.name(name)

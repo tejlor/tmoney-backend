@@ -1,6 +1,5 @@
 package pl.telech.tmoney.bank.controller;
 
-import static lombok.AccessLevel.PRIVATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
@@ -13,9 +12,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.helper.AccountHelper;
 import pl.telech.tmoney.bank.helper.EntryHelper;
+import pl.telech.tmoney.bank.mapper.AccountMapper;
 import pl.telech.tmoney.bank.model.dto.AccountDto;
 import pl.telech.tmoney.bank.model.dto.AccountSummaryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
@@ -24,7 +23,6 @@ import pl.telech.tmoney.commons.enums.Mode;
 import pl.telech.tmoney.utils.BaseTest;
 
 @RunWith(SpringRunner.class)
-@FieldDefaults(level = PRIVATE)
 public class AccountControllerTest extends BaseTest {
 
 	@Autowired
@@ -34,6 +32,8 @@ public class AccountControllerTest extends BaseTest {
 	AccountHelper accountHelper;
 	@Autowired
 	EntryHelper entryHelper;
+	@Autowired
+	AccountMapper mapper;
 	
 	@Test
 	@Transactional
@@ -145,7 +145,7 @@ public class AccountControllerTest extends BaseTest {
 		
 		// when
 		Account account = accountHelper.build("Konto bankowe");
-		AccountDto result = controller.create(new AccountDto(account));	
+		AccountDto result = controller.create(mapper.toDto(account));	
 		flushAndClear();
 		
 		// then
@@ -161,7 +161,7 @@ public class AccountControllerTest extends BaseTest {
 		flush();
 		
 		// when
-		AccountDto dto = new AccountDto(account);
+		AccountDto dto = mapper.toDto(account);
 		dto.setActive(false);
 		AccountDto result = controller.update(account.getId(), dto);	
 		flushAndClear();

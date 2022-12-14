@@ -7,19 +7,22 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import lombok.experimental.ExtensionMethod;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
+@ExtensionMethod(Extensions.class)
 public class TStreamUtils {
 
 	public <T, R> List<R> map(Collection<T> collection, Function<T, R> mapper) {
 		return mapToList(collection, mapper);
 	}
 	
+
 	public <T, R> List<R> mapToList(Collection<T> collection, Function<T, R> mapper) {
 		return collection.stream()
 				.map(mapper)
-				.collect(Collectors.toList());
+				.list();
 	}
 	
 	public <T, R> Set<R> mapToSet(Collection<T> collection, Function<T, R> mapper) {

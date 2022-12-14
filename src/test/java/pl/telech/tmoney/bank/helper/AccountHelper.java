@@ -38,17 +38,17 @@ public class AccountHelper {
 			.save(entityManager);
 	}
 	
-	public Account save(String name, boolean active) {
-		return new AccountBuilder()
-			.name(name)
-			.active(active)
-			.save(entityManager);
-	}
-	
 	public Account save(String name, String code) {
 		return new AccountBuilder()
 			.name(name)
 			.code(code)
+			.save(entityManager);
+	}
+	
+	public Account save(String name, boolean active) {
+		return new AccountBuilder()
+			.name(name)
+			.active(active)
 			.save(entityManager);
 	}
 	

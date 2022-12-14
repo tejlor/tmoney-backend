@@ -1,7 +1,5 @@
 package pl.telech.tmoney.commons.config.filter;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import java.io.*;
 
 import javax.servlet.ReadListener;
@@ -10,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
 import lombok.Getter;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 /*
@@ -18,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
  * Rest controller reads body and closes stream, which does not allow to read it again in AppLogAspect.
  */
 @Slf4j
-@FieldDefaults(level = PRIVATE)
 public class RequestWrapper extends HttpServletRequestWrapper {
 
 	@Getter

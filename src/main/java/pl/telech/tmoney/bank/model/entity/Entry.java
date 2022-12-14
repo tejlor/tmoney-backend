@@ -1,43 +1,27 @@
 package pl.telech.tmoney.bank.model.entity;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedEntityGraph;
-import javax.persistence.NamedAttributeNode;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Setter;
-import lombok.experimental.FieldDefaults;
 import lombok.experimental.FieldNameConstants;
 import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 
 /*
  * Entry (row in table).
  */
+@Data
 @Entity
-@Getter @Setter
-@NoArgsConstructor
 @FieldNameConstants
-@FieldDefaults(level = PRIVATE)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "entry", schema = "bank")
-@NamedEntityGraph(name = Entry.GRAPH_WITH_CATEGORY,
-	attributeNodes = @NamedAttributeNode(Entry.Fields.category)
-)
 public class Entry extends AbstractEntity {
-	
-	public static final String GRAPH_WITH_CATEGORY = "withCategory";
-	
+		
 	@Setter(AccessLevel.PRIVATE)
     @Column(insertable = false, updatable = false)
     Integer accountId;
@@ -53,7 +37,7 @@ public class Entry extends AbstractEntity {
     @Column(insertable = false, updatable = false)
     Integer categoryId;
 	
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "categoryId")
 	Category category;				// category
 	
@@ -72,10 +56,6 @@ public class Entry extends AbstractEntity {
 	@Column(nullable = false)
 	BigDecimal balanceOverall;		// balance in whole portfolio
 				
-
-	public Entry(Integer id) {
-		super(id);
-	}
 	
 	public void setAccount(Account account) {
 		this.account = account;

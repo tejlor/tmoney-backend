@@ -1,26 +1,21 @@
 package pl.telech.tmoney.adm.model.entity;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.FieldDefaults;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.FieldNameConstants;
 import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 
 /*
  * System setting.
  */
+@Data
 @Entity
-@Getter @Setter
-@NoArgsConstructor
-@FieldDefaults(level = PRIVATE)
 @FieldNameConstants
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "setting", schema = "adm")
 public class Setting extends AbstractEntity {
 	
@@ -30,8 +25,4 @@ public class Setting extends AbstractEntity {
 	@Column(length = 255)
 	String value;					// setting value
 	
-
-	public Setting(Integer id) {
-		super(id);
-	}
 }

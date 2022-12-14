@@ -1,33 +1,28 @@
 package pl.telech.tmoney.bank.model.entity;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.FieldDefaults;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.FieldNameConstants;
 import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 
 /*
- * Category.
+ * Category of entry.
  */
+@Data
 @Entity
-@Getter @Setter
-@NoArgsConstructor
 @FieldNameConstants
-@FieldDefaults(level = PRIVATE)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "category", schema = "bank")
 public class Category extends AbstractEntity {
 		
 	@Column(length = 100, nullable = false)
-	String name;				// account name
+	String name;				// category name
 	
 	@Column(nullable = false)
 	Integer account;			// m2m accounts
@@ -44,9 +39,4 @@ public class Category extends AbstractEntity {
 	@Column(length = 255)
 	String defaultDescription;	// default entry description
 				
-
-	public Category(Integer id) {
-		super(id);
-	}
-
 }

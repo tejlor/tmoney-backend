@@ -1,7 +1,5 @@
 package pl.telech.tmoney.commons.model.shared;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -15,12 +13,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.commons.model.interfaces.Loggable;
 import pl.telech.tmoney.commons.utils.TUtils;
 
 @Getter @Setter
-@FieldDefaults(level = PRIVATE)
 public class TableParams implements Loggable {
 
 	int pageNo;

@@ -1,6 +1,5 @@
 package pl.telech.tmoney.bank.controller;
 
-import static lombok.AccessLevel.PRIVATE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
@@ -14,19 +13,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.logic.interfaces.AccountLogic;
+import pl.telech.tmoney.bank.mapper.AccountMapper;
+import pl.telech.tmoney.bank.mapper.EntryMapper;
 import pl.telech.tmoney.bank.model.dto.AccountDto;
 import pl.telech.tmoney.bank.model.dto.AccountSummaryDto;
-import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.commons.controller.AbstractController;
 import pl.telech.tmoney.commons.utils.TUtils;
 
 @RestController
 @RequestMapping("/bank-accounts")
-@FieldDefaults(level = PRIVATE)
 public class AccountController extends AbstractController {
 
+	@Autowired
+	AccountMapper mapper;
+	@Autowired
+	EntryMapper entryMapper;
+	
 	@Autowired
 	AccountLogic accountLogic;
 	
@@ -36,7 +39,7 @@ public class AccountController extends AbstractController {
 	@RequestMapping(value = "", method = GET)
 	public List<AccountDto> getActive() {
 		
-		return AccountDto.toDtoList(accountLogic.loadActive());
+		return mapper.toDtoList(accountLogic.loadActive());
 	}
 	
 	/*
@@ -48,8 +51,8 @@ public class AccountController extends AbstractController {
 		
 		return accountLogic.getAccountSummaries(code).stream()
 				.map(pair -> new AccountSummaryDto(
-					new AccountDto(pair.getKey()), 
-					new EntryDto(pair.getValue()))
+					mapper.toDto(pair.getKey()), 
+					entryMapper.toDto(pair.getValue()))
 				)
 				.collect(Collectors.toList());
 	}
@@ -60,7 +63,7 @@ public class AccountController extends AbstractController {
 	@RequestMapping(value = "/id/{id:" + ID + "}", method = GET)
 	public AccountDto getById(int id) {
 		
-		return new AccountDto(accountLogic.loadById(id));
+		return mapper.toDto(accountLogic.loadById(id));
 	}
 	
 	/*
@@ -70,7 +73,7 @@ public class AccountController extends AbstractController {
 	public AccountDto getByCode(
 			@PathVariable String code) {
 		
-		return new AccountDto(accountLogic.loadByCode(code));
+		return mapper.toDto(accountLogic.loadByCode(code));
 	}
 	
 	/*
@@ -80,7 +83,7 @@ public class AccountController extends AbstractController {
 	public AccountDto create(
 			@RequestBody AccountDto account) {
 		
-		return new AccountDto(accountLogic.create(account.toModel()));
+		return mapper.toDto(accountLogic.create(account));
 	}
 	
 	/*
@@ -92,6 +95,6 @@ public class AccountController extends AbstractController {
 			@RequestBody AccountDto account) {
 		
 		TUtils.assertDtoId(id, account);
-		return new AccountDto(accountLogic.update(id, account.toModel()));
+		return mapper.toDto(accountLogic.update(id, account));
 	}
 }

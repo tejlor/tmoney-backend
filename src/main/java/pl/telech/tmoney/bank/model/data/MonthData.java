@@ -1,6 +1,4 @@
-package pl.telech.tmoney.bank.model.shared;
-
-import static lombok.AccessLevel.PRIVATE;
+package pl.telech.tmoney.bank.model.data;
 
 import java.math.BigDecimal;
 import java.time.Month;
@@ -8,11 +6,9 @@ import java.time.Month;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.FieldDefaults;
 
 @Getter
 @Builder
-@FieldDefaults(level = PRIVATE)
 public class MonthData implements Comparable<MonthData> {
 	
 	Month month;

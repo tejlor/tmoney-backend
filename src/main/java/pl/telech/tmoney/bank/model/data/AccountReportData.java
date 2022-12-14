@@ -1,17 +1,13 @@
-package pl.telech.tmoney.bank.model.shared;
-
-import static lombok.AccessLevel.PRIVATE;
+package pl.telech.tmoney.bank.model.data;
 
 import java.math.BigDecimal;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.model.entity.Account;
 
 @Getter
 @Builder
-@FieldDefaults(level = PRIVATE)
 public class AccountReportData {
 
 	Account account;

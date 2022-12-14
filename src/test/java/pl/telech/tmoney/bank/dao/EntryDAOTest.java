@@ -1,13 +1,10 @@
 package pl.telech.tmoney.bank.dao;
 
-import static lombok.AccessLevel.PRIVATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static pl.telech.tmoney.utils.TestUtils.date;
-import static pl.telech.tmoney.utils.TestUtils.decimal;
+import static pl.telech.tmoney.utils.TestUtils.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.Before;
@@ -19,22 +16,19 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import lombok.experimental.FieldDefaults;
-import pl.telech.tmoney.bank.builder.EntryBuilder;
+import pl.telech.tmoney.bank.dao.data.CategoryAmount;
+import pl.telech.tmoney.bank.dao.data.EntryAmount;
 import pl.telech.tmoney.bank.helper.AccountHelper;
 import pl.telech.tmoney.bank.helper.CategoryHelper;
 import pl.telech.tmoney.bank.helper.EntryHelper;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
-import pl.telech.tmoney.bank.model.shared.CategoryAmount;
-import pl.telech.tmoney.bank.model.shared.EntryAmount;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @Import({AccountHelper.class, CategoryHelper.class, EntryHelper.class})
 @ActiveProfiles("junit")
-@FieldDefaults(level = PRIVATE)
 public class EntryDAOTest {
 
 	@Autowired
@@ -47,7 +41,7 @@ public class EntryDAOTest {
 	@Autowired
 	EntryHelper entryHelper;
 	
-	private static Integer accountHomeId, accountBankId;
+	private static Integer accountHomeId, accountBankId, categoryCarId;
 	
 	@Before
 	public void initDB() {
@@ -61,37 +55,72 @@ public class EntryDAOTest {
 		Category categoryCar = categoryHelper.save("Samochód");
 		Category categoryShopping = categoryHelper.save("Zakupy");
 		Category categoryMovements = categoryHelper.save("Przelewy pomiędzy rachunkami", false);
+		categoryCarId = categoryCar.getId();
 		
-		saveEntry("Zasilenie konta", date("2022-01-01"), accountBank, categoryStock, decimal("-25 000.00"));
-		saveEntry("Podatki", date("2022-01-05"), accountBank, categoryWork, decimal("-1 230.00"));
-		saveEntry("Wypłata", date("2022-01-10"), accountBank, categoryWork, decimal("10 000.00"));
-		saveEntry("Benzyna", date("2022-01-10"), accountHome, categoryCar, decimal("-289.45"));
-		saveEntry("Przelew z firmowego", date("2022-01-10"), accountBank, categoryMovements, decimal("2000.00"));
-		saveEntry("Zwrot opłaty", date("2022-01-19"), accountHome, categoryCar, decimal("5.00"));
-		saveEntry("Lidl", date("2022-01-21"), accountHome, categoryShopping, decimal("-87.95"));
-		saveEntry("Biedronka", date("2022-01-31"), accountBank, categoryShopping, decimal("-24.99"));
-		saveEntry("Odsetki", date("2022-02-01"), accountBank, categoryStock, decimal("350.00"));
+		entryHelper.save("Przelew na giełdę", 	date("2022-01-01"), accountBank, categoryStock, 		decimal("-25 000.00"));
+		entryHelper.save("Odsetki z giełdy",	date("2022-01-02"), accountBank, categoryStock, 		decimal("    250.00"));
+		entryHelper.save("Podatki", 			date("2022-01-05"), accountBank, categoryWork, 			decimal(" -1 230.00"));
+		entryHelper.save("Wypłata", 			date("2022-01-10"), accountBank, categoryWork, 			decimal(" 10 000.00"));
+		entryHelper.save("Benzyna", 			date("2022-01-10"), accountHome, categoryCar, 			decimal("   -289.45"));
+		entryHelper.save("Wypłata z bankomatu",	date("2022-01-10"), accountBank, categoryMovements, 	decimal(" -2 000.00"));
+		entryHelper.save("Wypłata z bankomatu",	date("2022-01-10"), accountHome, categoryMovements, 	decimal("  2 000.00"));
+		entryHelper.save("Zwrot opłaty", 		date("2022-01-19"), accountHome, categoryCar, 			decimal("      5.00"));
+		entryHelper.save("Lidl", 				date("2022-01-21"), accountHome, categoryShopping, 		decimal("    -87.95"));
+		entryHelper.save("Biedronka", 			date("2022-01-31"), accountBank, categoryShopping, 		decimal("    -24.99"));
+		entryHelper.save("Odsetki z giełdy",	date("2022-02-01"), accountBank, categoryStock, 		decimal("    350.00"));
 	}
 	
 	@Test
-	public void testFindLastByAccountBeforeDate() {
+	public void testFindByCategoryId() {
 		// when
-		Entry result = dao.findLastByAccountBeforeDate(accountHomeId, date("2022-02-01"));
+		List<Entry> result = dao.findByCategoryId(categoryCarId);
 		
 		// then
 		assertThat(result).isNotNull();
-		assertThat(result.getName()).isEqualTo("Lidl");
+		assertThat(result).hasSize(2);
+		assertThat(result).extracting(Entry.Fields.date, Entry.Fields.name)
+			.containsExactly(
+					tuple(date("2022-01-10"), "Benzyna"),
+					tuple(date("2022-01-19"), "Zwrot opłaty")
+			);
 	}
 	
 	@Test
-	public void testFindLastBeforeDate() {
+	public void testFindByAccountId() {
 		// when
-		Entry result = dao.findLastBeforeDate(date("2022-02-01"));
+		List<Entry> result = dao.findByAccountId(accountHomeId);
 		
 		// then
 		assertThat(result).isNotNull();
-		assertThat(result.getName()).isEqualTo("Biedronka");
+		assertThat(result).hasSize(4);
+		assertThat(result).extracting(Entry.Fields.date, Entry.Fields.name)
+			.containsExactly(
+					tuple(date("2022-01-10"), "Benzyna"),
+					tuple(date("2022-01-10"), "Wypłata z bankomatu"),
+					tuple(date("2022-01-19"), "Zwrot opłaty"),
+					tuple(date("2022-01-21"), "Lidl")
+			);
 	}
+	
+//	@Test
+//	public void testFindLastByAccountBeforeDate() {
+//		// when
+//		Entry result = dao.findLastByAccountBeforeDate(accountHomeId, date("2022-02-01"));
+//		
+//		// then
+//		assertThat(result).isNotNull();
+//		assertThat(result.getName()).isEqualTo("Lidl");
+//	}
+//	
+//	@Test
+//	public void testFindLastBeforeDate() {
+//		// when
+//		Entry result = dao.findLastBeforeDate(date("2022-02-01"));
+//		
+//		// then
+//		assertThat(result).isNotNull();
+//		assertThat(result.getName()).isEqualTo("Biedronka");
+//	}
 	
 	@Test
 	public void testFindAccountIncome() {
@@ -100,7 +129,7 @@ public class EntryDAOTest {
 		
 		// then
 		assertThat(result).isNotNull();
-		assertThat(result).isEqualTo(decimal("12 000.00"));
+		assertThat(result).isEqualTo(decimal("10 250.00"));
 	}
 	
 	@Test
@@ -114,30 +143,31 @@ public class EntryDAOTest {
 	}
 	
 	@Test
-	public void testFindSummaryIncome() {
+	public void testFindSummaryIncomeByCategory() {
 		// when
-		List<CategoryAmount> result = dao.findSummaryIncome(date("2022-01-01"), date("2022-01-31"));
+		List<CategoryAmount> result = dao.findSummaryIncomeByCategory(date("2022-01-01"), date("2022-01-31"));
 		
 		// then
 		assertThat(result).isNotNull();
-		assertThat(result).hasSize(2);
+		assertThat(result).hasSize(3);
 		assertThat(result).extracting(CategoryAmount.Fields.categoryName, CategoryAmount.Fields.amount)
-			.contains(
+			.containsOnly(
+					tuple("Giełda", decimal("250.00")),
 					tuple("Praca", decimal("10 000.00")),
 					tuple("Samochód", decimal("5.00"))
 			);
 	}
 	
 	@Test
-	public void testFindSummaryOutcome() {
+	public void testFindSummaryOutcomeByCategory() {
 		// when
-		List<CategoryAmount> result = dao.findSummaryOutcome(date("2022-01-01"), date("2022-01-31"));
+		List<CategoryAmount> result = dao.findSummaryOutcomeByCategory(date("2022-01-01"), date("2022-01-31"));
 		
 		// then
 		assertThat(result).isNotNull();
 		assertThat(result).hasSize(4);
 		assertThat(result).extracting(CategoryAmount.Fields.categoryName, CategoryAmount.Fields.amount)
-			.contains(
+			.containsOnly(
 					tuple("Giełda", decimal("25 000.00")), 
 					tuple("Praca", decimal("1 230.00")),
 					tuple("Samochód", decimal("289.45")),
@@ -146,16 +176,17 @@ public class EntryDAOTest {
 	}
 	
 	@Test
-	public void testFindSummaryChart() {
+	public void testFindEntriesForReport() {
 		// when
-		List<EntryAmount> result = dao.findSummaryChart(date("2022-01-01"), date("2022-01-31"));
+		List<EntryAmount> result = dao.findEntriesForReport(date("2022-01-01"), date("2022-01-31"));
 		
 		// then
 		assertThat(result).isNotNull();
-		assertThat(result).hasSize(7);
+		assertThat(result).hasSize(8);
 		assertThat(result).extracting(EntryAmount.Fields.date, EntryAmount.Fields.amount)
-			.contains(
-					tuple(date("2022-01-01"), decimal("-25 000.00")), 		
+			.containsOnly(
+					tuple(date("2022-01-01"), decimal("-25 000.00")),
+					tuple(date("2022-01-02"), decimal("250.00")),
 					tuple(date("2022-01-05"), decimal("-1 230.00")),
 					tuple(date("2022-01-10"), decimal("10 000.00")),
 					tuple(date("2022-01-10"), decimal("-289.45")),
@@ -163,16 +194,6 @@ public class EntryDAOTest {
 					tuple(date("2022-01-21"), decimal("-87.95")),
 					tuple(date("2022-01-31"), decimal("-24.99"))
 			);
-	}
-	
-	private void saveEntry(String name, LocalDate date, Account account, Category category, BigDecimal amount) {
-		entryHelper.save(
-			new EntryBuilder()
-				.name(name)
-				.date(date)
-				.account(account)
-				.category(category)
-				.amount(amount));
 	}
 	
 }

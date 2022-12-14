@@ -1,7 +1,5 @@
 package pl.telech.tmoney.commons.controller;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import java.beans.PropertyEditorSupport;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RestController;
 
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import pl.telech.tmoney.commons.model.dto.AbstractDto;
 import pl.telech.tmoney.commons.model.exception.NotFoundException;
@@ -31,7 +28,6 @@ import pl.telech.tmoney.commons.utils.aop.AppLogOmit;
 
 @Slf4j
 @RestController
-@FieldDefaults(level = PRIVATE)
 public class AbstractController {
 	
 	@Value("${tmoney.environment}")

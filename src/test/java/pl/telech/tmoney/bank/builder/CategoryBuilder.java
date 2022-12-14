@@ -1,19 +1,13 @@
 package pl.telech.tmoney.bank.builder;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import java.math.BigDecimal;
-
-import javax.persistence.EntityManager;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.commons.builder.AbstractBuilder;
 
 @Setter
-@FieldDefaults(level = PRIVATE)
 @Accessors(chain = true, fluent = true)
 public class CategoryBuilder extends AbstractBuilder<Category> {
 	
@@ -37,8 +31,4 @@ public class CategoryBuilder extends AbstractBuilder<Category> {
 		return obj;	
 	}
 
-	@Override
-	public void persistDependences(EntityManager em) {
-		
-	}
 }

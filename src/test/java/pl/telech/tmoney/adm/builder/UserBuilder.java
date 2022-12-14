@@ -1,18 +1,12 @@
 package pl.telech.tmoney.adm.builder;
 
-import static lombok.AccessLevel.PRIVATE;
-
-import javax.persistence.EntityManager;
-
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.adm.model.entity.User;
 import pl.telech.tmoney.commons.builder.AbstractBuilder;
 import pl.telech.tmoney.commons.utils.TUtils;
 
 @Setter
-@FieldDefaults(level = PRIVATE)
 @Accessors(chain = true, fluent = true)
 public class UserBuilder extends AbstractBuilder<User> {
 	
@@ -34,8 +28,4 @@ public class UserBuilder extends AbstractBuilder<User> {
 		return obj;	
 	}
 
-	@Override
-	public void persistDependences(EntityManager em) {
-		
-	}
 }

@@ -1,6 +1,5 @@
 package pl.telech.tmoney.bank.controller;
 
-import static lombok.AccessLevel.PRIVATE;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -11,15 +10,10 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.logic.interfaces.CategoryLogic;
+import pl.telech.tmoney.bank.mapper.CategoryMapper;
 import pl.telech.tmoney.bank.model.dto.CategoryDto;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.commons.controller.AbstractController;
@@ -29,9 +23,11 @@ import pl.telech.tmoney.commons.utils.TUtils;
 
 @RestController
 @RequestMapping("/categories")
-@FieldDefaults(level = PRIVATE)
 public class CategoryController extends AbstractController {
 
+	@Autowired
+	CategoryMapper mapper;
+	
 	@Autowired
 	CategoryLogic categoryLogic;
 	
@@ -48,7 +44,7 @@ public class CategoryController extends AbstractController {
 		var tableParams = new TableParams(pageNo, pageSize, filter, sortBy);		
 		Pair<List<Category>, Integer> result = categoryLogic.loadTable(tableParams); 	
 		var table = new TableDataDto<CategoryDto>(tableParams);
-		table.setRows(CategoryDto.toDtoList(result.getKey()));
+		table.setRows(mapper.toDtoList(result.getKey()));
 		table.setCount(result.getValue());		
 		return table;
 	}
@@ -59,7 +55,7 @@ public class CategoryController extends AbstractController {
 	@RequestMapping(value = "", method = GET)
 	public List<CategoryDto> getAll() {
 		
-		return sort(CategoryDto.toDtoList(categoryLogic.loadAll()));
+		return sort(mapper.toDtoList(categoryLogic.loadAll()));
 	}
 	
 	/*
@@ -69,7 +65,7 @@ public class CategoryController extends AbstractController {
 	public CategoryDto getById(
 			@PathVariable int id) {
 		
-		return new CategoryDto(categoryLogic.loadById(id));
+		return mapper.toDto(categoryLogic.loadById(id));
 	}
 	
 	/*
@@ -79,7 +75,7 @@ public class CategoryController extends AbstractController {
 	public List<CategoryDto> getByAccountCode(
 			@PathVariable String code) {
 		
-		return sort(CategoryDto.toDtoList(categoryLogic.loadByAccountCode(code)));
+		return sort(mapper.toDtoList(categoryLogic.loadByAccountCode(code)));
 	}
 	
 	/*
@@ -89,7 +85,7 @@ public class CategoryController extends AbstractController {
 	public CategoryDto create(
 			@RequestBody CategoryDto category) {
 		
-		return new CategoryDto(categoryLogic.create(category.toModel()));
+		return mapper.toDto(categoryLogic.create(category));
 	}
 	
 	/*
@@ -101,7 +97,7 @@ public class CategoryController extends AbstractController {
 			@RequestBody CategoryDto category) {
 		
 		TUtils.assertDtoId(id, category);
-		return new CategoryDto(categoryLogic.update(id, category.toModel()));
+		return mapper.toDto(categoryLogic.update(id, category));
 	}
 	
 	/*

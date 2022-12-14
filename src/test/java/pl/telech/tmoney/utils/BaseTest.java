@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import javax.persistence.EntityManager;
 
 import org.assertj.core.api.Fail;
-import org.junit.After;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,14 +24,11 @@ import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 public class BaseTest {
 
 	User defaultUser;
-	BeanFieldSetter beanFieldSetter;
 	
 	@Autowired
 	EntityManager entityManager;
 	
-	public BaseTest() {
-		beanFieldSetter = new BeanFieldSetter();
-	}
+
 	
     @Before
     public void before() {
@@ -42,10 +38,6 @@ public class BaseTest {
         defaultUser = new UserBuilder().save(entityManager);
     }
 	
-	@After
-	public void after() {
-		beanFieldSetter.restoreAllOriginValues();
-	}
 	
 	protected <T extends AbstractEntity> T load(Class<T> clazz, int id)  {
 		return entityManager.find(clazz, id);
@@ -62,10 +54,6 @@ public class BaseTest {
 	protected <T extends AbstractEntity> void flushAndClear() {
 		entityManager.flush();
 		entityManager.clear();
-	}
-	
-	protected void setBeanField(Object targetObject, String name, Object value) {
-		beanFieldSetter.setObjectField(targetObject, name, value);
 	}
 
 	protected static <T extends Exception> void expectException(Runnable action, Class<T> exceptionClass, String exceptionMessage) {

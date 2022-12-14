@@ -1,7 +1,5 @@
 package pl.telech.tmoney.commons.config;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -22,7 +20,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.adm.logic.interfaces.UserLogic;
 import pl.telech.tmoney.commons.utils.Sha1PasswordEncoder;
 
@@ -31,7 +28,6 @@ import pl.telech.tmoney.commons.utils.Sha1PasswordEncoder;
  */
 @Configuration
 @EnableWebSecurity
-@FieldDefaults(level = PRIVATE)
 public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Value("${tmoney.environment}")

@@ -1,7 +1,5 @@
 package pl.telech.tmoney.commons.config;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +17,6 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.adm.logic.interfaces.UserLogic;
 
 /*
@@ -27,7 +24,6 @@ import pl.telech.tmoney.adm.logic.interfaces.UserLogic;
  */
 @Configuration
 @EnableAuthorizationServer
-@FieldDefaults(level = PRIVATE)
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
 	@Value("${tmoney.auth.clientName}")

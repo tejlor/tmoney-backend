@@ -1,7 +1,5 @@
 package pl.telech.tmoney.commons.dao;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,14 +14,12 @@ import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.commons.dao.interfaces.DAO;
 import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 
 /*
  * Base implementation of all repository classes. Adds some methods helpful in using specifications and entity graphs. 
  */
-@FieldDefaults(level = PRIVATE)
 public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, Integer> implements DAO<T> {
 
 	EntityManager entityManager;
