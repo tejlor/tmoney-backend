@@ -8,15 +8,12 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
 
-import pl.telech.tmoney.adm.logic.helper.interfaces.SimpleTokenEndpoint;
 
 @TestConfiguration
 public class TMoneyTestConfiguration {
  
-    @Bean
+    /*@Bean
     @Primary
     public SimpleTokenEndpoint createSimpleTokenEndpoint(){
         return new SimpleTokenEndpoint() {
@@ -30,5 +27,5 @@ public class TMoneyTestConfiguration {
 				return new ResponseEntity<OAuth2AccessToken>(new DefaultOAuth2AccessToken("token"), headers, HttpStatus.OK);
 			}
 		};
-    }
+    }*/
 }

@@ -6,9 +6,10 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import pl.telech.tmoney.bank.helper.AccountHelper;
@@ -26,7 +27,7 @@ import pl.telech.tmoney.commons.model.exception.TMoneyException;
 import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.utils.BaseTest;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class CategoryControllerTest extends BaseTest {
 
 	@Autowired

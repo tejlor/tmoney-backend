@@ -7,10 +7,10 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pl.telech.tmoney.bank.helper.AccountHelper;
 import pl.telech.tmoney.bank.helper.CategoryHelper;
@@ -26,7 +26,7 @@ import pl.telech.tmoney.commons.model.dto.TableDataDto.TableInfoDto;
 import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.utils.BaseTest;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class EntryControllerTest extends BaseTest {
 
 	@Autowired

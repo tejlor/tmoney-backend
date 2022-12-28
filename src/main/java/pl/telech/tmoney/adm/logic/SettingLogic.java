@@ -9,18 +9,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import pl.telech.tmoney.adm.dao.SettingDAO;
-import pl.telech.tmoney.adm.logic.interfaces.SettingLogic;
 import pl.telech.tmoney.adm.model.entity.Setting;
 import pl.telech.tmoney.commons.logic.AbstractLogicImpl;
 
 @Slf4j
 @Service
 @Transactional
-public class SettingLogicImpl extends AbstractLogicImpl<Setting> implements SettingLogic {
+public class SettingLogic extends AbstractLogicImpl<Setting> {
 	
 	SettingDAO dao;
 	
-	public SettingLogicImpl(SettingDAO dao) {
+	public SettingLogic(SettingDAO dao) {
 		super(dao);
 		this.dao = dao;
 	}
@@ -30,7 +29,6 @@ public class SettingLogicImpl extends AbstractLogicImpl<Setting> implements Sett
 				.collect(Collectors.toList());
 	}
 
-	@Override
 	public int loadIntValue(String name) {
 		int value = 0;
 		
@@ -47,7 +45,6 @@ public class SettingLogicImpl extends AbstractLogicImpl<Setting> implements Sett
 		return value;
 	}
 	
-	@Override
 	public BigDecimal loadDecimalValue(String name) {
 		BigDecimal value = BigDecimal.ZERO;
 		
@@ -64,7 +61,6 @@ public class SettingLogicImpl extends AbstractLogicImpl<Setting> implements Sett
 		return value;
 	}
 	
-	@Override
 	public boolean loadBoolValue(String name) {
 		boolean value = false;
 		
@@ -76,7 +72,6 @@ public class SettingLogicImpl extends AbstractLogicImpl<Setting> implements Sett
 		return value;
 	}
 	
-	@Override
 	public String loadStringValue(String name) {
 		return loadValue(name);
 	}

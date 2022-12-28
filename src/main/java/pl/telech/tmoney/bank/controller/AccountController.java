@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import pl.telech.tmoney.bank.logic.interfaces.AccountLogic;
+import pl.telech.tmoney.bank.logic.AccountLogic;
 import pl.telech.tmoney.bank.mapper.AccountMapper;
 import pl.telech.tmoney.bank.mapper.EntryMapper;
 import pl.telech.tmoney.bank.model.dto.AccountDto;

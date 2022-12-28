@@ -4,20 +4,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.transaction.Transactional;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pl.telech.tmoney.bank.helper.AccountHelper;
 import pl.telech.tmoney.bank.helper.EntryHelper;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.utils.BaseTest;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class ReportControllerTest extends BaseTest {
 
 	@Autowired

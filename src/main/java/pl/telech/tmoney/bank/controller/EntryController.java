@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import pl.telech.tmoney.bank.logic.interfaces.EntryLogic;
+import pl.telech.tmoney.bank.logic.EntryLogic;
 import pl.telech.tmoney.bank.mapper.EntryMapper;
 import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Entry;

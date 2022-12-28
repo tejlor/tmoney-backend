@@ -1,8 +1,10 @@
 package pl.telech.tmoney.commons.utils.aop;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -10,9 +12,9 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import lombok.extern.slf4j.Slf4j;
-import pl.telech.tmoney.commons.config.filter.RequestWrapper;
 import pl.telech.tmoney.commons.model.exception.NotFoundException;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
 import pl.telech.tmoney.commons.model.interfaces.Loggable;
@@ -44,7 +46,7 @@ public class AppLogAspect {
 		Object result = null;
 		try {
 			result = jp.proceed();
-			sb.append(getResultData(result));	
+			sb.append(getResponseData(result));	
 		} 
 		catch(NotFoundException e){
 			sb.append("\n").append(e.toShortString());
@@ -68,7 +70,7 @@ public class AppLogAspect {
 	}
 	
 	private String getRequestData() throws IOException{
-		RequestWrapper request = getRequestFromContext(); 
+		ContentCachingRequestWrapper request = getRequestFromContext(); 
 		if(request == null)
 			return "";
 		
@@ -80,13 +82,13 @@ public class AppLogAspect {
 		}
 					
 		if (request.getMethod().equalsIgnoreCase("POST") || request.getMethod().equalsIgnoreCase("PUT")) {
-			sb.append("\nBODY:\n").append(request.getBody());
+			sb.append("\nBODY:\n").append(IOUtils.toString(request.getInputStream(), Charset.defaultCharset()));
 		}
 		
 		return sb.toString();
 	}
 	
-	private String getResultData(Object result){
+	private String getResponseData(Object result){
 		if(result == null)
 			return "";
 		
@@ -117,9 +119,9 @@ public class AppLogAspect {
 		return sb.toString();
 	}
 	
-	private RequestWrapper getRequestFromContext(){
+	private ContentCachingRequestWrapper getRequestFromContext(){
 		ServletRequestAttributes requestAttr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
 		var request = requestAttr.getRequest();
-		return request instanceof RequestWrapper ? (RequestWrapper) requestAttr.getRequest() : null;
+		return request instanceof ContentCachingRequestWrapper ? (ContentCachingRequestWrapper) requestAttr.getRequest() : null;
 	}
 }

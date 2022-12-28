@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import pl.telech.tmoney.adm.logic.interfaces.UserLogic;
+import pl.telech.tmoney.adm.logic.UserLogic;
 import pl.telech.tmoney.adm.mapper.UserMapper;
 import pl.telech.tmoney.adm.model.dto.UserDto;
 import pl.telech.tmoney.commons.controller.AbstractController;

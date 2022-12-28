@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import pl.telech.tmoney.bank.dao.EntryDAO;
-import pl.telech.tmoney.bank.logic.interfaces.AccountLogic;
-import pl.telech.tmoney.bank.logic.interfaces.EntryLogic;
 import pl.telech.tmoney.bank.mapper.EntryMapper;
 import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
@@ -24,7 +22,7 @@ import pl.telech.tmoney.commons.utils.TUtils;
 
 @Service
 @Transactional
-public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLogic {
+public class EntryLogic extends AbstractLogicImpl<Entry> {
 	
 	EntryDAO dao;
 	
@@ -37,12 +35,11 @@ public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLog
 	@Autowired
 	EntryMapper mapper;
 	
-	public EntryLogicImpl(EntryDAO dao) {
+	public EntryLogic(EntryDAO dao) {
 		super(dao);
 		this.dao = dao;
 	}
 	
-	@Override
 	public List<Entry> loadAll(String accountCode) {
 		Integer accountId = null;
 		
@@ -57,7 +54,6 @@ public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLog
 		return dao.findByAccountId(accountId);
 	}
 	
-	@Override
 	public Pair<List<Entry>, Integer> loadAll(String accountCode, TableParams params) {
 		Integer accountId = null;
 		
@@ -72,12 +68,10 @@ public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLog
 		return dao.findTableByAccountId(accountId, params);
 	}
 	
-	@Override
 	public List<Entry> loadByCategoryId(int categoryId) {
 		return dao.findByCategoryId(categoryId);
 	}
 	
-	@Override
 	public Entry create(EntryDto entryDto) {
 		Entry entry = mapper.toNewEntity(entryDto);
 		calculateAndFillBalances(entry);
@@ -88,7 +82,6 @@ public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLog
 		return entry;
 	}
 	
-	@Override
 	public Entry update(int id, EntryDto entryDto) {
 		Entry entry = loadById(id);
 		TUtils.assertEntityExists(entry);
@@ -100,7 +93,6 @@ public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLog
 		return entry;
 	}
 	
-	@Override
 	public void delete(int id) {
 		Entry entry = loadById(id);
 		TUtils.assertEntityExists(entry);
@@ -109,12 +101,10 @@ public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLog
 		updateBalances();
 	}
 	
-	@Override
 	public Entry loadLastByAccount(int accountId) {
 		return dao.findLastByAccountBeforeDate(accountId, LocalDate.now());
 	}
 	
-	@Override
 	public void updateBalances() {
 		if (!TUtils.isJUnit(environment)) {
 			dao.updateBalances();

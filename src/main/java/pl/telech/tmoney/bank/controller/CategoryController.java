@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import pl.telech.tmoney.bank.logic.interfaces.CategoryLogic;
+import pl.telech.tmoney.bank.logic.CategoryLogic;
 import pl.telech.tmoney.bank.mapper.CategoryMapper;
 import pl.telech.tmoney.bank.model.dto.CategoryDto;
 import pl.telech.tmoney.bank.model.entity.Category;

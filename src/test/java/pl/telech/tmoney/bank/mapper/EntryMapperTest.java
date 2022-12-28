@@ -4,18 +4,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pl.telech.tmoney.bank.asserts.EntryAssert;
 import pl.telech.tmoney.bank.builder.EntryBuilder;
 import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Entry;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @Import({EntryBuilder.class, EntryMapperImpl.class, AccountMapperImpl.class, CategoryMapperImpl.class})
 public class EntryMapperTest {
 

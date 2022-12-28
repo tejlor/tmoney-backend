@@ -9,9 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import pl.telech.tmoney.bank.dao.CategoryDAO;
-import pl.telech.tmoney.bank.logic.interfaces.AccountLogic;
-import pl.telech.tmoney.bank.logic.interfaces.CategoryLogic;
-import pl.telech.tmoney.bank.logic.interfaces.EntryLogic;
 import pl.telech.tmoney.bank.model.dto.CategoryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;
@@ -23,7 +20,7 @@ import pl.telech.tmoney.commons.utils.TUtils;
 
 @Service
 @Transactional
-public class CategoryLogicImpl extends AbstractLogicImpl<Category> implements CategoryLogic {
+public class CategoryLogic extends AbstractLogicImpl<Category> {
 	
 	CategoryDAO dao;
 	
@@ -33,17 +30,15 @@ public class CategoryLogicImpl extends AbstractLogicImpl<Category> implements Ca
 	EntryLogic entryLogic;
 	
 	
-	public CategoryLogicImpl(CategoryDAO dao) {
+	public CategoryLogic(CategoryDAO dao) {
 		super(dao);
 		this.dao = dao;
 	}
 	
-	@Override
 	public Pair<List<Category>, Integer> loadTable(TableParams params) {
 		return dao.findTable(params);
 	}
 	
-	@Override
 	public List<Category> loadByAccountCode(String accountCode) {
 		Account account = accountLogic.loadByCode(accountCode);
 		return loadAll().stream()
@@ -51,7 +46,6 @@ public class CategoryLogicImpl extends AbstractLogicImpl<Category> implements Ca
 			.collect(Collectors.toList());
 	}
 		
-	@Override
 	public Category create(CategoryDto _category) {
 		var category = new Category();		
 		category.setName(_category.getName());
@@ -64,7 +58,6 @@ public class CategoryLogicImpl extends AbstractLogicImpl<Category> implements Ca
 		return save(category);
 	}
 	
-	@Override
 	public Category update(int id, CategoryDto _category) {
 		Category category = loadById(id);
 		TUtils.assertEntityExists(category);
@@ -79,7 +72,6 @@ public class CategoryLogicImpl extends AbstractLogicImpl<Category> implements Ca
 		return save(category);
 	}
 	
-	@Override
 	public void delete(int id, Integer newCategoryId) {
 		Category category = loadById(id);
 		TUtils.assertEntityExists(category);

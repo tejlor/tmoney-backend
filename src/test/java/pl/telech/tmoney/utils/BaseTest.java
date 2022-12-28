@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import javax.persistence.EntityManager;
 
 import org.assertj.core.api.Fail;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -30,7 +30,7 @@ public class BaseTest {
 	
 
 	
-    @Before
+    @BeforeEach
     public void before() {
     	// restart autoincrement values
         entityManager.createNativeQuery("TRUNCATE TABLE adm.User RESTART IDENTITY AND COMMIT NO CHECK").executeUpdate();

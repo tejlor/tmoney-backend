@@ -11,14 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import pl.telech.tmoney.adm.dao.UserDAO;
-import pl.telech.tmoney.adm.logic.interfaces.UserLogic;
 import pl.telech.tmoney.adm.model.entity.User;
 import pl.telech.tmoney.commons.logic.AbstractLogicImpl;
 
 @Slf4j
 @Service
 @Transactional
-public class UserLogicImpl extends AbstractLogicImpl<User> implements UserLogic, UserDetailsService {
+public class UserLogic extends AbstractLogicImpl<User> implements UserDetailsService {
 
 	@Value("${tmoney.auth.clientName}")
 	String clientName;
@@ -28,7 +27,7 @@ public class UserLogicImpl extends AbstractLogicImpl<User> implements UserLogic,
 	UserDAO dao;
 	
 	
-	public UserLogicImpl(UserDAO dao) {
+	public UserLogic(UserDAO dao) {
 		super(dao);
 		this.dao = dao;
 	}
@@ -37,7 +36,6 @@ public class UserLogicImpl extends AbstractLogicImpl<User> implements UserLogic,
 	 * Gets logged user from session.
 	 * Object isn't connected to Hibernate session and doesn't have sub-objects.
 	 */
-	@Override
 	public User getCurrentUser() {
 		try {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -63,7 +61,6 @@ public class UserLogicImpl extends AbstractLogicImpl<User> implements UserLogic,
 		}
 	}
 	
-	@Override
 	public User loadCurrentUser() {
 		return dao.findById(getCurrentUser().getId()).get();
 	}

@@ -7,14 +7,14 @@ import static pl.telech.tmoney.utils.TestUtils.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pl.telech.tmoney.bank.dao.data.CategoryAmount;
 import pl.telech.tmoney.bank.dao.data.EntryAmount;
@@ -25,7 +25,7 @@ import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @DataJpaTest
 @Import({AccountHelper.class, CategoryHelper.class, EntryHelper.class})
 @ActiveProfiles("junit")
@@ -43,7 +43,7 @@ public class EntryDAOTest {
 	
 	private static Integer accountHomeId, accountBankId, categoryCarId;
 	
-	@Before
+	@BeforeEach
 	public void initDB() {
 		Account accountHome = accountHelper.save("Dom");
 		Account accountBank = accountHelper.save("Konto bankowe");	

@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import pl.telech.tmoney.bank.dao.AccountDAO;
-import pl.telech.tmoney.bank.logic.interfaces.AccountLogic;
-import pl.telech.tmoney.bank.logic.interfaces.EntryLogic;
 import pl.telech.tmoney.bank.model.dto.AccountDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Entry;
@@ -20,14 +18,12 @@ import pl.telech.tmoney.commons.utils.TUtils;
 
 @Service
 @Transactional
-public class AccountLogicImpl extends AbstractLogicImpl<Account> implements AccountLogic {
+public class AccountLogic extends AbstractLogicImpl<Account> {
 	
 	static final Account summaryAccount;
 	
 	AccountDAO dao;
-	
-	@Autowired
-	EntryLogic entryLogic;
+
 	
 	static {
 		summaryAccount = new Account();
@@ -36,27 +32,23 @@ public class AccountLogicImpl extends AbstractLogicImpl<Account> implements Acco
 		summaryAccount.setName("Podsumowanie");
 	}
 	
-	public AccountLogicImpl(AccountDAO dao) {
+	public AccountLogic(AccountDAO dao) {
 		super(dao);
 		this.dao = dao;
 	}
 	
-	@Override
 	public Account loadByCode(String code) {
 		return dao.findByCode(code);
 	}
 	
-	@Override
 	public Account getSummaryAccount() {
 		return summaryAccount;
 	}
 	
-	@Override
 	public List<Account> loadActive() {
 		return dao.findActive();
 	}
 	
-	@Override
 	public Account create(AccountDto _account) {
 		var account = new Account();
 		account.setCode(_account.getCode());
@@ -70,7 +62,6 @@ public class AccountLogicImpl extends AbstractLogicImpl<Account> implements Acco
 		return save(account);
 	}
 	
-	@Override
 	public Account update(int id, AccountDto _account) {
 		Account account = loadById(id);
 		TUtils.assertEntityExists(account);
@@ -83,7 +74,6 @@ public class AccountLogicImpl extends AbstractLogicImpl<Account> implements Acco
 		return save(account);
 	}
 	
-	@Override
 	public List<Pair<Account, Entry>> getAccountSummaries(String accountCode) {	
 		List<String> accountCodes = accountCode != null
 				? Collections.singletonList(accountCode)
@@ -98,7 +88,7 @@ public class AccountLogicImpl extends AbstractLogicImpl<Account> implements Acco
 		return accountCodes.stream()
 				.map(code -> {
 					var account = dao.findByCode(code);
-					var entry = entryLogic.loadLastByAccount(account.getId());
+					Entry entry = null; //entryLogic.loadLastByAccount(account.getId());
 					return Pair.of(account, entry);
 				})
 				.collect(Collectors.toList());
