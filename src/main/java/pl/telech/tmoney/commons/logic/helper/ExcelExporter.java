@@ -1,7 +1,5 @@
 package pl.telech.tmoney.commons.logic.helper;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -20,11 +18,9 @@ import org.apache.poi.xssf.usermodel.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
 
 @Setter
-@FieldDefaults(level = PRIVATE)
 @Accessors(chain = true, fluent = true)
 public class ExcelExporter<T> {
 

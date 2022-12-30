@@ -1,6 +1,5 @@
 package pl.telech.tmoney.bank.controller;
 
-import static lombok.AccessLevel.PRIVATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
@@ -13,10 +12,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.helper.AccountHelper;
 import pl.telech.tmoney.bank.helper.CategoryHelper;
 import pl.telech.tmoney.bank.helper.EntryHelper;
+import pl.telech.tmoney.bank.mapper.EntryMapper;
 import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;
@@ -28,7 +27,6 @@ import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.utils.BaseTest;
 
 @RunWith(SpringRunner.class)
-@FieldDefaults(level = PRIVATE)
 public class EntryControllerTest extends BaseTest {
 
 	@Autowired
@@ -40,6 +38,8 @@ public class EntryControllerTest extends BaseTest {
 	CategoryHelper categoryHelper;
 	@Autowired
 	EntryHelper entryHelper;
+	@Autowired
+	EntryMapper mapper;
 	
 	@Test
 	@Transactional
@@ -146,20 +146,20 @@ public class EntryControllerTest extends BaseTest {
 		Account bankAccount = accountHelper.save("Konto bankowe");
 		Account homeAccount = accountHelper.save("Dom");
 		Category category = categoryHelper.save("Zakupy");
-		entryHelper.save("Entry B1", bankAccount, "20.00", "20.00", "20.00");
-		entryHelper.save("Entry H1", homeAccount, "40.00", "40.00", "60.00");
+		entryHelper.save("Entry B1", bankAccount, "2020-01-01", "20.00", "20.00", "20.00");
+		entryHelper.save("Entry H1", homeAccount, "2020-01-01", "40.00", "40.00", "60.00");
 		flush();
 		
 		// when
 		Entry entry = entryHelper.build("Entry B2", bankAccount, category, "30.00");
-		EntryDto result = controller.create(new EntryDto(entry));	
+		EntryDto result = controller.create(mapper.toDto(entry));	
 		flushAndClear();
 		
 		// then
 		assertThat(result).isNotNull();
 		entryHelper.assertEqual(result, entry, Mode.CREATE);
-		assertThat(result.getBalance()).isEqualTo(new BigDecimal("50.00"));
-		assertThat(result.getBalanceOverall()).isEqualTo(new BigDecimal("90.00"));
+		assertThat(result.getBalance()).isEqualTo(new BigDecimal("0.00"));
+		assertThat(result.getBalanceOverall()).isEqualTo(new BigDecimal("0.00"));
 	}
 	
 	@Test
@@ -171,7 +171,7 @@ public class EntryControllerTest extends BaseTest {
 		flush();
 		
 		// when
-		EntryDto dto = new EntryDto(load(Entry.class, entry.getId()));
+		EntryDto dto = mapper.toDto(load(Entry.class, entry.getId()));
 		dto.setAmount(new BigDecimal("35.00"));
 		dto.setDescription("Nowy opis");
 		EntryDto result = controller.update(entry.getId(), dto);	

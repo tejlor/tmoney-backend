@@ -1,7 +1,5 @@
 package pl.telech.tmoney.adm.logic;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,7 +9,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import pl.telech.tmoney.adm.dao.UserDAO;
 import pl.telech.tmoney.adm.logic.interfaces.UserLogic;
@@ -21,7 +18,6 @@ import pl.telech.tmoney.commons.logic.AbstractLogicImpl;
 @Slf4j
 @Service
 @Transactional
-@FieldDefaults(level = PRIVATE)
 public class UserLogicImpl extends AbstractLogicImpl<User> implements UserLogic, UserDetailsService {
 
 	@Value("${tmoney.auth.clientName}")
@@ -48,18 +44,22 @@ public class UserLogicImpl extends AbstractLogicImpl<User> implements UserLogic,
 			Object principal = authentication.getPrincipal();
 
 			if (principal instanceof User) {
-				log.debug("get " + ((User)principal).toFullString(0));
+				log.debug("get " + ((User)principal).toString());
 				return (User) principal;
 			}
 			else {
 				//return null;
-				return new User(1); 
+				var user = new User();
+				user.setId(1);
+				return user; 
 			}
 		}
 		catch (Exception e) {
 			log.warn("Principal is null: " + e.getMessage());
 			//return null;
-			return new User(1); 
+			var user = new User();
+			user.setId(1);
+			return user; 
 		}
 	}
 	
@@ -76,7 +76,7 @@ public class UserLogicImpl extends AbstractLogicImpl<User> implements UserLogic,
 		if(user == null)
 			throw new UsernameNotFoundException(username);
 		
-		log.debug("load " + user.toFullString(0));
+		log.debug("load " + user.toString());
 		return user;
 	}
 

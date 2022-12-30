@@ -3,9 +3,8 @@ package pl.telech.tmoney.commons.model.exception;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-
 public class TMoneyException extends RuntimeException {
-
+	
 	public TMoneyException(){
 		super();
 	}

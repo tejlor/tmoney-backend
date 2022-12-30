@@ -1,7 +1,5 @@
 package pl.telech.tmoney.bank.logic.pdf;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -14,19 +12,11 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
@@ -34,7 +24,6 @@ import pl.telech.tmoney.commons.model.shared.FileResult;
 import pl.telech.tmoney.commons.utils.TUtils;
 
 @Component
-@FieldDefaults(level = PRIVATE)
 public class PdfTableGenerator extends AbstractPdfGenerator {
 	
     @Autowired

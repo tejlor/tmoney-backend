@@ -1,6 +1,5 @@
 package pl.telech.tmoney.bank.controller;
 
-import static lombok.AccessLevel.PRIVATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.transaction.Transactional;
@@ -13,14 +12,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.helper.AccountHelper;
 import pl.telech.tmoney.bank.helper.EntryHelper;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.utils.BaseTest;
 
 @RunWith(SpringRunner.class)
-@FieldDefaults(level = PRIVATE)
 public class ReportControllerTest extends BaseTest {
 
 	@Autowired

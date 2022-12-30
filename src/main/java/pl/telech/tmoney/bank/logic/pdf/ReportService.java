@@ -1,7 +1,5 @@
 package pl.telech.tmoney.bank.logic.pdf;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
@@ -13,13 +11,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.dao.EntryDAO;
+import pl.telech.tmoney.bank.dao.data.EntryAmount;
 import pl.telech.tmoney.bank.logic.interfaces.AccountLogic;
 import pl.telech.tmoney.bank.logic.interfaces.EntryLogic;
+import pl.telech.tmoney.bank.model.data.*;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Entry;
-import pl.telech.tmoney.bank.model.shared.*;
 import pl.telech.tmoney.commons.model.shared.FileResult;
 import pl.telech.tmoney.commons.utils.TStreamUtils;
 import pl.telech.tmoney.commons.utils.TUtils;
@@ -27,7 +25,6 @@ import pl.telech.tmoney.commons.utils.TUtils;
 @Service
 @Transactional
 @RequiredArgsConstructor
-@FieldDefaults(level = PRIVATE)
 public class ReportService {
 
 	final EntryDAO entryDao;
@@ -82,8 +79,8 @@ public class ReportService {
 		return SummaryReportData.builder()
 			.initialBalance(initialBalance)
 			.finalBalance(entryDao.findLastBeforeDate(dateTo.plusDays(1)).getBalanceOverall())
-			.incomes(TStreamUtils.sort(entryDao.findSummaryIncome(dateFrom, dateTo)))
-			.outcomes(TStreamUtils.sort(entryDao.findSummaryOutcome(dateFrom, dateTo)))
+			.incomes(TStreamUtils.sort(entryDao.findSummaryIncomeByCategory(dateFrom, dateTo)))
+			.outcomes(TStreamUtils.sort(entryDao.findSummaryOutcomeByCategory(dateFrom, dateTo)))
 			.build();
 	}
 	
@@ -94,7 +91,7 @@ public class ReportService {
 	}
 	
 	private List<MonthData> calculateMonthList(LocalDate dateFrom, LocalDate dateTo, BigDecimal initialBalance) {
-		List<MonthData> result = entryDao.findSummaryChart(dateFrom, dateTo).stream()
+		List<MonthData> result = entryDao.findEntriesForReport(dateFrom, dateTo).stream()
 			.collect(Collectors.groupingBy(entry -> entry.getDate().getMonth()))
 			.entrySet()
 			.stream()

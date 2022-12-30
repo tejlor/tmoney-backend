@@ -1,18 +1,15 @@
-package pl.telech.tmoney.bank.model.shared;
-
-import static lombok.AccessLevel.PRIVATE;
+package pl.telech.tmoney.bank.model.data;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.experimental.FieldDefaults;
+import pl.telech.tmoney.bank.dao.data.CategoryAmount;
 import pl.telech.tmoney.commons.utils.TUtils;
 
 @Getter
 @Builder
-@FieldDefaults(level = PRIVATE)
 public class SummaryReportData {
 
 	BigDecimal initialBalance;

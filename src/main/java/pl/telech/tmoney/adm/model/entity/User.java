@@ -1,29 +1,28 @@
 package pl.telech.tmoney.adm.model.entity;
 
-import static lombok.AccessLevel.PRIVATE;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.FieldDefaults;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.FieldNameConstants;
 import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 
 /*
  * System user.
  */
+@Data
 @Entity
-@Getter @Setter
-@NoArgsConstructor
 @FieldNameConstants
-@FieldDefaults(level = PRIVATE)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "user", schema = "adm")
 public class User extends AbstractEntity implements UserDetails {
 			
@@ -39,11 +38,6 @@ public class User extends AbstractEntity implements UserDetails {
 	@Column(length = 40, nullable = false)
 	String password;				// password (hash SHA1)
 				
-
-	public User(Integer id) {
-		super(id);
-	}
-	
 	// UserDetails
 	
 	@Override

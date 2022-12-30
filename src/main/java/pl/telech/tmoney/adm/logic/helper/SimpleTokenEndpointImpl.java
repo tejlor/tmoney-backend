@@ -1,7 +1,5 @@
 package pl.telech.tmoney.adm.logic.helper;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,6 @@ import org.springframework.security.oauth2.provider.*;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.stereotype.Component;
 
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.adm.logic.helper.interfaces.SimpleTokenEndpoint;
 import pl.telech.tmoney.adm.logic.interfaces.UserLogic;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
@@ -24,7 +21,6 @@ import pl.telech.tmoney.commons.model.exception.TMoneyException;
  * Class simulate endpoint for token generating. It is used to generate token for user without knowing of his password.
  */
 @Component
-@FieldDefaults(level = PRIVATE)
 public class SimpleTokenEndpointImpl implements SimpleTokenEndpoint {
 		
 	@Autowired

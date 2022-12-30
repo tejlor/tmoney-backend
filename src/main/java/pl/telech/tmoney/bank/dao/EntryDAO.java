@@ -14,10 +14,10 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import pl.telech.tmoney.bank.dao.data.CategoryAmount;
+import pl.telech.tmoney.bank.dao.data.EntryAmount;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.bank.model.entity.Entry.Fields;
-import pl.telech.tmoney.bank.model.shared.CategoryAmount;
-import pl.telech.tmoney.bank.model.shared.EntryAmount;
 import pl.telech.tmoney.commons.dao.interfaces.DAO;
 import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 import pl.telech.tmoney.commons.model.shared.TableParams;
@@ -29,16 +29,19 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 	
 	default Pair<List<Entry>, Integer> findTableByAccountId(Integer accountId, TableParams tableParams){
 		return findAllWithCount(
-				Entry.GRAPH_WITH_CATEGORY,
 				tableParams.getPage(),
 				tableParams.getFilter() != null ? isLike(tableParams.getFilter()) : null,
 				accountId != null ? belongsToAccount(accountId): null
 				);
 	}
 	
+	@Query("SELECT e "
+		 + "FROM Entry e JOIN e.category "
+		 + "WHERE e.accountId = :accountId")
+	List<Entry> findByAccountId(@Param("accountId") int accountId, Sort sort);
+	
 	default List<Entry> findByAccountId(Integer accountId){
 		return findAll(
-				Entry.GRAPH_WITH_CATEGORY,
 				SortAsc,
 				accountId != null ? belongsToAccount(accountId): null
 				);
@@ -58,34 +61,44 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 	}
 		
 	@Query("SELECT SUM(e.amount) "
-			+ "FROM Entry e "
-			+ "WHERE e.accountId = :accountId AND e.date BETWEEN :dateFrom AND :dateTo AND e.amount > 0")
+		 + "FROM Entry e "
+		 + "WHERE e.accountId = :accountId "
+		 	+ "AND e.date BETWEEN :dateFrom AND :dateTo "
+		 	+ "AND e.amount > 0")
 	BigDecimal findAccountIncome(@Param("accountId") int accountId, @Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
 	
 	@Query("SELECT -SUM(e.amount) "
-			+ "FROM Entry e "
-			+ "WHERE e.accountId = :accountId AND e.date BETWEEN :dateFrom AND :dateTo AND e.amount < 0")
+		 + "FROM Entry e "
+		 + "WHERE e.accountId = :accountId "
+		 	+ "AND e.date BETWEEN :dateFrom AND :dateTo "
+		 	+ "AND e.amount < 0")
 	BigDecimal findAccountOutcome(@Param("accountId") int accountId, @Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
 	
-	@Query("SELECT new pl.telech.tmoney.bank.model.shared.CategoryAmount(e.category.name, SUM(e.amount)) "
-			+ "FROM Entry e "
-			+ "WHERE e.date BETWEEN :dateFrom AND :dateTo AND e.amount > 0 AND e.category.report = TRUE "
-			+ "GROUP BY e.category.name ")
-	List<CategoryAmount> findSummaryIncome(@Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
+	@Query("SELECT NEW " + CategoryAmount.TYPE + "(e.category.name, SUM(e.amount)) "
+		 + "FROM Entry e "
+		 + "WHERE e.date BETWEEN :dateFrom AND :dateTo "
+		 	+ "AND e.amount > 0 "
+		 	+ "AND e.category.report = TRUE "
+		 + "GROUP BY e.category.name ")
+	List<CategoryAmount> findSummaryIncomeByCategory(@Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
 	
-	@Query("SELECT new pl.telech.tmoney.bank.model.shared.CategoryAmount(e.category.name, -SUM(e.amount)) "
-			+ "FROM Entry e "
-			+ "WHERE e.date BETWEEN :dateFrom AND :dateTo AND e.amount < 0 AND e.category.report = TRUE "
-			+ "GROUP BY e.category.name ")
-	List<CategoryAmount> findSummaryOutcome(@Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
+	@Query("SELECT NEW " + CategoryAmount.TYPE + "(e.category.name, -SUM(e.amount)) "
+		 + "FROM Entry e "
+		 + "WHERE e.date BETWEEN :dateFrom AND :dateTo "
+		 	+ "AND e.amount < 0 "
+		 	+ "AND e.category.report = TRUE "
+		 + "GROUP BY e.category.name ")
+	List<CategoryAmount> findSummaryOutcomeByCategory(@Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
 	
-	@Query("SELECT new pl.telech.tmoney.bank.model.shared.EntryAmount(e.date, e.amount) "
-			+ "FROM Entry e "
-			+ "WHERE e.date BETWEEN :dateFrom AND :dateTo AND e.category.report = TRUE")
-	List<EntryAmount> findSummaryChart(@Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
+	@Query("SELECT NEW " + EntryAmount.TYPE + "(e.date, e.amount) "
+		 + "FROM Entry e "
+		 + "WHERE e.date BETWEEN :dateFrom AND :dateTo "
+		 	+ "AND e.category.report = TRUE")
+	List<EntryAmount> findEntriesForReport(@Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
 	
-	
-	
+	/*
+	 * @Procedure annotation doesn't work - "bank.updateBalances is procedure. Use call." 
+	 */
 	@Modifying
 	@Query(value = "CALL bank.updateBalances()", nativeQuery = true)
 	void updateBalances();

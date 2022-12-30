@@ -1,6 +1,5 @@
 package pl.telech.tmoney.adm.controller;
 
-import static lombok.AccessLevel.PRIVATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.transaction.Transactional;
@@ -10,13 +9,11 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.adm.model.dto.UserDto;
 import pl.telech.tmoney.adm.model.entity.User;
 import pl.telech.tmoney.utils.BaseTest;
 
 @RunWith(SpringRunner.class)
-@FieldDefaults(level = PRIVATE)
 public class UserControllerTest extends BaseTest {
 
 	@Autowired

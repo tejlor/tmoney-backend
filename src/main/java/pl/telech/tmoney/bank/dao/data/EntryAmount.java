@@ -1,4 +1,4 @@
-package pl.telech.tmoney.bank.model.shared;
+package pl.telech.tmoney.bank.dao.data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -10,6 +10,8 @@ import lombok.experimental.FieldNameConstants;
 @FieldNameConstants
 public class EntryAmount {
 
+	public static final String TYPE = "pl.telech.tmoney.bank.dao.data.EntryAmount";
+	
 	LocalDate date;
 	BigDecimal amount;
 }

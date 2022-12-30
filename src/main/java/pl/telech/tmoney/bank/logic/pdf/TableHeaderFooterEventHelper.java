@@ -1,30 +1,19 @@
 package pl.telech.tmoney.bank.logic.pdf;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 
-import com.itextpdf.text.BadElementException;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Phrase;
+import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
 import pl.telech.tmoney.commons.utils.TUtils;
 
-@FieldDefaults(level = PRIVATE)
 public class TableHeaderFooterEventHelper extends PdfPageEventHelper {
 
     Account account;

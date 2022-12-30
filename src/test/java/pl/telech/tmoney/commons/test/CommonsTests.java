@@ -1,6 +1,5 @@
 package pl.telech.tmoney.commons.test;
 
-import static lombok.AccessLevel.PRIVATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Modifier;
@@ -16,11 +15,9 @@ import org.reflections.scanners.Scanners;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@FieldDefaults(level = PRIVATE)
 public class CommonsTests {
 
 	@Test

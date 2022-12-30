@@ -1,7 +1,5 @@
 package pl.telech.tmoney.bank.logic.pdf;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.geom.Ellipse2D;
@@ -28,12 +26,10 @@ import org.jfree.ui.RectangleInsets;
 import org.springframework.stereotype.Component;
 
 import lombok.SneakyThrows;
-import lombok.experimental.FieldDefaults;
-import pl.telech.tmoney.bank.model.shared.ChartData;
-import pl.telech.tmoney.bank.model.shared.MonthData;
+import pl.telech.tmoney.bank.model.data.ChartData;
+import pl.telech.tmoney.bank.model.data.MonthData;
 
 @Component
-@FieldDefaults(level = PRIVATE)
 public class BarLineChartGenerator extends AbstractChartGenerator {
 
 	Font monthFont, barFont, lineFont;

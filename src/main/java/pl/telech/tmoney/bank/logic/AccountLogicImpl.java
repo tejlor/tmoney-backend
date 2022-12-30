@@ -1,7 +1,5 @@
 package pl.telech.tmoney.bank.logic;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.dao.AccountDAO;
 import pl.telech.tmoney.bank.logic.interfaces.AccountLogic;
 import pl.telech.tmoney.bank.logic.interfaces.EntryLogic;
+import pl.telech.tmoney.bank.model.dto.AccountDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.commons.logic.AbstractLogicImpl;
@@ -22,7 +20,6 @@ import pl.telech.tmoney.commons.utils.TUtils;
 
 @Service
 @Transactional
-@FieldDefaults(level = PRIVATE)
 public class AccountLogicImpl extends AbstractLogicImpl<Account> implements AccountLogic {
 	
 	static final Account summaryAccount;
@@ -60,9 +57,7 @@ public class AccountLogicImpl extends AbstractLogicImpl<Account> implements Acco
 	}
 	
 	@Override
-	public Account create(Account _account) {
-		validate(_account);
-		
+	public Account create(AccountDto _account) {
 		var account = new Account();
 		account.setCode(_account.getCode());
 		account.setName(_account.getName());
@@ -76,9 +71,7 @@ public class AccountLogicImpl extends AbstractLogicImpl<Account> implements Acco
 	}
 	
 	@Override
-	public Account update(int id, Account _account) {
-		validate(_account);
-		
+	public Account update(int id, AccountDto _account) {
 		Account account = loadById(id);
 		TUtils.assertEntityExists(account);
 				
@@ -109,9 +102,5 @@ public class AccountLogicImpl extends AbstractLogicImpl<Account> implements Acco
 					return Pair.of(account, entry);
 				})
 				.collect(Collectors.toList());
-	}
-	
-	private void validate(Account account) {
-		
 	}
 }

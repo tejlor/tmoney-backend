@@ -1,6 +1,5 @@
 package pl.telech.tmoney.bank.controller;
 
-import static lombok.AccessLevel.PRIVATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -12,12 +11,11 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import lombok.experimental.FieldDefaults;
 import pl.telech.tmoney.bank.helper.AccountHelper;
 import pl.telech.tmoney.bank.helper.CategoryHelper;
 import pl.telech.tmoney.bank.helper.EntryHelper;
+import pl.telech.tmoney.bank.mapper.CategoryMapper;
 import pl.telech.tmoney.bank.model.dto.CategoryDto;
-import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
@@ -29,7 +27,6 @@ import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.utils.BaseTest;
 
 @RunWith(SpringRunner.class)
-@FieldDefaults(level = PRIVATE)
 public class CategoryControllerTest extends BaseTest {
 
 	@Autowired
@@ -41,6 +38,8 @@ public class CategoryControllerTest extends BaseTest {
 	CategoryHelper categoryHelper;
 	@Autowired
 	EntryHelper entryHelper;
+	@Autowired
+	CategoryMapper mapper;
 	
 	@Test
 	@Transactional
@@ -145,7 +144,7 @@ public class CategoryControllerTest extends BaseTest {
 		
 		// when
 		Category category = categoryHelper.build("Samochód");
-		CategoryDto result = controller.create(new CategoryDto(category));	
+		CategoryDto result = controller.create(mapper.toDto(category));	
 		flushAndClear();
 		
 		// then
@@ -161,7 +160,7 @@ public class CategoryControllerTest extends BaseTest {
 		flush();
 		
 		// when
-		CategoryDto dto = new CategoryDto(category);
+		CategoryDto dto = mapper.toDto(category);
 		dto.setDefaultDescription("Nowy opis");
 		CategoryDto result = controller.update(category.getId(), dto);	
 		flushAndClear();

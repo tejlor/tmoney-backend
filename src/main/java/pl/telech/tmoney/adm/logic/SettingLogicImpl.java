@@ -1,7 +1,5 @@
 package pl.telech.tmoney.adm.logic;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,7 +7,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import pl.telech.tmoney.adm.dao.SettingDAO;
 import pl.telech.tmoney.adm.logic.interfaces.SettingLogic;
@@ -19,7 +16,6 @@ import pl.telech.tmoney.commons.logic.AbstractLogicImpl;
 @Slf4j
 @Service
 @Transactional
-@FieldDefaults(level = PRIVATE)
 public class SettingLogicImpl extends AbstractLogicImpl<Setting> implements SettingLogic {
 	
 	SettingDAO dao;
