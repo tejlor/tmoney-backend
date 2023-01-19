@@ -11,27 +11,29 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MvcResult;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import pl.telech.tmoney.bank.helper.AccountHelper;
 import pl.telech.tmoney.bank.helper.EntryHelper;
 import pl.telech.tmoney.bank.model.entity.Account;
-import pl.telech.tmoney.utils.BaseTest;
+import pl.telech.tmoney.utils.BaseMvcTest;
 
-@ExtendWith(SpringExtension.class)
-public class ReportControllerTest extends BaseTest {
 
-	@Autowired
-	ReportController controller;
+public class ReportControllerTest extends BaseMvcTest {
+
+	private static final String baseUrl = "/reports";
 	
 	@Autowired
 	AccountHelper accountHelper;
+	
 	@Autowired
 	EntryHelper entryHelper;
 	
 	
 	@Test
-	@Transactional
-	public void generateTable() {	
+	void generateTable() throws Exception {	
 		// given
 		Account account = accountHelper.save("Konto bankowe", "SANTANDER");
 		entryHelper.save("Zakupy", account);
@@ -42,28 +44,20 @@ public class ReportControllerTest extends BaseTest {
 		entryHelper.save("Benzyna", account);
 		entryHelper.save("Autostrada", account);
 		entryHelper.save("Czapka N", account);
-		flush();
-		
 		
 		// when
-		ResponseEntity<byte[]> result = controller.generateTable("SANTANDER");	
-		flushAndClear();
+		MvcResult result = get2(baseUrl + "/table/SANTANDER");
 		
 		// then
 		assertThat(result).isNotNull();
+		assertThat(result.getResponse().getContentAsByteArray().length).isGreaterThan(30000);
 		
-		byte[] body = result.getBody();
-		assertThat(body).isNotNull();
-		assertThat(body.length).isGreaterThan(30000);
-		
-		HttpHeaders headers = result.getHeaders();
-		assertThat(headers.get(HttpHeaders.CONTENT_DISPOSITION).get(0)).isEqualTo("attachment; filename=\"Konto bankowe.pdf\"");
-		assertThat(headers.get(HttpHeaders.CONTENT_TYPE).get(0)).isEqualTo(MediaType.APPLICATION_PDF_VALUE);
+		assertThat(result.getResponse().getHeaderValue(HttpHeaders.CONTENT_DISPOSITION)).isEqualTo("attachment; filename=\"Konto bankowe.pdf\"");
+		assertThat(result.getResponse().getHeaderValue(HttpHeaders.CONTENT_TYPE)).isEqualTo(MediaType.APPLICATION_PDF_VALUE);
 	}
 	
 	@Test
-	@Transactional
-	public void generateTable_Summary() {	
+	void generateTable_Summary() throws Exception {	
 		// given
 		Account account1 = accountHelper.save("Konto bankowe", "SANTANDER");
 		Account account2 = accountHelper.save("Dom", "HOME");
@@ -75,23 +69,17 @@ public class ReportControllerTest extends BaseTest {
 		entryHelper.save("Benzyna", account2);
 		entryHelper.save("Autostrada", account2);
 		entryHelper.save("Czapka N", account1);
-		flush();
 		
 		
 		// when
-		ResponseEntity<byte[]> result = controller.generateTable(null);	
-		flushAndClear();
+		MvcResult result = get2(baseUrl + "/table");
 		
 		// then
 		assertThat(result).isNotNull();
+		assertThat(result.getResponse().getContentAsByteArray().length).isGreaterThan(30000);
 		
-		byte[] body = result.getBody();
-		assertThat(body).isNotNull();
-		assertThat(body.length).isGreaterThan(30000);
-		
-		HttpHeaders headers = result.getHeaders();
-		assertThat(headers.get(HttpHeaders.CONTENT_DISPOSITION).get(0)).isEqualTo("attachment; filename=\"Podsumowanie.pdf\"");
-		assertThat(headers.get(HttpHeaders.CONTENT_TYPE).get(0)).isEqualTo(MediaType.APPLICATION_PDF_VALUE);
+		assertThat(result.getResponse().getHeaderValue(HttpHeaders.CONTENT_DISPOSITION)).isEqualTo("attachment; filename=\"Podsumowanie.pdf\"");
+		assertThat(result.getResponse().getHeaderValue(HttpHeaders.CONTENT_TYPE)).isEqualTo(MediaType.APPLICATION_PDF_VALUE);
 	}
 	
 

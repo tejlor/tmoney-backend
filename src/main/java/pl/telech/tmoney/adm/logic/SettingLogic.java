@@ -4,24 +4,28 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.telech.tmoney.adm.dao.SettingDAO;
 import pl.telech.tmoney.adm.model.entity.Setting;
-import pl.telech.tmoney.commons.logic.AbstractLogicImpl;
+import pl.telech.tmoney.commons.logic.AbstractLogic;
 
 @Slf4j
 @Service
 @Transactional
-public class SettingLogic extends AbstractLogicImpl<Setting> {
+@RequiredArgsConstructor
+public class SettingLogic extends AbstractLogic<Setting> {
 	
-	SettingDAO dao;
+	final SettingDAO dao;
 	
-	public SettingLogic(SettingDAO dao) {
-		super(dao);
-		this.dao = dao;
+	@PostConstruct
+	public void init() {
+		super.dao = this.dao;
 	}
 	
 	public List<Setting> loadSafe(){

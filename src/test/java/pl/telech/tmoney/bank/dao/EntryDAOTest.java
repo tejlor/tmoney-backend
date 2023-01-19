@@ -57,17 +57,17 @@ public class EntryDAOTest {
 		Category categoryMovements = categoryHelper.save("Przelewy pomiędzy rachunkami", false);
 		categoryCarId = categoryCar.getId();
 		
-		entryHelper.save("Przelew na giełdę", 	date("2022-01-01"), accountBank, categoryStock, 		decimal("-25 000.00"));
-		entryHelper.save("Odsetki z giełdy",	date("2022-01-02"), accountBank, categoryStock, 		decimal("    250.00"));
-		entryHelper.save("Podatki", 			date("2022-01-05"), accountBank, categoryWork, 			decimal(" -1 230.00"));
-		entryHelper.save("Wypłata", 			date("2022-01-10"), accountBank, categoryWork, 			decimal(" 10 000.00"));
-		entryHelper.save("Benzyna", 			date("2022-01-10"), accountHome, categoryCar, 			decimal("   -289.45"));
-		entryHelper.save("Wypłata z bankomatu",	date("2022-01-10"), accountBank, categoryMovements, 	decimal(" -2 000.00"));
-		entryHelper.save("Wypłata z bankomatu",	date("2022-01-10"), accountHome, categoryMovements, 	decimal("  2 000.00"));
-		entryHelper.save("Zwrot opłaty", 		date("2022-01-19"), accountHome, categoryCar, 			decimal("      5.00"));
-		entryHelper.save("Lidl", 				date("2022-01-21"), accountHome, categoryShopping, 		decimal("    -87.95"));
-		entryHelper.save("Biedronka", 			date("2022-01-31"), accountBank, categoryShopping, 		decimal("    -24.99"));
-		entryHelper.save("Odsetki z giełdy",	date("2022-02-01"), accountBank, categoryStock, 		decimal("    350.00"));
+		entryHelper.save("Przelew na giełdę", 	date("2022-01-01"), accountBank, categoryStock, 		dec("-25 000.00"));
+		entryHelper.save("Odsetki z giełdy",	date("2022-01-02"), accountBank, categoryStock, 		dec("    250.00"));
+		entryHelper.save("Podatki", 			date("2022-01-05"), accountBank, categoryWork, 			dec(" -1 230.00"));
+		entryHelper.save("Wypłata", 			date("2022-01-10"), accountBank, categoryWork, 			dec(" 10 000.00"));
+		entryHelper.save("Benzyna", 			date("2022-01-10"), accountHome, categoryCar, 			dec("   -289.45"));
+		entryHelper.save("Wypłata z bankomatu",	date("2022-01-10"), accountBank, categoryMovements, 	dec(" -2 000.00"));
+		entryHelper.save("Wypłata z bankomatu",	date("2022-01-10"), accountHome, categoryMovements, 	dec("  2 000.00"));
+		entryHelper.save("Zwrot opłaty", 		date("2022-01-19"), accountHome, categoryCar, 			dec("      5.00"));
+		entryHelper.save("Lidl", 				date("2022-01-21"), accountHome, categoryShopping, 		dec("    -87.95"));
+		entryHelper.save("Biedronka", 			date("2022-01-31"), accountBank, categoryShopping, 		dec("    -24.99"));
+		entryHelper.save("Odsetki z giełdy",	date("2022-02-01"), accountBank, categoryStock, 		dec("    350.00"));
 	}
 	
 	@Test
@@ -129,7 +129,7 @@ public class EntryDAOTest {
 		
 		// then
 		assertThat(result).isNotNull();
-		assertThat(result).isEqualTo(decimal("10 250.00"));
+		assertThat(result).isEqualTo(dec("10 250.00"));
 	}
 	
 	@Test
@@ -139,7 +139,7 @@ public class EntryDAOTest {
 		
 		// then
 		assertThat(result).isNotNull();
-		assertThat(result).isEqualTo(decimal("377.40"));
+		assertThat(result).isEqualTo(dec("377.40"));
 	}
 	
 	@Test
@@ -152,9 +152,9 @@ public class EntryDAOTest {
 		assertThat(result).hasSize(3);
 		assertThat(result).extracting(CategoryAmount.Fields.categoryName, CategoryAmount.Fields.amount)
 			.containsOnly(
-					tuple("Giełda", decimal("250.00")),
-					tuple("Praca", decimal("10 000.00")),
-					tuple("Samochód", decimal("5.00"))
+					tuple("Giełda", dec("250.00")),
+					tuple("Praca", dec("10 000.00")),
+					tuple("Samochód", dec("5.00"))
 			);
 	}
 	
@@ -168,10 +168,10 @@ public class EntryDAOTest {
 		assertThat(result).hasSize(4);
 		assertThat(result).extracting(CategoryAmount.Fields.categoryName, CategoryAmount.Fields.amount)
 			.containsOnly(
-					tuple("Giełda", decimal("25 000.00")), 
-					tuple("Praca", decimal("1 230.00")),
-					tuple("Samochód", decimal("289.45")),
-					tuple("Zakupy", decimal("112.94"))
+					tuple("Giełda", dec("25 000.00")), 
+					tuple("Praca", dec("1 230.00")),
+					tuple("Samochód", dec("289.45")),
+					tuple("Zakupy", dec("112.94"))
 			);
 	}
 	
@@ -185,14 +185,14 @@ public class EntryDAOTest {
 		assertThat(result).hasSize(8);
 		assertThat(result).extracting(EntryAmount.Fields.date, EntryAmount.Fields.amount)
 			.containsOnly(
-					tuple(date("2022-01-01"), decimal("-25 000.00")),
-					tuple(date("2022-01-02"), decimal("250.00")),
-					tuple(date("2022-01-05"), decimal("-1 230.00")),
-					tuple(date("2022-01-10"), decimal("10 000.00")),
-					tuple(date("2022-01-10"), decimal("-289.45")),
-					tuple(date("2022-01-19"), decimal("5.00")),
-					tuple(date("2022-01-21"), decimal("-87.95")),
-					tuple(date("2022-01-31"), decimal("-24.99"))
+					tuple(date("2022-01-01"), dec("-25 000.00")),
+					tuple(date("2022-01-02"), dec("250.00")),
+					tuple(date("2022-01-05"), dec("-1 230.00")),
+					tuple(date("2022-01-10"), dec("10 000.00")),
+					tuple(date("2022-01-10"), dec("-289.45")),
+					tuple(date("2022-01-19"), dec("5.00")),
+					tuple(date("2022-01-21"), dec("-87.95")),
+					tuple(date("2022-01-31"), dec("-24.99"))
 			);
 	}
 	

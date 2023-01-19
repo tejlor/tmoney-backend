@@ -1,10 +1,5 @@
 package pl.telech.tmoney.bank.mapper;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -14,10 +9,13 @@ import pl.telech.tmoney.bank.asserts.EntryAssert;
 import pl.telech.tmoney.bank.builder.EntryBuilder;
 import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Entry;
+import pl.telech.tmoney.commons.builder.AbstractBuilder;
+import pl.telech.tmoney.commons.mapper.EntityMapper;
+import pl.telech.tmoney.commons.mapper.EntityMapperTest;
 
 @ExtendWith(SpringExtension.class)
 @Import({EntryBuilder.class, EntryMapperImpl.class, AccountMapperImpl.class, CategoryMapperImpl.class})
-public class EntryMapperTest {
+public class EntryMapperTest extends EntityMapperTest<Entry, EntryDto> {
 
 	@Autowired
 	EntryBuilder builder;
@@ -25,57 +23,24 @@ public class EntryMapperTest {
 	@Autowired
 	EntryMapper mapper;
 
-	@Test
-	public void testToDto() {
-		// given
-		Entry entity = builder.id(1).build();
+	@Override
+	protected AbstractBuilder<Entry> getBuilder() {
+		return builder;
+	}
 
-		// when
-		EntryDto result = mapper.toDto(entity);
+	@Override
+	protected EntityMapper<Entry, EntryDto> getMapper() {
+		return mapper;
+	}
 
-		// then
-		assertThat(result).isNotNull();
-		EntryAssert.assertThatDto(result).isMappedFrom(entity);
+	@Override
+	protected Class<EntryAssert> getAssertionsClass() {
+		return EntryAssert.class;
 	}
 	
-	@Test
-	public void testToDtoList() {
-		// given
-		List<Entry> list = List.of(builder.id(1).build());
-
-		// when
-		List<EntryDto> result = mapper.toDtoList(list);
-
-		// then
-		assertThat(result).isNotNull();
-		assertThat(result).hasSameSizeAs(list);
-		EntryAssert.assertThatDto(result.get(0)).isMappedFrom(list.get(0));
-	}
-	
-	@Test
-	public void testToNewEntity() {
-		// given
-		EntryDto dto = mapper.toDto(builder.id(1).build());
-
-		// when
-		Entry result = mapper.toNewEntity(dto);
-
-		// then
-		assertThat(result).isNotNull();
-		EntryAssert.assertThatDto(dto).creates(result);
-	}
-
-	@Test
-	public void testUpdate() {
-		// given
-		EntryDto dto = mapper.toDto(builder.id(1).build());
-
-		// when
-		Entry updatedEntity = new Entry();
-		Entry result = mapper.update(dto, updatedEntity);
-
-		// then
-		assertThat(result).isSameAs(updatedEntity);
-		EntryAssert.assertThatDto(dto).updates(result);
+	@Override
+	protected void prepareDtoForUpdateTest(EntryDto dto) {
+		dto.getAccount().setId(22);
+		dto.getCategory().setId(33);
 	}
 }

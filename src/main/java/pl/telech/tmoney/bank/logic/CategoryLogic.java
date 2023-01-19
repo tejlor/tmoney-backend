@@ -3,36 +3,38 @@ package pl.telech.tmoney.bank.logic;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.RequiredArgsConstructor;
 import pl.telech.tmoney.bank.dao.CategoryDAO;
+import pl.telech.tmoney.bank.mapper.CategoryMapper;
 import pl.telech.tmoney.bank.model.dto.CategoryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
-import pl.telech.tmoney.commons.logic.AbstractLogicImpl;
+import pl.telech.tmoney.commons.logic.AbstractLogic;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
 import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.commons.utils.TUtils;
 
 @Service
 @Transactional
-public class CategoryLogic extends AbstractLogicImpl<Category> {
+@RequiredArgsConstructor
+public class CategoryLogic extends AbstractLogic<Category> {
 	
-	CategoryDAO dao;
-	
-	@Autowired
-	AccountLogic accountLogic;
-	@Autowired
-	EntryLogic entryLogic;
+	final CategoryDAO dao;
+	final CategoryMapper mapper;
+	final AccountLogic accountLogic;
+	final EntryLogic entryLogic;
 	
 	
-	public CategoryLogic(CategoryDAO dao) {
-		super(dao);
-		this.dao = dao;
+	@PostConstruct
+	public void init() {
+		super.dao = this.dao;
 	}
 	
 	public Pair<List<Category>, Integer> loadTable(TableParams params) {
@@ -46,29 +48,13 @@ public class CategoryLogic extends AbstractLogicImpl<Category> {
 			.collect(Collectors.toList());
 	}
 		
-	public Category create(CategoryDto _category) {
-		var category = new Category();		
-		category.setName(_category.getName());
-		category.setAccount(_category.getAccount());
-		category.setReport(_category.getReport());
-		category.setDefaultName(_category.getDefaultName());
-		category.setDefaultAmount(_category.getDefaultAmount());
-		category.setDefaultDescription(_category.getDefaultDescription());
-		
-		return save(category);
+	public Category create(CategoryDto categoryDto) {		
+		return save(mapper.create(categoryDto));
 	}
 	
-	public Category update(int id, CategoryDto _category) {
+	public Category update(int id, CategoryDto categoryDto) {
 		Category category = loadById(id);
-		TUtils.assertEntityExists(category);
-				
-		category.setName(_category.getName());
-		category.setAccount(_category.getAccount());
-		category.setReport(_category.getReport());
-		category.setDefaultName(_category.getDefaultName());
-		category.setDefaultAmount(_category.getDefaultAmount());
-		category.setDefaultDescription(_category.getDefaultDescription());
-		
+		mapper.update(category, categoryDto);
 		return save(category);
 	}
 	

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.io.IOUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -70,7 +72,7 @@ public class AppLogAspect {
 	}
 	
 	private String getRequestData() throws IOException{
-		ContentCachingRequestWrapper request = getRequestFromContext(); 
+		HttpServletRequest request = getRequestFromContext(); 
 		if(request == null)
 			return "";
 		
@@ -119,9 +121,9 @@ public class AppLogAspect {
 		return sb.toString();
 	}
 	
-	private ContentCachingRequestWrapper getRequestFromContext(){
+	private HttpServletRequest getRequestFromContext(){
 		ServletRequestAttributes requestAttr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
 		var request = requestAttr.getRequest();
-		return request instanceof ContentCachingRequestWrapper ? (ContentCachingRequestWrapper) requestAttr.getRequest() : null;
+		return request;
 	}
 }

@@ -8,10 +8,10 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import lombok.RequiredArgsConstructor;
 import pl.telech.tmoney.bank.logic.CategoryLogic;
 import pl.telech.tmoney.bank.mapper.CategoryMapper;
 import pl.telech.tmoney.bank.model.dto.CategoryDto;
@@ -22,14 +22,31 @@ import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.commons.utils.TUtils;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/categories")
 public class CategoryController extends AbstractController {
 
-	@Autowired
-	CategoryMapper mapper;
+	final CategoryMapper mapper;
+	final CategoryLogic categoryLogic;
 	
-	@Autowired
-	CategoryLogic categoryLogic;
+	/*
+	 * Returns category by id.
+	 */
+	@RequestMapping(value = "/{id:" + ID + "}", method = GET)
+	public CategoryDto getById(
+			@PathVariable int id) {
+		
+		return mapper.toDto(categoryLogic.loadById(id));
+	}
+	
+	/*
+	 * Returns all categories.
+	 */
+	@RequestMapping(value = "", method = GET)
+	public List<CategoryDto> getAll() {
+		
+		return sort(mapper.toDtoList(categoryLogic.loadAll()));
+	}
 	
 	/*
 	 * Returns all categories for table.
@@ -47,25 +64,6 @@ public class CategoryController extends AbstractController {
 		table.setRows(mapper.toDtoList(result.getKey()));
 		table.setCount(result.getValue());		
 		return table;
-	}
-	
-	/*
-	 * Returns all categories.
-	 */
-	@RequestMapping(value = "", method = GET)
-	public List<CategoryDto> getAll() {
-		
-		return sort(mapper.toDtoList(categoryLogic.loadAll()));
-	}
-	
-	/*
-	 * Returns category by id.
-	 */
-	@RequestMapping(value = "/{id:" + ID + "}", method = GET)
-	public CategoryDto getById(
-			@PathVariable int id) {
-		
-		return mapper.toDto(categoryLogic.loadById(id));
 	}
 	
 	/*

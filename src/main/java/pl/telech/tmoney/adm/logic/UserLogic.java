@@ -1,5 +1,7 @@
 package pl.telech.tmoney.adm.logic;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,27 +11,29 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.telech.tmoney.adm.dao.UserDAO;
 import pl.telech.tmoney.adm.model.entity.User;
-import pl.telech.tmoney.commons.logic.AbstractLogicImpl;
+import pl.telech.tmoney.commons.logic.AbstractLogic;
 
 @Slf4j
 @Service
 @Transactional
-public class UserLogic extends AbstractLogicImpl<User> implements UserDetailsService {
+@RequiredArgsConstructor
+public class UserLogic extends AbstractLogic<User> implements UserDetailsService {
 
 	@Value("${tmoney.auth.clientName}")
 	String clientName;
 	@Value("${tmoney.auth.clientPass}")
 	String clientPass;
 	
-	UserDAO dao;
+	final UserDAO dao;
 	
 	
-	public UserLogic(UserDAO dao) {
-		super(dao);
-		this.dao = dao;
+	@PostConstruct
+	public void init() {
+		super.dao = this.dao;
 	}
 	
 	/*

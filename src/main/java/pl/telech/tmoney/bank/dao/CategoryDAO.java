@@ -26,7 +26,7 @@ public interface CategoryDAO extends DAO<Category>, JpaSpecificationExecutor<Cat
 	}
 	
 	@Modifying
-	@Query(value = "UPDATE Entry SET category_id = :newCategoryId WHERE categoryId = :categoryId")
+	@Query(value = "UPDATE Entry SET category.id = :newCategoryId WHERE category.id = :categoryId")
 	void changeCategory(@Param("categoryId") int categoryId, @Param("newCategoryId") int newCategoryId);
 	
 	// ######################### Specifications #########################################################################################################

@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
@@ -45,7 +46,6 @@ public class CommonsTests {
 			}
 			
 			Set<String> testMethods = Arrays.stream(testClass.getDeclaredMethods())
-					.filter(m -> Modifier.isPublic(m.getModifiers()))
 					.filter(m -> m.isAnnotationPresent(Test.class))
 					.map(m -> m.getName())
 					.collect(Collectors.toSet());

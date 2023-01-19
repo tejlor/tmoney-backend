@@ -7,12 +7,12 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.RequiredArgsConstructor;
 import pl.telech.tmoney.bank.logic.AccountLogic;
 import pl.telech.tmoney.bank.mapper.AccountMapper;
 import pl.telech.tmoney.bank.mapper.EntryMapper;
@@ -22,16 +22,24 @@ import pl.telech.tmoney.commons.controller.AbstractController;
 import pl.telech.tmoney.commons.utils.TUtils;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/bank-accounts")
 public class AccountController extends AbstractController {
 
-	@Autowired
-	AccountMapper mapper;
-	@Autowired
-	EntryMapper entryMapper;
+	final AccountMapper mapper;
+	final EntryMapper entryMapper;
+	final AccountLogic accountLogic;
 	
-	@Autowired
-	AccountLogic accountLogic;
+	
+	/*
+	 * Returns account by code.
+	 */
+	@RequestMapping(value = "/{code:" + CODE + "}", method = GET)
+	public AccountDto getByCode(
+			@PathVariable String code) {
+		
+		return mapper.toDto(accountLogic.loadByCode(code));
+	}
 	
 	/*
 	 * Returns active accounts.
@@ -56,26 +64,7 @@ public class AccountController extends AbstractController {
 				)
 				.collect(Collectors.toList());
 	}
-	
-	/*
-	 * Returns account by id.
-	 */
-	@RequestMapping(value = "/id/{id:" + ID + "}", method = GET)
-	public AccountDto getById(int id) {
-		
-		return mapper.toDto(accountLogic.loadById(id));
-	}
-	
-	/*
-	 * Returns account by code.
-	 */
-	@RequestMapping(value = "/{code:" + CODE + "}", method = GET)
-	public AccountDto getByCode(
-			@PathVariable String code) {
-		
-		return mapper.toDto(accountLogic.loadByCode(code));
-	}
-	
+
 	/*
 	 * Creates new account.
 	 */
