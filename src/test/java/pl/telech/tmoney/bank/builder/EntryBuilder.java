@@ -1,5 +1,7 @@
 package pl.telech.tmoney.bank.builder;
 
+import static pl.telech.tmoney.utils.TestUtils.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -20,10 +22,10 @@ public class EntryBuilder extends AbstractBuilder<Entry> {
 	LocalDate date = LocalDate.now();				
 	Category category = new CategoryBuilder().build();			
 	String name = "Zakup telewizora";				
-	BigDecimal amount = BigDecimal.TEN;			
+	BigDecimal amount = dec("10.00");			
 	String description = "sklep Morele";			
-	BigDecimal balance = BigDecimal.ONE;			
-	BigDecimal balanceOverall = BigDecimal.TEN;	
+	BigDecimal balance = dec("1.00");			
+	BigDecimal balanceOverall = dec("10.00");	
 	
 	@Override
 	public Entry build() {
@@ -42,10 +44,10 @@ public class EntryBuilder extends AbstractBuilder<Entry> {
 
 	@Override
 	protected void persistDependencies(EntityManager em) {
-		if (account != null) {
+		if (account != null && account.getId() == null) {
 			em.persist(account);
 		}
-		if (category != null) {
+		if (category != null && category.getId() == null) {
 			em.persist(category);
 		}
 	}

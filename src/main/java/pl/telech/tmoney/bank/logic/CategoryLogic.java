@@ -3,47 +3,44 @@ package pl.telech.tmoney.bank.logic;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.RequiredArgsConstructor;
 import pl.telech.tmoney.bank.dao.CategoryDAO;
-import pl.telech.tmoney.bank.logic.interfaces.AccountLogic;
-import pl.telech.tmoney.bank.logic.interfaces.CategoryLogic;
-import pl.telech.tmoney.bank.logic.interfaces.EntryLogic;
+import pl.telech.tmoney.bank.mapper.CategoryMapper;
 import pl.telech.tmoney.bank.model.dto.CategoryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
-import pl.telech.tmoney.commons.logic.AbstractLogicImpl;
+import pl.telech.tmoney.commons.logic.AbstractLogic;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
 import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.commons.utils.TUtils;
 
 @Service
 @Transactional
-public class CategoryLogicImpl extends AbstractLogicImpl<Category> implements CategoryLogic {
+@RequiredArgsConstructor
+public class CategoryLogic extends AbstractLogic<Category> {
 	
-	CategoryDAO dao;
-	
-	@Autowired
-	AccountLogic accountLogic;
-	@Autowired
-	EntryLogic entryLogic;
+	final CategoryDAO dao;
+	final CategoryMapper mapper;
+	final AccountLogic accountLogic;
+	final EntryLogic entryLogic;
 	
 	
-	public CategoryLogicImpl(CategoryDAO dao) {
-		super(dao);
-		this.dao = dao;
+	@PostConstruct
+	public void init() {
+		super.dao = this.dao;
 	}
 	
-	@Override
 	public Pair<List<Category>, Integer> loadTable(TableParams params) {
 		return dao.findTable(params);
 	}
 	
-	@Override
 	public List<Category> loadByAccountCode(String accountCode) {
 		Account account = accountLogic.loadByCode(accountCode);
 		return loadAll().stream()
@@ -51,35 +48,16 @@ public class CategoryLogicImpl extends AbstractLogicImpl<Category> implements Ca
 			.collect(Collectors.toList());
 	}
 		
-	@Override
-	public Category create(CategoryDto _category) {
-		var category = new Category();		
-		category.setName(_category.getName());
-		category.setAccount(_category.getAccount());
-		category.setReport(_category.getReport());
-		category.setDefaultName(_category.getDefaultName());
-		category.setDefaultAmount(_category.getDefaultAmount());
-		category.setDefaultDescription(_category.getDefaultDescription());
-		
-		return save(category);
+	public Category create(CategoryDto categoryDto) {		
+		return save(mapper.create(categoryDto));
 	}
 	
-	@Override
-	public Category update(int id, CategoryDto _category) {
+	public Category update(int id, CategoryDto categoryDto) {
 		Category category = loadById(id);
-		TUtils.assertEntityExists(category);
-				
-		category.setName(_category.getName());
-		category.setAccount(_category.getAccount());
-		category.setReport(_category.getReport());
-		category.setDefaultName(_category.getDefaultName());
-		category.setDefaultAmount(_category.getDefaultAmount());
-		category.setDefaultDescription(_category.getDefaultDescription());
-		
+		mapper.update(category, categoryDto);
 		return save(category);
 	}
 	
-	@Override
 	public void delete(int id, Integer newCategoryId) {
 		Category category = loadById(id);
 		TUtils.assertEntityExists(category);

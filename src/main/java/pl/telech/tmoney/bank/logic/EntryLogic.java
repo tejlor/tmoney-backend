@@ -1,48 +1,43 @@
 package pl.telech.tmoney.bank.logic;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.RequiredArgsConstructor;
 import pl.telech.tmoney.bank.dao.EntryDAO;
-import pl.telech.tmoney.bank.logic.interfaces.AccountLogic;
-import pl.telech.tmoney.bank.logic.interfaces.EntryLogic;
 import pl.telech.tmoney.bank.mapper.EntryMapper;
 import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Entry;
-import pl.telech.tmoney.commons.logic.AbstractLogicImpl;
+import pl.telech.tmoney.commons.logic.AbstractLogic;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
 import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.commons.utils.TUtils;
 
 @Service
 @Transactional
-public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLogic {
-	
-	EntryDAO dao;
+@RequiredArgsConstructor
+public class EntryLogic extends AbstractLogic<Entry> {
 	
 	@Value("${tmoney.environment}")
 	String environment;
+
+	final EntryDAO dao;
+	final AccountLogic accountLogic;
+	final EntryMapper mapper;
 	
-	@Autowired
-	AccountLogic accountLogic;
-	
-	@Autowired
-	EntryMapper mapper;
-	
-	public EntryLogicImpl(EntryDAO dao) {
-		super(dao);
-		this.dao = dao;
+	@PostConstruct
+	public void init() {
+		super.dao = this.dao;
 	}
 	
-	@Override
 	public List<Entry> loadAll(String accountCode) {
 		Integer accountId = null;
 		
@@ -57,7 +52,6 @@ public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLog
 		return dao.findByAccountId(accountId);
 	}
 	
-	@Override
 	public Pair<List<Entry>, Integer> loadAll(String accountCode, TableParams params) {
 		Integer accountId = null;
 		
@@ -72,35 +66,27 @@ public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLog
 		return dao.findTableByAccountId(accountId, params);
 	}
 	
-	@Override
 	public List<Entry> loadByCategoryId(int categoryId) {
 		return dao.findByCategoryId(categoryId);
 	}
 	
-	@Override
 	public Entry create(EntryDto entryDto) {
-		Entry entry = mapper.toNewEntity(entryDto);
-		calculateAndFillBalances(entry);
-		
+		Entry entry = mapper.create(entryDto);
 		entry = saveAndFlush(entry);
 		updateBalances();
 		reload(entry);
 		return entry;
 	}
 	
-	@Override
 	public Entry update(int id, EntryDto entryDto) {
 		Entry entry = loadById(id);
-		TUtils.assertEntityExists(entry);
-		mapper.update(entryDto, entry);	
-		
+		mapper.update(entry, entryDto);	
 		entry = saveAndFlush(entry);
 		updateBalances();
 		reload(entry);
 		return entry;
 	}
 	
-	@Override
 	public void delete(int id) {
 		Entry entry = loadById(id);
 		TUtils.assertEntityExists(entry);
@@ -109,24 +95,14 @@ public class EntryLogicImpl extends AbstractLogicImpl<Entry> implements EntryLog
 		updateBalances();
 	}
 	
-	@Override
 	public Entry loadLastByAccount(int accountId) {
-		return dao.findLastByAccountBeforeDate(accountId, LocalDate.now());
+		return dao.findLastByAccountBeforeDate(accountId, LocalDate.now().plusDays(1));
 	}
 	
-	@Override
 	public void updateBalances() {
 		if (!TUtils.isJUnit(environment)) {
 			dao.updateBalances();
 		}
-	}
-	
-	// ################################### PRIVATE #########################################################################
-	
-	
-	private void calculateAndFillBalances(Entry entry) {
-		entry.setBalance(BigDecimal.ZERO);
-		entry.setBalanceOverall(BigDecimal.ZERO);
 	}
 		
 }

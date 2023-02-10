@@ -9,8 +9,8 @@ import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 public interface EntityMapperConfig {
 		
 	@Mapping(target = "id", ignore = true)
-	AbstractEntity toNewEntity(AbstractDto dto);
+	AbstractEntity create(AbstractDto dto);
 	
-	@InheritConfiguration(name = "toNewEntity")
+	@InheritConfiguration(name = "create")
 	AbstractEntity update(AbstractDto dto, @MappingTarget AbstractEntity entity);
 }

@@ -7,23 +7,24 @@ import org.mapstruct.*;
 
 import pl.telech.tmoney.bank.model.dto.AccountDto;
 import pl.telech.tmoney.bank.model.entity.Account;
+import pl.telech.tmoney.commons.mapper.EntityMapper;
 import pl.telech.tmoney.commons.mapper.EntityMapperConfig;
 
 @Mapper(config = EntityMapperConfig.class)
-public interface AccountMapper {
+public interface AccountMapper extends EntityMapper<Account, AccountDto> {
 	
 	AccountDto toDto(Account entity);
 	
-	List<AccountDto> toDtoList(Collection<Account> entity);
+	List<AccountDto> toDtoList(Collection<Account> entities);
 	
 	@Named("toEntity")
 	Account toEntity(AccountDto dto);
-	
-	@Named("toNewEntity")
-	@InheritConfiguration(name = "toNewEntity")
-	Account toNewEntity(AccountDto dto);
+
+	@Named("create")
+	@InheritConfiguration(name = "create")
+	Account create(AccountDto dto);
 	
 	@Mapping(target = "code", ignore = true)
 	@InheritConfiguration(name = "update")
-	Account update(AccountDto dto, @MappingTarget Account entity);
+	Account update(@MappingTarget Account entity, AccountDto dto);
 }

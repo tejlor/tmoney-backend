@@ -30,21 +30,25 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
 	}
 	
 	@Override
+	@SuppressWarnings("unchecked")
 	public T findOne(Specification<T> ...spec) {
         return findOne(null, null, spec);
     }
 	
 	@Override
+	@SuppressWarnings("unchecked")
 	public T findOne(String entityGraphName, Specification<T> ...spec) {
         return findOne(entityGraphName, null, spec);
     }
 	
 	@Override
+	@SuppressWarnings("unchecked")
 	public T findOne(Pageable page, Specification<T> ...spec) {
         return findOne(null, page, spec);
     }
 	
 	@Override
+	@SuppressWarnings("unchecked")
 	public T findOne(String entityGraphName, Pageable page, Specification<T> ...spec) {
         TypedQuery<T> query = getQuery(conjunction(spec), page);
         if(entityGraphName != null)

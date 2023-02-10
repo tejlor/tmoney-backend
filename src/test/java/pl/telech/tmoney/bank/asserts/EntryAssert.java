@@ -1,11 +1,10 @@
 package pl.telech.tmoney.bank.asserts;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.apache.commons.lang3.tuple.Pair;
 
 import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.commons.asserts.EntityAssert;
-import pl.telech.tmoney.commons.enums.Mode;
 
 
 public class EntryAssert extends EntityAssert<Entry, EntryDto> {
@@ -13,41 +12,22 @@ public class EntryAssert extends EntityAssert<Entry, EntryDto> {
 	
 	private EntryAssert(EntryDto result) {
 		super(result);
+		
+		addCondition("accountId", Pair.of(Entry::getAccountId, dto -> dto.getAccount().getId()));	
+		addCondition("account", Pair.of(entity -> entity.getAccount().getId(), dto -> dto.getAccount().getId()));		
+		addCondition("date", Pair.of(Entry::getDate, EntryDto::getDate));		
+		addCondition("category", Pair.of(entity -> entity.getCategory().getId(), dto -> dto.getCategory().getId()));	
+		addCondition("name", Pair.of(Entry::getName, EntryDto::getName));	
+		addCondition("amount", Pair.of(Entry::getAmount, EntryDto::getAmount));	
+		addCondition("description", Pair.of(Entry::getDescription, EntryDto::getDescription));	
+		addCondition("balance", Pair.of(Entry::getBalance, EntryDto::getBalance));
+		addCondition("balanceOverall", Pair.of(Entry::getBalanceOverall, EntryDto::getBalanceOverall));
+		
+		addUpdateSkipFields("accountId", "account", "balance", "balanceOverall");
 	}
 	
 	public static EntryAssert assertThatDto(EntryDto result) {
 		return new EntryAssert(result);
-	}
-	
-	@Override
-	protected void compare(EntryDto dto, Mode mode) {
-		if(mode == Mode.GET) {
-			assertThat(dto.getId()).isEqualTo(entity.getId());
-		}
-		if(mode != Mode.UPDATE) {
-			assertThat(dto.getAccount()).isNotNull();
-			assertThat(dto.getAccount().getId()).isEqualTo(entity.getAccount().getId());
-			assertThat(dto.getBalance()).isEqualTo(entity.getBalance());
-			assertThat(dto.getBalanceOverall()).isEqualTo(entity.getBalanceOverall());
-		}
-		
-		assertThat(dto.getDate()).isEqualTo(entity.getDate());
-		assertThat(dto.getCategory()).isNotNull();
-		assertThat(dto.getCategory().getId()).isEqualTo(entity.getCategory().getId());
-		assertThat(dto.getName()).isEqualTo(entity.getName());
-		assertThat(dto.getAmount()).isEqualTo(entity.getAmount());
-		assertThat(dto.getDescription()).isEqualTo(entity.getDescription());
-	}
-	
-	@Override
-	protected void checkIfUnmappedFieldsAreNull(Mode mode) {
-		super.checkIfUnmappedFieldsAreNull(mode);
-		
-		if (mode == Mode.UPDATE) {
-			assertThat(entity.getAccount()).isNull();	
-			assertThat(entity.getBalance()).isNull();
-			assertThat(entity.getBalanceOverall()).isNull();
-		}
 	}
 		
 }

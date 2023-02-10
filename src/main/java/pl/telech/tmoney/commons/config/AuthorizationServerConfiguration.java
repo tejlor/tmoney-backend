@@ -17,7 +17,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
-import pl.telech.tmoney.adm.logic.interfaces.UserLogic;
+import pl.telech.tmoney.adm.logic.UserLogic;
 
 /*
  * Configuration of oAuth 2.0.

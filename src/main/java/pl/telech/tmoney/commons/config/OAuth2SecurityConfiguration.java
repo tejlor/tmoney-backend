@@ -20,7 +20,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import pl.telech.tmoney.adm.logic.interfaces.UserLogic;
+import pl.telech.tmoney.adm.logic.UserLogic;
 import pl.telech.tmoney.commons.utils.Sha1PasswordEncoder;
 
 /*
@@ -62,7 +62,7 @@ public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public FilterRegistrationBean<CorsFilter> corsFilter() {	
 		var config = new CorsConfiguration();
 		config.setAllowCredentials(true);
-		config.addAllowedOrigin("*");
+		config.addAllowedOriginPattern("*");
 		config.addAllowedHeader("*");
 		config.addAllowedMethod("GET");
 		config.addAllowedMethod("POST");

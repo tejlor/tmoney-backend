@@ -8,8 +8,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,12 +41,11 @@ public class CommonsTests {
 				testClass = Class.forName(controller.getName() + "Test");
 			} 
 			catch (ClassNotFoundException e) {
-				Assert.fail("Unable to find Test class form controller " + controller.getName());
+				Assertions.fail("Unable to find Test class form controller " + controller.getName());
 				return;
 			}
 			
 			Set<String> testMethods = Arrays.stream(testClass.getDeclaredMethods())
-					.filter(m -> Modifier.isPublic(m.getModifiers()))
 					.filter(m -> m.isAnnotationPresent(Test.class))
 					.map(m -> m.getName())
 					.collect(Collectors.toSet());

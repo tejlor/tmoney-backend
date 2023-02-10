@@ -1,46 +1,31 @@
 package pl.telech.tmoney.bank.asserts;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.apache.commons.lang3.tuple.Pair;
 
 import pl.telech.tmoney.bank.model.dto.AccountDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.commons.asserts.EntityAssert;
-import pl.telech.tmoney.commons.enums.Mode;
 
 
 public class AccountAssert extends EntityAssert<Account, AccountDto> {
-	
+		
 	private AccountAssert(AccountDto result) {
 		super(result);
+		
+		addCondition("name", 		Pair.of(Account::getName, AccountDto::getName));	
+		addCondition("code", 		Pair.of(Account::getCode, AccountDto::getCode));
+		addCondition("active", 		Pair.of(Account::getActive, AccountDto::getActive));
+		addCondition("color", 		Pair.of(Account::getColor, AccountDto::getColor));
+		addCondition("lightColor", 	Pair.of(Account::getLightColor, AccountDto::getLightColor));
+		addCondition("darkColor", 	Pair.of(Account::getDarkColor, AccountDto::getDarkColor));
+		addCondition("orderNo", 	Pair.of(Account::getOrderNo, AccountDto::getOrderNo));
+		addCondition("icon", 		Pair.of(Account::getIcon, AccountDto::getIcon));
+		
+		addUpdateSkipFields("code");
 	}
 	
 	public static AccountAssert assertThatDto(AccountDto result) {
 		return new AccountAssert(result);
 	}
-		
-	@Override
-	protected void compare(AccountDto dto, Mode mode) {
-		if(mode == Mode.GET) {
-			assertThat(dto.getId()).isEqualTo(entity.getId());
-		}
-		if(mode != Mode.UPDATE) {
-			assertThat(dto.getCode()).isEqualTo(entity.getCode());
-		}
-		assertThat(dto.getName()).isEqualTo(entity.getName());
-		assertThat(dto.getActive()).isEqualTo(entity.getActive());
-		assertThat(dto.getColor()).isEqualTo(entity.getColor());
-		assertThat(dto.getLightColor()).isEqualTo(entity.getLightColor());
-		assertThat(dto.getDarkColor()).isEqualTo(entity.getDarkColor());
-		assertThat(dto.getOrderNo()).isEqualTo(entity.getOrderNo());
-		assertThat(dto.getIcon()).isEqualTo(entity.getIcon());
-	}
-
-	@Override
-	protected void checkIfUnmappedFieldsAreNull(Mode mode) {
-		super.checkIfUnmappedFieldsAreNull(mode);
-		
-		if (mode == Mode.UPDATE) {
-			assertThat(entity.getCode()).isNull();
-		}	
-	}		
+	
 }
