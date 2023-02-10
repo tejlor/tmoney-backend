@@ -32,11 +32,7 @@ public class Entry extends AbstractEntity {
 	
 	@Column(nullable = false)
 	LocalDate date;					// entry date
-	
-	@Setter(AccessLevel.PRIVATE)
-    @Column(insertable = false, updatable = false)
-    Integer categoryId;
-	
+		
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "categoryId")
 	Category category;				// category
@@ -62,9 +58,4 @@ public class Entry extends AbstractEntity {
 		this.accountId = account != null ? account.getId() : null;
 	}
 	
-	public void setCategory(Category category) {
-		this.category = category;
-		this.categoryId = category != null ? category.getId() : null;
-	}
-
 }

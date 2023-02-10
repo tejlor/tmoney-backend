@@ -1,17 +1,18 @@
 package pl.telech.tmoney.bank.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.telech.tmoney.utils.TestUtils.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-import javax.transaction.Transactional;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.web.servlet.MvcResult;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import pl.telech.tmoney.bank.asserts.EntryAssert;
 import pl.telech.tmoney.bank.helper.AccountHelper;
 import pl.telech.tmoney.bank.helper.CategoryHelper;
 import pl.telech.tmoney.bank.helper.EntryHelper;
@@ -20,30 +21,44 @@ import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
-import pl.telech.tmoney.commons.enums.Mode;
 import pl.telech.tmoney.commons.model.dto.TableDataDto;
 import pl.telech.tmoney.commons.model.dto.TableDataDto.TableInfoDto;
 import pl.telech.tmoney.commons.model.shared.TableParams;
-import pl.telech.tmoney.utils.BaseTest;
+import pl.telech.tmoney.utils.BaseMvcTest;
 
-@RunWith(SpringRunner.class)
-public class EntryControllerTest extends BaseTest {
+class EntryControllerTest extends BaseMvcTest {
 
-	@Autowired
-	EntryController controller;
-	
+	private static final String baseUrl = "/entries";
+		
 	@Autowired
 	AccountHelper accountHelper;
+	
 	@Autowired
 	CategoryHelper categoryHelper;
+	
 	@Autowired
 	EntryHelper entryHelper;
+	
 	@Autowired
-	EntryMapper mapper;
+	EntryMapper entryMapper;
+	
 	
 	@Test
-	@Transactional
-	public void getTable() {	
+	void getById() throws Exception {	
+		// given
+		Account account = accountHelper.save("Konto bankowe");
+		Entry entry = entryHelper.save("Zakupy", account);
+		
+		// when
+		EntryDto responseDto = get(baseUrl + "/" + entry.getId(), EntryDto.class);
+		
+		// then
+		EntryAssert.assertThatDto(responseDto)
+			.isMappedFrom(entry);
+	}
+	
+	@Test
+	void getTable() throws Exception {	
 		// given
 		Account account = accountHelper.save("Konto bankowe", "BANK");
 		entryHelper.save("Zakupy", account);
@@ -54,11 +69,10 @@ public class EntryControllerTest extends BaseTest {
 		entryHelper.save("Benzyna", account);
 		entryHelper.save("Autostrada", account);
 		entryHelper.save("Czapka N", account);
-		flush();
 		
 		// when
-		TableDataDto<EntryDto> result = controller.getTable("BANK", 1, 2, "z", "name ASC");	
-		flushAndClear();
+		String url = String.format(baseUrl + "/table/BANK?pageNo=%d&pageSize=%d&filter=%s&sortBy=%s", 1, 2, "z", "name ASC");
+		TableDataDto<EntryDto> result = get(url, new TypeReference<TableDataDto<EntryDto>>() {});	
 		
 		// then
 		assertThat(result).isNotNull();
@@ -82,8 +96,7 @@ public class EntryControllerTest extends BaseTest {
 	}
 	
 	@Test
-	@Transactional
-	public void getTable_accountIsNull() {	
+	void getTable_accountIsNull() throws Exception {	
 		// given
 		Account account1 = accountHelper.save("Konto bankowe", "BANK");
 		Account account2 = accountHelper.save("Dom", "HOME");
@@ -95,11 +108,10 @@ public class EntryControllerTest extends BaseTest {
 		entryHelper.save("Benzyna", account2);
 		entryHelper.save("Autostrada", account1);
 		entryHelper.save("Czapka N", account2);
-		flush();
 		
 		// when
-		TableDataDto<EntryDto> result = controller.getTable(null, 1, 2, "z", "name ASC");	
-		flushAndClear();
+		String url = String.format(baseUrl + "/table?pageNo=%d&pageSize=%d&filter=%s&sortBy=%s", 1, 2, "z", "name ASC");
+		TableDataDto<EntryDto> result = get(url, new TypeReference<TableDataDto<EntryDto>>() {});	
 		
 		// then
 		assertThat(result).isNotNull();
@@ -123,87 +135,61 @@ public class EntryControllerTest extends BaseTest {
 	}
 	
 	@Test
-	@Transactional
-	public void getById() {	
-		// given
-		Account account = accountHelper.save("Konto bankowe");
-		Entry entry = entryHelper.save("Zakupy", account);
-		flush();
-		
-		// when
-		EntryDto result = controller.getById(entry.getId());	
-		flushAndClear();
-		
-		// then
-		assertThat(result).isNotNull();
-		entryHelper.assertEqual(result, entry, Mode.GET);
-	}
-	
-	@Test
-	@Transactional
-	public void create() {	
+	void create() throws Exception {	
 		// given
 		Account bankAccount = accountHelper.save("Konto bankowe");
-		Account homeAccount = accountHelper.save("Dom");
 		Category category = categoryHelper.save("Zakupy");
-		entryHelper.save("Entry B1", bankAccount, "2020-01-01", "20.00", "20.00", "20.00");
-		entryHelper.save("Entry H1", homeAccount, "2020-01-01", "40.00", "40.00", "60.00");
-		flush();
+		Entry entry = entryHelper.build("Entry B2", bankAccount, category, dec("30.00"));
+		EntryDto requestDto = entryMapper.toDto(entry);
 		
-		// when
-		Entry entry = entryHelper.build("Entry B2", bankAccount, category, "30.00");
-		EntryDto result = controller.create(mapper.toDto(entry));	
-		flushAndClear();
+		// when	
+		EntryDto responseDto = post(baseUrl, requestDto, EntryDto.class);	
 		
 		// then
-		assertThat(result).isNotNull();
-		entryHelper.assertEqual(result, entry, Mode.CREATE);
-		assertThat(result.getBalance()).isEqualTo(new BigDecimal("0.00"));
-		assertThat(result.getBalanceOverall()).isEqualTo(new BigDecimal("0.00"));
+		Entry createdEntry = dbHelper.load(Entry.class, responseDto.getId());
+		EntryAssert.assertThatDto(responseDto)
+			.isMappedFrom(createdEntry)
+			.createdBy(requestDto);
 	}
 	
 	@Test
-	@Transactional
-	public void update() {	
+	void update() throws Exception {	
 		// given
 		Account bankAccount = accountHelper.save("Konto bankowe");
-		Entry entry = entryHelper.save("Zakupy", bankAccount, "30.00");
-		flush();
+		Entry entry = entryHelper.save("Zakupy", bankAccount, dec("30.00"));
+		EntryDto requestDto = entryMapper.toDto(entry);
+		requestDto.setAmount(dec("-30.00"));
 		
 		// when
-		EntryDto dto = mapper.toDto(load(Entry.class, entry.getId()));
-		dto.setAmount(new BigDecimal("35.00"));
-		dto.setDescription("Nowy opis");
-		EntryDto result = controller.update(entry.getId(), dto);	
-		flushAndClear();
+		EntryDto responseDto = put(baseUrl + "/" + entry.getId(), requestDto, EntryDto.class);
 		
 		// then
-		assertThat(result).isNotNull();
-		assertThat(result.getDescription()).isEqualTo(dto.getDescription());
-		assertThat(result.getAmount()).isEqualTo(dto.getAmount());
+		assertThat(responseDto.getId()).isEqualTo(entry.getId());
+		Entry updatedEntry = dbHelper.load(Entry.class, responseDto.getId());
+		EntryAssert.assertThatDto(responseDto)
+			.isMappedFrom(updatedEntry)
+			.updatedBy(requestDto);
 	}
 	
 	@Test
-	@Transactional
-	public void delete() {	
+	void delete() throws Exception {	
 		// given
 		Account account = accountHelper.save("Konto bankowe");
 		Entry entry = entryHelper.save("Zakupy", account);
-		flush();
 		
 		// when
-		controller.delete(entry.getId());	
-		flushAndClear();
+		MvcResult result = delete(baseUrl + "/" + entry.getId());
 		
 		// then
-		Entry deletedEntry = load(Entry.class, entry.getId());
+		assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+		
+		Entry deletedEntry = dbHelper.load(Entry.class, entry.getId());
 		assertThat(deletedEntry).isNull();
 	}
 	
 	@Test
-	@Transactional
-	public void updateBalances() {			
-		// no test in H2 database
+	void updateBalances() {	
+		
 	}
-	
+		
 }

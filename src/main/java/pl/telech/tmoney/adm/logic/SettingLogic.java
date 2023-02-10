@@ -4,25 +4,28 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.telech.tmoney.adm.dao.SettingDAO;
-import pl.telech.tmoney.adm.logic.interfaces.SettingLogic;
 import pl.telech.tmoney.adm.model.entity.Setting;
-import pl.telech.tmoney.commons.logic.AbstractLogicImpl;
+import pl.telech.tmoney.commons.logic.AbstractLogic;
 
 @Slf4j
 @Service
 @Transactional
-public class SettingLogicImpl extends AbstractLogicImpl<Setting> implements SettingLogic {
+@RequiredArgsConstructor
+public class SettingLogic extends AbstractLogic<Setting> {
 	
-	SettingDAO dao;
+	final SettingDAO dao;
 	
-	public SettingLogicImpl(SettingDAO dao) {
-		super(dao);
-		this.dao = dao;
+	@PostConstruct
+	public void init() {
+		super.dao = this.dao;
 	}
 	
 	public List<Setting> loadSafe(){
@@ -30,7 +33,6 @@ public class SettingLogicImpl extends AbstractLogicImpl<Setting> implements Sett
 				.collect(Collectors.toList());
 	}
 
-	@Override
 	public int loadIntValue(String name) {
 		int value = 0;
 		
@@ -47,7 +49,6 @@ public class SettingLogicImpl extends AbstractLogicImpl<Setting> implements Sett
 		return value;
 	}
 	
-	@Override
 	public BigDecimal loadDecimalValue(String name) {
 		BigDecimal value = BigDecimal.ZERO;
 		
@@ -64,7 +65,6 @@ public class SettingLogicImpl extends AbstractLogicImpl<Setting> implements Sett
 		return value;
 	}
 	
-	@Override
 	public boolean loadBoolValue(String name) {
 		boolean value = false;
 		
@@ -76,7 +76,6 @@ public class SettingLogicImpl extends AbstractLogicImpl<Setting> implements Sett
 		return value;
 	}
 	
-	@Override
 	public String loadStringValue(String name) {
 		return loadValue(name);
 	}

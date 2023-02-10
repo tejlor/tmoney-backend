@@ -10,17 +10,19 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 /*
- * Filter adding wrapper for request, which allows to read content twice. Required for logging.
+ * Filter adding wrapper for request, which allows to read content many times. Required for logging.
  */
 @Component
 public class CachingRequestBodyFilter extends GenericFilterBean {
     
 	@Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {		
-        var currentRequest = (HttpServletRequest) servletRequest;
-        var wrappedRequest = new RequestWrapper(currentRequest);
-        chain.doFilter(wrappedRequest, servletResponse);
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {		
+        var currentRequest = (HttpServletRequest) request;
+        var wrappedRequest = new ContentCachingRequestWrapper(currentRequest);
+        wrappedRequest.getParameterMap(); // needed for caching!!
+        chain.doFilter(wrappedRequest, response);
     }	
 }

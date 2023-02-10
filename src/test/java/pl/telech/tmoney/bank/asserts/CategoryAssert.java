@@ -1,32 +1,27 @@
 package pl.telech.tmoney.bank.asserts;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.apache.commons.lang3.tuple.Pair;
 
 import pl.telech.tmoney.bank.model.dto.CategoryDto;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.commons.asserts.EntityAssert;
-import pl.telech.tmoney.commons.enums.Mode;
 
 public class CategoryAssert extends EntityAssert<Category, CategoryDto> {
 	
 	private CategoryAssert(CategoryDto result) {
 		super(result);
+		
+		addCondition("name", 				Pair.of(Category::getName, CategoryDto::getName));	
+		addCondition("account", 			Pair.of(Category::getAccount, CategoryDto::getAccount));	
+		addCondition("report", 				Pair.of(Category::getReport, CategoryDto::getReport));	
+		addCondition("defaultName", 		Pair.of(Category::getDefaultName, CategoryDto::getDefaultName));	
+		addCondition("defaultAmount", 		Pair.of(Category::getDefaultAmount, CategoryDto::getDefaultAmount));	
+		addCondition("deefaultDescription", Pair.of(Category::getDefaultDescription, CategoryDto::getDefaultDescription));	
+		
+		addUpdateSkipFields("accountId", "categoryId", "balance", "balanceOverall");
 	}
 	
 	public static CategoryAssert assertThatDto(CategoryDto result) {
 		return new CategoryAssert(result);
-	}
-
-	@Override
-	protected void compare(CategoryDto dto, Mode mode) {
-		if(mode == Mode.GET) {
-			assertThat(dto.getId()).isEqualTo(entity.getId());
-		}
-		assertThat(dto.getName()).isEqualTo(entity.getName());
-		assertThat(dto.getAccount()).isEqualTo(entity.getAccount());
-		assertThat(dto.getReport()).isEqualTo(entity.getReport());
-		assertThat(dto.getDefaultName()).isEqualTo(entity.getDefaultName());
-		assertThat(dto.getDefaultAmount()).isEqualTo(entity.getDefaultAmount());
-		assertThat(dto.getDefaultDescription()).isEqualTo(entity.getDefaultDescription());
-	}		
+	}	
 }

@@ -1,15 +1,15 @@
 package pl.telech.tmoney.commons.model.interfaces;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javassist.Modifier;
 import pl.telech.tmoney.commons.utils.TConstants;
 
 /*
- * Interface for dto objects which contets should be logged.
+ * Interface for dto objects which contents should be logged.
  */
 public interface Loggable {
 

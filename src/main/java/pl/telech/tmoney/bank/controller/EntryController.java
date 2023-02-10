@@ -8,11 +8,11 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import pl.telech.tmoney.bank.logic.interfaces.EntryLogic;
+import lombok.RequiredArgsConstructor;
+import pl.telech.tmoney.bank.logic.EntryLogic;
 import pl.telech.tmoney.bank.mapper.EntryMapper;
 import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Entry;
@@ -22,19 +22,27 @@ import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.commons.utils.TUtils;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/entries")
 public class EntryController extends AbstractController {
 
-	@Autowired
-	EntryMapper mapper;
+	final EntryMapper mapper;
+	final EntryLogic entryLogic;
+		
+	/*
+	 * Returns entry by id.
+	 */
+	@RequestMapping(value = "/{id:" + ID + "}", method = GET)
+	public EntryDto getById(
+			@PathVariable int id) {
+		
+		return mapper.toDto(entryLogic.loadById(id));
+	}
 	
-	@Autowired
-	EntryLogic entryLogic;
-			
 	/*
 	 * Returns children of element for table.
 	 */
-	@RequestMapping(value = {"table/", "table/{accountCode:" + CODE + "}"}, method = GET)
+	@RequestMapping(value = {"/table", "/table/{accountCode:" + CODE + "}"}, method = GET)
 	public TableDataDto<EntryDto> getTable(
 		@PathVariable(required = false) String accountCode,
 		@RequestParam(required = false) Integer pageNo,
@@ -48,16 +56,6 @@ public class EntryController extends AbstractController {
 		table.setRows(mapper.toDtoList(result.getKey()));
 		table.setCount(result.getValue());		
 		return table;
-	}
-	
-	/*
-	 * Returns entry by id.
-	 */
-	@RequestMapping(value = "/{id:" + ID + "}", method = GET)
-	public EntryDto getById(
-			@PathVariable int id) {
-		
-		return mapper.toDto(entryLogic.loadById(id));
 	}
 	
 	/*

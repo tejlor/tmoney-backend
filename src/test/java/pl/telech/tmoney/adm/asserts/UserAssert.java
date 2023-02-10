@@ -1,29 +1,24 @@
 package pl.telech.tmoney.adm.asserts;
 
-import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.api.SoftAssertions;
+import org.apache.commons.lang3.tuple.Pair;
 
 import pl.telech.tmoney.adm.model.dto.UserDto;
 import pl.telech.tmoney.adm.model.entity.User;
+import pl.telech.tmoney.commons.asserts.EntityAssert;
 
-public class UserAssert extends AbstractAssert<UserAssert, UserDto> {
+public class UserAssert extends EntityAssert<User, UserDto> {
 
-	private UserAssert(UserDto actual) {
-		super(actual, UserAssert.class);
+	private UserAssert(UserDto result) {
+		super(result);
+		
+		addCondition("firstName", 	Pair.of(User::getFirstName, UserDto::getFirstName));
+		addCondition("lastName", 	Pair.of(User::getLastName, UserDto::getLastName));
+		addCondition("email", 		Pair.of(User::getEmail, UserDto::getEmail));
+
 	}
 	
-	public static UserAssert assertThat(UserDto actual) {
-		return new UserAssert(actual);
-	}
-	
-	public UserAssert isEqualTo(User entity) {
-		var asserts = new SoftAssertions();
-		asserts.assertThat(actual.getId()).isEqualTo(entity.getId());
-		asserts.assertThat(actual.getFirstName()).isEqualTo(entity.getFirstName());
-		asserts.assertThat(actual.getLastName()).isEqualTo(entity.getLastName());
-		asserts.assertThat(actual.getEmail()).isEqualTo(entity.getEmail());
-		asserts.assertAll();
-		return this;
+	public static UserAssert assertThatDto(UserDto result) {
+		return new UserAssert(result);
 	}
 		
 }

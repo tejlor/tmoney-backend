@@ -1,6 +1,7 @@
 package pl.telech.tmoney.commons.builder;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -11,7 +12,6 @@ import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 public abstract class AbstractBuilder<T extends AbstractEntity> {
 
 	Integer id = null;
-	
 	
 	public T save(EntityManager em) {
 		var result = build();

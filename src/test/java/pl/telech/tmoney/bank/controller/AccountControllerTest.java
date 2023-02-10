@@ -1,17 +1,17 @@
 package pl.telech.tmoney.bank.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.telech.tmoney.utils.TestUtils.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
-import javax.transaction.Transactional;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringRunner;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import pl.telech.tmoney.bank.asserts.AccountAssert;
+import pl.telech.tmoney.bank.asserts.EntryAssert;
 import pl.telech.tmoney.bank.helper.AccountHelper;
 import pl.telech.tmoney.bank.helper.EntryHelper;
 import pl.telech.tmoney.bank.mapper.AccountMapper;
@@ -19,157 +19,124 @@ import pl.telech.tmoney.bank.model.dto.AccountDto;
 import pl.telech.tmoney.bank.model.dto.AccountSummaryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Entry;
-import pl.telech.tmoney.commons.enums.Mode;
-import pl.telech.tmoney.utils.BaseTest;
+import pl.telech.tmoney.utils.BaseMvcTest;
 
-@RunWith(SpringRunner.class)
-public class AccountControllerTest extends BaseTest {
 
-	@Autowired
-	AccountController controller;
+class AccountControllerTest extends BaseMvcTest {
+
+	private static final String baseUrl = "/bank-accounts";
 	
 	@Autowired
 	AccountHelper accountHelper;
+	
 	@Autowired
 	EntryHelper entryHelper;
+	
 	@Autowired
-	AccountMapper mapper;
+	AccountMapper accountMapper;
 	
 	@Test
-	@Transactional
-	public void getActive() {	
+	void getByCode() throws Exception {	
 		// given
-		Account account0 = accountHelper.save("Konto bankowe");
-		Account account1 = accountHelper.save("Dom");
-		Account account2 = accountHelper.save("Konto maklerskie");
-		Account account3 = accountHelper.save("Konto w innym banku", false);
-		flush();
+		Account account = accountHelper.save("Konto bankowe", "bank1");
 		
 		// when
-		List<AccountDto> result = controller.getActive();	
-		flushAndClear();
+		AccountDto responseDto = get(baseUrl + "/" + account.getCode(), AccountDto.class);
 		
-		// then
-		assertThat(result).isNotNull();
-		assertThat(result).hasSize(3);
-		accountHelper.assertEqual(result.get(0), account0, Mode.GET);
-		accountHelper.assertEqual(result.get(1), account1, Mode.GET);
-		accountHelper.assertEqual(result.get(2), account2, Mode.GET);
+		// then	
+		AccountAssert.assertThatDto(responseDto)
+			.isMappedFrom(account);
 	}
 	
 	@Test
-	@Transactional
-	public void getSummary() {
+	void getActive() throws Exception {	
 		// given
-		Account account0 = accountHelper.save("Konto bankowe", "BANK");
-		Account account1 = accountHelper.save("Dom", "HOME");		
-		entryHelper.save("Zakupy", LocalDate.of(2020, 5, 12), account0);
-		entryHelper.save("Fryzjer", LocalDate.of(2020, 7, 12), account1);
-		Entry entry0 = entryHelper.save("ZUS", LocalDate.of(2020, 5, 13), account0);
-		Entry entry1 = entryHelper.save("Zakupy", LocalDate.of(2020, 7, 13), account1);
-		flush();
+		Account account0 = accountHelper.save("Konto bankowe", true);	
+		Account account1 = accountHelper.save("Dom", true);
+		accountHelper.save("IKE", false);
 		
 		// when
-		List<AccountSummaryDto> result = controller.getSummary("HOME");	
-		flushAndClear();
+		List<AccountDto> response = get(baseUrl, new TypeReference<List<AccountDto>>() {});
 		
-		// then
-		assertThat(result).isNotNull();
-		assertThat(result).hasSize(1);
-		accountHelper.assertEqual(result.get(0).getAccount(), account1, Mode.GET);
-		entryHelper.assertEqual(result.get(0).getEntry(), entry1, Mode.GET);
+		// then	
+		assertThat(response).hasSize(2);
+		AccountAssert.assertThatDto(response.get(0)).isMappedFrom(account0);
+		AccountAssert.assertThatDto(response.get(1)).isMappedFrom(account1);
 	}
 	
 	@Test
-	@Transactional
-	public void getSummary_all() {
+	void create() throws Exception {	
+		// given
+		Account account = accountHelper.build("Konto bankowe");
+		AccountDto requestDto = accountMapper.toDto(account);
+		
+		// when
+		AccountDto responseDto = post(baseUrl, requestDto, AccountDto.class);
+		
+		// then	
+		Account createdAccount = dbHelper.load(Account.class, responseDto.getId());	
+		AccountAssert.assertThatDto(responseDto)
+			.isMappedFrom(createdAccount)
+			.createdBy(requestDto);
+	}
+	
+	@Test
+	void update() throws Exception {	
+		// given
+		Account account = accountHelper.save("Konto bankowe");
+		AccountDto requestDto = accountMapper.toDto(account);
+		requestDto.setActive(false);
+		
+		// when
+		AccountDto responseDto = put(baseUrl + "/" + account.getId(), requestDto, AccountDto.class);
+		
+		// then	
+		assertThat(responseDto.getId()).isEqualTo(account.getId());
+		Account updatedAccount = dbHelper.load(Account.class, responseDto.getId());	
+		AccountAssert.assertThatDto(responseDto)
+			.isMappedFrom(updatedAccount)
+			.updatedBy(requestDto);
+	}
+	
+	@Test
+	public void getSummary() throws Exception {
 		// given
 		Account account0 = accountHelper.save("Konto bankowe", "BANK");
 		Account account1 = accountHelper.save("Dom", "HOME");		
-		entryHelper.save("Zakupy", LocalDate.of(2020, 5, 12), account0);
-		entryHelper.save("Fryzjer", LocalDate.of(2020, 7, 12), account1);
-		Entry entry0 = entryHelper.save("ZUS", LocalDate.of(2020, 5, 13), account0);
-		Entry entry1 = entryHelper.save("Zakupy", LocalDate.of(2020, 7, 13), account1);
-		flush();
+		entryHelper.save("Zakupy", date("2020-05-12"), account0);
+		entryHelper.save("Fryzjer", date("2020-07-12"), account1);
+		Entry entry0 = entryHelper.save("ZUS", date("2020-05-13"), account0);
+		Entry entry1 = entryHelper.save("Zakupy", date("2020-07-13"), account1);
 		
 		// when
-		List<AccountSummaryDto> result = controller.getSummary(null);	
-		flushAndClear();
+		List<AccountSummaryDto> result = get(baseUrl + "/summary", new TypeReference<List<AccountSummaryDto>>() {});
 		
 		// then
 		assertThat(result).isNotNull();
 		assertThat(result).hasSize(2);
-		accountHelper.assertEqual(result.get(0).getAccount(), account0, Mode.GET);
-		accountHelper.assertEqual(result.get(1).getAccount(), account1, Mode.GET);
-		entryHelper.assertEqual(result.get(0).getEntry(), entry0, Mode.GET);
-		entryHelper.assertEqual(result.get(1).getEntry(), entry1, Mode.GET);
+		AccountAssert.assertThatDto(result.get(0).getAccount()).isMappedFrom(account0);
+		AccountAssert.assertThatDto(result.get(1).getAccount()).isMappedFrom(account1);
+		EntryAssert.assertThatDto(result.get(0).getEntry()).isMappedFrom(entry0);
+		EntryAssert.assertThatDto(result.get(1).getEntry()).isMappedFrom(entry1);
 	}
 	
 	@Test
-	@Transactional
-	public void getById() {	
+	public void getSummary_byCode() throws Exception {
 		// given
-		Account account = accountHelper.save("Konto bankowe");
-		flush();
+		Account account0 = accountHelper.save("Konto bankowe", "BANK");
+		Account account1 = accountHelper.save("Dom", "HOME");		
+		entryHelper.save("Zakupy", date("2020-05-12"), account0);
+		entryHelper.save("Fryzjer", date("2020-07-12"), account1);
+		Entry entry0 = entryHelper.save("ZUS", date("2020-05-13"), account0);
+		entryHelper.save("Zakupy", date("2020-07-13"), account1);
 		
 		// when
-		AccountDto result = controller.getById(account.getId());	
-		flushAndClear();
+		List<AccountSummaryDto> result = get(baseUrl + "/summary/BANK", new TypeReference<List<AccountSummaryDto>>() {});
 		
 		// then
 		assertThat(result).isNotNull();
-		accountHelper.assertEqual(result, account, Mode.GET);
+		assertThat(result).hasSize(1);
+		AccountAssert.assertThatDto(result.get(0).getAccount()).isMappedFrom(account0);
+		EntryAssert.assertThatDto(result.get(0).getEntry()).isMappedFrom(entry0);
 	}
-	
-	@Test
-	@Transactional
-	public void getByCode() {	
-		// given
-		Account account = accountHelper.save("Konto bankowe", "BANK");
-		flush();
-		
-		// when
-		AccountDto result = controller.getByCode(account.getCode());	
-		flushAndClear();
-		
-		// then
-		assertThat(result).isNotNull();
-		accountHelper.assertEqual(result, account, Mode.GET);
-	}
-	
-	@Test
-	@Transactional
-	public void create() {	
-		// given
-		flush();
-		
-		// when
-		Account account = accountHelper.build("Konto bankowe");
-		AccountDto result = controller.create(mapper.toDto(account));	
-		flushAndClear();
-		
-		// then
-		assertThat(result).isNotNull();
-		accountHelper.assertEqual(result, account, Mode.CREATE);
-	}
-	
-	@Test
-	@Transactional
-	public void update() {	
-		// given
-		Account account = accountHelper.save("Konto bankowe");
-		flush();
-		
-		// when
-		AccountDto dto = mapper.toDto(account);
-		dto.setActive(false);
-		AccountDto result = controller.update(account.getId(), dto);	
-		flushAndClear();
-		
-		// then
-		assertThat(result).isNotNull();
-		Account updatedAccount = load(Account.class, account.getId());
-		accountHelper.assertEqual(result, updatedAccount, Mode.GET);
-	}
-		
 }
