@@ -38,11 +38,11 @@ function commit_version {
 	git add .
 	git ci -m "Wersja ${OPTARG}"
 	git tag ${OPTARG}
-	#git push
-	#git co master
-	#git merge dev
-	#git push --tags
-	#git co dev
+	git push
+	git co master
+	git merge dev
+	git push --tags
+	git co dev
 }
 
 while getopts "cstv:" opt; do
