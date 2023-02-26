@@ -60,7 +60,7 @@ public class ReportService {
 	}
 	
 	private List<AccountReportData> calculateAccountsData(LocalDate dateFrom, LocalDate dateTo) {
-		return TStreamUtils.map(accountLogic.loadActive(), account -> calculateAccountData(account, dateFrom, dateTo));
+		return TStreamUtils.map(accountLogic.loadAll(true), account -> calculateAccountData(account, dateFrom, dateTo));
 	}
 	
 	private AccountReportData calculateAccountData(Account account, LocalDate dateFrom, LocalDate dateTo) {

@@ -3,7 +3,7 @@
 	<groupId>pl.telech.tmoney</groupId>
 	<artifactId>tmoney</artifactId>
 	<name>tmoney</name>
-	<version>3.0.2</version>
+	<version>0.0.1</version>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

@@ -21,14 +21,14 @@ public class Account extends AbstractEntity {
 	
 	public static final String SUMMARY_CODE = "SUMMARY";
 	
-	@Column(length = 100, nullable = false)
-	String name;				// account name
-	
 	@Column(length = 10, nullable = false)
 	String code;				// technical code
 	
+	@Column(length = 100, nullable = false)
+	String name;				// account name
+	
 	@Column(nullable = false)
-	Boolean active;				// active accounts are visible at front and in reports
+	boolean active;				// active accounts are visible at front and in reports
 	
 	@Column(length = 6) 
 	String color;				// color in 000000 format
@@ -44,6 +44,9 @@ public class Account extends AbstractEntity {
 	
 	@Column(length = 50)
 	String icon;				// font awesome account icon 
+	
+	@Column(columnDefinition = "TEXT")
+	String logo;				// logo jpg file in base64
 	
 	
 	public int getLightColorInt() {

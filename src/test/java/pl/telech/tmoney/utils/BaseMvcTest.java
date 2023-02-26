@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -117,6 +118,7 @@ public class BaseMvcTest {
 			.andExpectAll(
 					status().isOk(),
 			        content().contentType("application/json"))
+			.andDo(MockMvcResultHandlers.print())
 			.andReturn();
 	}
 	

@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import lombok.experimental.ExtensionMethod;
 import lombok.experimental.UtilityClass;
@@ -28,7 +27,7 @@ public class TStreamUtils {
 	public <T, R> Set<R> mapToSet(Collection<T> collection, Function<T, R> mapper) {
 		return collection.stream()
 				.map(mapper)
-				.collect(Collectors.toSet());
+				.set();
 	}
 	
 	public <T extends Comparable<T>> List<T> sort(List<T> list) {

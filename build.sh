@@ -23,6 +23,28 @@ function test {
 	mvn clean package
 }
 
+function version {
+	cd ../tmoney-frontend
+	git co dev
+	npm version --no-git-tag-version ${OPTARG}
+	commit_version 
+	cd ../tmoney-backend
+	git co dev
+	mvn versions:set -DnewVersion=${OPTARG}
+	commit_version
+}
+
+function commit_version {
+	git add .
+	git ci -m "Wersja ${OPTARG}"
+	git tag ${OPTARG}
+	#git push
+	#git co master
+	#git merge dev
+	#git push --tags
+	#git co dev
+}
+
 while getopts "cstv:" opt; do
 	case $opt in
 	c)
@@ -36,6 +58,9 @@ while getopts "cstv:" opt; do
 		;;
 	p)
 		prod
+		;;
+	v)
+		version
 		;;
 	\?)
 		echo "Dopuszczalne opcje to: c (compile), s (start), t (test), p (prod)."      
