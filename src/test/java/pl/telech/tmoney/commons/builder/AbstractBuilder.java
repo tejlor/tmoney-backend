@@ -1,7 +1,6 @@
 package pl.telech.tmoney.commons.builder;
 
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;

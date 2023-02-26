@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import pl.telech.tmoney.bank.asserts.CategoryAssert;
+import pl.telech.tmoney.bank.builder.CategoryBuilder;
 import pl.telech.tmoney.bank.helper.AccountHelper;
 import pl.telech.tmoney.bank.helper.CategoryHelper;
 import pl.telech.tmoney.bank.helper.EntryHelper;
@@ -128,7 +129,7 @@ public class CategoryControllerTest extends BaseMvcTest {
 	@Test
 	void create() throws Exception {	
 		// given
-		Category category = categoryHelper.build("Zakupy");
+		Category category = new CategoryBuilder().name("Zakupy").build();
 		CategoryDto requestDto = categoryMapper.toDto(category);
 		
 		// when

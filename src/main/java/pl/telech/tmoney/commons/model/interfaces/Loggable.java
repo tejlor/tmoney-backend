@@ -55,7 +55,7 @@ public interface Loggable {
 					}
 				}
 				else {
-					sb.append(obj + "\n");
+					sb.append(toString(obj) + "\n");
 				}
 			}
 			catch (IllegalArgumentException | IllegalAccessException e) {
@@ -68,5 +68,18 @@ public interface Loggable {
 		}
 		
 		return sb.toString();
+	}
+	
+	private String toString(Object object) {
+		if(object == null) {
+			return "";
+		}
+		
+		String str = object.toString();
+		if(str.length() > 100) {
+			return str.substring(0, 100) + "...";
+		}
+		
+		return str;
 	}
 }

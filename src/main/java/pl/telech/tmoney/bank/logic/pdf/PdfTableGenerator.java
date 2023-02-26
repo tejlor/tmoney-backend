@@ -6,9 +6,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
@@ -25,10 +23,7 @@ import pl.telech.tmoney.commons.utils.TUtils;
 
 @Component
 public class PdfTableGenerator extends AbstractPdfGenerator {
-	
-    @Autowired
-    ResourceLoader loader;
-	
+		
 	@Value("${tmoney.version}")
 	String tmoneyVersion;
 	
@@ -65,8 +60,7 @@ public class PdfTableGenerator extends AbstractPdfGenerator {
     	var out = new ByteArrayOutputStream();
         var writer = PdfWriter.getInstance(doc, out);
         
-        var logo = loader.getResource(String.format("classpath:images/%s.jpg", account.getCode().toLowerCase()));
-        writer.setPageEvent(new TableHeaderFooterEventHelper(account, tmoneyVersion, logo.getURL()));
+        writer.setPageEvent(new TableHeaderFooterEventHelper(account, tmoneyVersion));
         doc.open();
         
         createTable(doc, entries, account.getCode().equals(Account.SUMMARY_CODE));

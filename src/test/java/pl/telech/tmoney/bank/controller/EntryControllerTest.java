@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import pl.telech.tmoney.bank.asserts.EntryAssert;
+import pl.telech.tmoney.bank.builder.EntryBuilder;
 import pl.telech.tmoney.bank.helper.AccountHelper;
 import pl.telech.tmoney.bank.helper.CategoryHelper;
 import pl.telech.tmoney.bank.helper.EntryHelper;
@@ -139,7 +140,7 @@ class EntryControllerTest extends BaseMvcTest {
 		// given
 		Account bankAccount = accountHelper.save("Konto bankowe");
 		Category category = categoryHelper.save("Zakupy");
-		Entry entry = entryHelper.build("Entry B2", bankAccount, category, dec("30.00"));
+		Entry entry = new EntryBuilder().name("Entry B2").account(bankAccount).category(category).amount(dec("30.00")).build();
 		EntryDto requestDto = entryMapper.toDto(entry);
 		
 		// when	

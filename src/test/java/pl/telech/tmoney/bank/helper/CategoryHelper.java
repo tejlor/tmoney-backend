@@ -10,13 +10,13 @@ import pl.telech.tmoney.bank.builder.CategoryBuilder;
 import pl.telech.tmoney.bank.model.entity.Category;
 
 @Component
+@Transactional
 public class CategoryHelper {
 
 	@Autowired
 	EntityManager entityManager;
 	
 	
-	@Transactional
 	public Category save(String name) {
 		return new CategoryBuilder()
 			.name(name)
@@ -30,17 +30,11 @@ public class CategoryHelper {
 			.save(entityManager);
 	}
 	
-	@Transactional
 	public Category save(String name, int account) {
 		return new CategoryBuilder()
 			.name(name)
 			.account(account)
 			.save(entityManager);
 	}
-	
-	public Category build(String name) {
-		return new CategoryBuilder()
-			.name(name)
-			.build();
-	}
+
 }

@@ -72,7 +72,7 @@ public class AppLogAspect {
 	}
 	
 	private String getRequestData() throws IOException{
-		HttpServletRequest request = getRequestFromContext(); 
+		ContentCachingRequestWrapper request = getRequestFromContext(); 
 		if(request == null)
 			return "";
 		
@@ -84,7 +84,7 @@ public class AppLogAspect {
 		}
 					
 		if (request.getMethod().equalsIgnoreCase("POST") || request.getMethod().equalsIgnoreCase("PUT")) {
-			sb.append("\nBODY:\n").append(IOUtils.toString(request.getInputStream(), Charset.defaultCharset()));
+			sb.append("\nBODY:\n").append(new String(request.getContentAsByteArray()));
 		}
 		
 		return sb.toString();
@@ -121,9 +121,11 @@ public class AppLogAspect {
 		return sb.toString();
 	}
 	
-	private HttpServletRequest getRequestFromContext(){
+	private ContentCachingRequestWrapper getRequestFromContext(){
 		ServletRequestAttributes requestAttr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-		var request = requestAttr.getRequest();
-		return request;
+		HttpServletRequest request = requestAttr.getRequest();
+		return request instanceof ContentCachingRequestWrapper
+				? (ContentCachingRequestWrapper) request
+				: null;
 	}
 }
