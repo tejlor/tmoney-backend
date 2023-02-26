@@ -10,20 +10,19 @@ import pl.telech.tmoney.bank.builder.AccountBuilder;
 import pl.telech.tmoney.bank.model.entity.Account;
 
 @Component
+@Transactional
 public class AccountHelper {
 
 	@Autowired
 	EntityManager entityManager;
 	
 	
-	@Transactional
 	public Account save(String name) {
 		return new AccountBuilder()
 			.name(name)
 			.save(entityManager);
 	}
 	
-	@Transactional
 	public Account save(String name, String code) {
 		return new AccountBuilder()
 			.name(name)
@@ -31,17 +30,10 @@ public class AccountHelper {
 			.save(entityManager);
 	}
 	
-	@Transactional
 	public Account save(String name, boolean active) {
 		return new AccountBuilder()
 			.name(name)
 			.active(active)
 			.save(entityManager);
-	}
-	
-	public Account build(String name) {
-		return new AccountBuilder()
-			.name(name)
-			.build();
 	}
 }

@@ -81,7 +81,7 @@ public class PdfReportGenerator extends AbstractPdfGenerator {
         
     	var out = new ByteArrayOutputStream();
         var writer = PdfWriter.getInstance(doc, out);
-        writer.setPageEvent(new TableHeaderFooterEventHelper(null, tmoneyVersion, null));
+        writer.setPageEvent(new TableHeaderFooterEventHelper(null, tmoneyVersion));
         doc.open();
         
         createReport(doc, data);

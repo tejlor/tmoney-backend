@@ -1,8 +1,10 @@
 package pl.telech.tmoney.bank.logic.pdf;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.Base64;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
@@ -18,7 +20,6 @@ public class TableHeaderFooterEventHelper extends PdfPageEventHelper {
 
     Account account;
     String version;
-    URL logoUrl;
     
     Font font8gray, font12B;
     Image logo;
@@ -26,10 +27,9 @@ public class TableHeaderFooterEventHelper extends PdfPageEventHelper {
     String dateTime;
     
 
-    public TableHeaderFooterEventHelper(Account account, String version, URL logoUrl) {
+    public TableHeaderFooterEventHelper(Account account, String version) {
     	this.account = account;  
     	this.version = version;
-    	this.logoUrl = logoUrl;
     }
 
     @Override
@@ -51,12 +51,13 @@ public class TableHeaderFooterEventHelper extends PdfPageEventHelper {
         font12B = new Font(bf, 12, Font.BOLD);
     }
     
-    private void initLogo(Document doc) {
-    	if(logoUrl == null) 
+    private void initLogo(Document doc) {   
+    	if (account == null)
     		return;
     	
+    	byte[] decodedString = Base64.getDecoder().decode(new String(account.getLogo().substring(23)).getBytes());
     	try {
-			logo = Image.getInstance(logoUrl);
+			logo = Image.getInstance(decodedString);
 		} 
     	catch (BadElementException | IOException e) {
     		throw new TMoneyException("Cannot load logo image", e);

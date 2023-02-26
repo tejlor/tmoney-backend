@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import pl.telech.tmoney.bank.asserts.AccountAssert;
 import pl.telech.tmoney.bank.asserts.EntryAssert;
+import pl.telech.tmoney.bank.builder.AccountBuilder;
 import pl.telech.tmoney.bank.helper.AccountHelper;
 import pl.telech.tmoney.bank.helper.EntryHelper;
 import pl.telech.tmoney.bank.mapper.AccountMapper;
@@ -19,6 +20,9 @@ import pl.telech.tmoney.bank.model.dto.AccountDto;
 import pl.telech.tmoney.bank.model.dto.AccountSummaryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Entry;
+import pl.telech.tmoney.commons.model.dto.TableDataDto;
+import pl.telech.tmoney.commons.model.dto.TableDataDto.TableInfoDto;
+import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.utils.BaseMvcTest;
 
 
@@ -36,9 +40,22 @@ class AccountControllerTest extends BaseMvcTest {
 	AccountMapper accountMapper;
 	
 	@Test
+	void getById() throws Exception {	
+		// given
+		Account account = accountHelper.save("Konto bankowe");
+		
+		// when
+		AccountDto responseDto = get(baseUrl + "/" + account.getId(), AccountDto.class);
+		
+		// then	
+		AccountAssert.assertThatDto(responseDto)
+			.isMappedFrom(account);
+	}
+	
+	@Test
 	void getByCode() throws Exception {	
 		// given
-		Account account = accountHelper.save("Konto bankowe", "bank1");
+		Account account = accountHelper.save("Konto bankowe", "BANK");
 		
 		// when
 		AccountDto responseDto = get(baseUrl + "/" + account.getCode(), AccountDto.class);
@@ -49,14 +66,33 @@ class AccountControllerTest extends BaseMvcTest {
 	}
 	
 	@Test
-	void getActive() throws Exception {	
+	void getAll() throws Exception {	
 		// given
 		Account account0 = accountHelper.save("Konto bankowe", true);	
 		Account account1 = accountHelper.save("Dom", true);
-		accountHelper.save("IKE", false);
+		Account account2 = accountHelper.save("IKE", false);
 		
 		// when
 		List<AccountDto> response = get(baseUrl, new TypeReference<List<AccountDto>>() {});
+		
+		// then	
+		assertThat(response).hasSize(3);
+		AccountAssert.assertThatDto(response.get(0)).isMappedFrom(account0);
+		AccountAssert.assertThatDto(response.get(1)).isMappedFrom(account1);
+		AccountAssert.assertThatDto(response.get(2)).isMappedFrom(account2);
+	}
+	
+	@Test
+	void getAll_active() throws Exception {	
+		// given
+		Account account0 = accountHelper.save("Konto bankowe", true);	
+		Account account1 = accountHelper.save("Dom", true);
+		@SuppressWarnings("unused")
+		Account account2 = accountHelper.save("IKE", false);
+		
+		// when
+		String url = String.format(baseUrl + "?active=%s", true);
+		List<AccountDto> response = get(url, new TypeReference<List<AccountDto>>() {});
 		
 		// then	
 		assertThat(response).hasSize(2);
@@ -65,9 +101,45 @@ class AccountControllerTest extends BaseMvcTest {
 	}
 	
 	@Test
+	void getTable() throws Exception {	
+		// given
+		accountHelper.save("Konto bankowe"); // 1
+		accountHelper.save("Dom");
+		accountHelper.save("Konto firmowe"); // 2
+		accountHelper.save("Konto stare"); // 4
+		accountHelper.save("Konto maklerskie"); // 3
+		accountHelper.save("IKE");
+		accountHelper.save("IKZE");
+		
+		// when
+		String url = String.format(baseUrl + "/table?pageNo=%d&pageSize=%d&filter=%s&sortBy=%s", 1, 2, "kon", "name ASC");
+		TableDataDto<AccountDto> result = get(url, new TypeReference<TableDataDto<AccountDto>>() {});	
+		
+		// then
+		assertThat(result).isNotNull();
+
+		TableParams tableParams = result.getTableParams();
+		assertThat(tableParams.getPageNo()).isEqualTo(1);
+		assertThat(tableParams.getPageSize()).isEqualTo(2);
+		assertThat(tableParams.getFilter()).isEqualTo("kon");
+		assertThat(tableParams.getSortBy()).isEqualTo("name ASC");
+		
+		TableInfoDto tableInfo = result.getTableInfo();
+		assertThat(tableInfo.getPageCount()).isEqualTo(2);
+		assertThat(tableInfo.getRowCount()).isEqualTo(4);
+		assertThat(tableInfo.getRowStart()).isEqualTo(3);
+		assertThat(tableInfo.getRowEnd()).isEqualTo(4);
+		
+		List<AccountDto> rows = result.getRows();
+		assertThat(rows).hasSize(2);
+		assertThat(rows.get(0).getName()).isEqualTo("Konto maklerskie");
+		assertThat(rows.get(1).getName()).isEqualTo("Konto stare");
+	}
+	
+	@Test
 	void create() throws Exception {	
 		// given
-		Account account = accountHelper.build("Konto bankowe");
+		Account account = new AccountBuilder().name("Konto bankowe").build();
 		AccountDto requestDto = accountMapper.toDto(account);
 		
 		// when
