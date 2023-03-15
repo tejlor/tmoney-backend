@@ -42,30 +42,12 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 	@Qualifier("authenticationManagerBean")
 	AuthenticationManager authenticationManager;
 	
-    @Autowired
-    DataSource dataSource;
-	
 	@Autowired
 	UserLogic userLogic;
+	
+	@Autowired
+	TokenStore tokenStore;
 
-    @Bean
-    public TokenStore tokenStore() {
-        var tokenStore = new JdbcTokenStore(dataSource);
-        tokenStore.setInsertAccessTokenSql("INSERT INTO auth.access_token (token_id, token, authentication_id, user_name, client_id, authentication, refresh_token) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        tokenStore.setSelectAccessTokenSql("SELECT token_id, token FROM auth.access_token WHERE token_id = ?");
-        tokenStore.setSelectAccessTokenAuthenticationSql("SELECT token_id, authentication FROM auth.access_token WHERE token_id = ?");
-        tokenStore.setSelectAccessTokenFromAuthenticationSql("SELECT token_id, token FROM auth.access_token WHERE authentication_id = ?");
-        tokenStore.setSelectAccessTokensFromUserNameAndClientIdSql("SELECT token_id, token FROM auth.access_token WHERE user_name = ? AND client_id = ?");
-        tokenStore.setSelectAccessTokensFromUserNameSql("SELECT token_id, token FROM auth.access_token WHERE user_name = ?");
-        tokenStore.setSelectAccessTokensFromClientIdSql("SELECT token_id, token FROM auth.access_token WHERE client_id = ?");
-        tokenStore.setDeleteAccessTokenSql("DELETE FROM auth.access_token WHERE token_id = ?");
-        tokenStore.setDeleteAccessTokenFromRefreshTokenSql("DELETE FROM auth.access_token WHERE refresh_token = ?");
-        tokenStore.setInsertRefreshTokenSql("INSERT INTO auth.refresh_token (token_id, token, authentication) VALUES (?, ?, ?)");
-        tokenStore.setSelectRefreshTokenSql("SELECT token_id, token FROM auth.refresh_token WHERE token_id = ?");
-        tokenStore.setSelectRefreshTokenAuthenticationSql("SELECT token_id, authentication FROM auth.refresh_token WHERE token_id = ?");
-        tokenStore.setDeleteRefreshTokenSql("DELETE FROM auth.refresh_token WHERE token_id = ?");      
-        return tokenStore;
-    }
 	
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -88,7 +70,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 		endpoints
-			.tokenStore(tokenStore())
+			.tokenStore(tokenStore)
 			.authenticationManager(authenticationManager).userDetailsService((UserDetailsService) userLogic);
 	}
 }
