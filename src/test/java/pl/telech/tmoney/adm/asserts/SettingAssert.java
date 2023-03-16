@@ -1,29 +1,24 @@
 package pl.telech.tmoney.adm.asserts;
 
-import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.api.SoftAssertions;
+import org.apache.commons.lang3.tuple.Pair;
 
 import pl.telech.tmoney.adm.model.dto.SettingDto;
 import pl.telech.tmoney.adm.model.entity.Setting;
+import pl.telech.tmoney.commons.asserts.EntityAssert;
 
 
-public class SettingAssert extends AbstractAssert<SettingAssert, SettingDto> {
+public class SettingAssert extends EntityAssert<Setting, SettingDto> {
 
-	private SettingAssert(SettingDto actual) {
-		super(actual, SettingAssert.class);
+	private SettingAssert(SettingDto result) {
+		super(result);
+		
+		addCondition("firstName", 	Pair.of(Setting::getName, SettingDto::getName));
+		addCondition("lastName", 	Pair.of(Setting::getValue, SettingDto::getValue));
+
 	}
 	
-	public static SettingAssert assertThat(SettingDto actual) {
-		return new SettingAssert(actual);
-	}
-	
-	public SettingAssert isEqualTo(Setting entity) {
-		var asserts = new SoftAssertions();
-		asserts.assertThat(actual.getId()).isEqualTo(entity.getId());
-		asserts.assertThat(actual.getName()).isEqualTo(entity.getName());
-		asserts.assertThat(actual.getValue()).isEqualTo(entity.getValue());
-		asserts.assertAll();
-		return this;
+	public static SettingAssert assertThatDto(SettingDto result) {
+		return new SettingAssert(result);
 	}
 		
 }

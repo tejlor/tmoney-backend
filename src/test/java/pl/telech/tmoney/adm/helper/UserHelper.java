@@ -1,4 +1,4 @@
-package pl.telech.tmoney.adm;
+package pl.telech.tmoney.adm.helper;
 
 import javax.persistence.EntityManager;
 

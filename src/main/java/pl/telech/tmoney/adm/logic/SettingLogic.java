@@ -1,8 +1,6 @@
 package pl.telech.tmoney.adm.logic;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -28,10 +26,6 @@ public class SettingLogic extends AbstractLogic<Setting> {
 		super.dao = this.dao;
 	}
 	
-	public List<Setting> loadSafe(){
-		return loadAll().stream()
-				.collect(Collectors.toList());
-	}
 
 	public int loadIntValue(String name) {
 		int value = 0;
@@ -79,8 +73,6 @@ public class SettingLogic extends AbstractLogic<Setting> {
 	public String loadStringValue(String name) {
 		return loadValue(name);
 	}
-	
-	// ################################### PRIVATE #########################################################################
 	
 	private String loadValue(String name) {
 		Setting setting = dao.findByName(name);

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import pl.telech.tmoney.bank.dao.EntryDAO;
+import pl.telech.tmoney.bank.logic.tag.EntryTagCalculator;
 import pl.telech.tmoney.bank.mapper.EntryMapper;
 import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
@@ -32,6 +33,7 @@ public class EntryLogic extends AbstractLogic<Entry> {
 	final EntryDAO dao;
 	final AccountLogic accountLogic;
 	final EntryMapper mapper;
+	final EntryTagCalculator entryTagCalculator;
 	
 	@PostConstruct
 	public void init() {
@@ -72,6 +74,7 @@ public class EntryLogic extends AbstractLogic<Entry> {
 	
 	public Entry create(EntryDto entryDto) {
 		Entry entry = mapper.create(entryDto);
+		replaceTagsWithValues(entry);
 		entry = saveAndFlush(entry);
 		updateBalances();
 		reload(entry);
@@ -81,10 +84,15 @@ public class EntryLogic extends AbstractLogic<Entry> {
 	public Entry update(int id, EntryDto entryDto) {
 		Entry entry = loadById(id);
 		mapper.update(entry, entryDto);	
+		replaceTagsWithValues(entry);
 		entry = saveAndFlush(entry);
 		updateBalances();
 		reload(entry);
 		return entry;
+	}
+	
+	private void replaceTagsWithValues(Entry entry) {
+		entry.setDescription(entryTagCalculator.replaceTagsWithValues(entry.getDescription(), entry.getDate()));
 	}
 	
 	public void delete(int id) {

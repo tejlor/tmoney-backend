@@ -1,8 +1,5 @@
 package pl.telech.tmoney.adm.mapper;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -12,27 +9,32 @@ import pl.telech.tmoney.adm.asserts.SettingAssert;
 import pl.telech.tmoney.adm.builder.SettingBuilder;
 import pl.telech.tmoney.adm.model.dto.SettingDto;
 import pl.telech.tmoney.adm.model.entity.Setting;
+import pl.telech.tmoney.commons.builder.AbstractBuilder;
+import pl.telech.tmoney.commons.mapper.EntityMapper;
+import pl.telech.tmoney.commons.mapper.EntityMapperTest;
 
 @ExtendWith(SpringExtension.class)
 @Import({SettingBuilder.class, SettingMapperImpl.class})
-public class SettingMapperTest {
+public class SettingMapperTest extends EntityMapperTest<Setting, SettingDto> {
 
 	@Autowired
 	SettingBuilder builder;
 
 	@Autowired
 	SettingMapper mapper;
+	
+	@Override
+	protected AbstractBuilder<Setting> getBuilder() {
+		return builder;
+	}
 
-	@Test
-	public void testToDto() {
-		// given
-		Setting setting = builder.build();
+	@Override
+	protected EntityMapper<Setting, SettingDto> getMapper() {
+		return mapper;
+	}
 
-		// when
-		SettingDto result = mapper.toDto(setting);
-
-		// then
-		assertThat(result).isNotNull();
-		SettingAssert.assertThat(result).isEqualTo(setting);
+	@Override
+	protected Class<SettingAssert> getAssertionsClass() {
+		return SettingAssert.class;
 	}
 }
