@@ -18,12 +18,12 @@ public interface AccountDAO extends DAO<Account>, JpaSpecificationExecutor<Accou
 	Account findByCode(String code);
 	
 	default List<Account> findAll(boolean onlyActive) {
-		return findAll(BY_ORDER_NO, 
+		return findMany(BY_ORDER_NO, 
 				onlyActive ? isActive() : null);
 	}
 	
 	default Pair<List<Account>, Integer> findTable(TableParams tableParams) {
-		return findAllWithCount(
+		return findManyWithCount(
 				null,
 				tableParams.getPage(),
 				tableParams.getFilter() != null ? isLike(tableParams.getFilter()) : null

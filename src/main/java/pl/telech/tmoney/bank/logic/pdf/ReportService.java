@@ -119,7 +119,6 @@ public class ReportService {
 		BigDecimal balance = initialBalance;
 		
 		for(MonthData month : months) {
-			System.out.println(month.getMonth().name() + " " + balance + " " + month.calcProfit());
 			balance = balance.add(month.calcProfit());
 			month.setBalance(balance);
 		}

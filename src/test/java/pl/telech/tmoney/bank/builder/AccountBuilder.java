@@ -11,7 +11,8 @@ public class AccountBuilder extends AbstractBuilder<Account> {
 	
 	String name = "Dom";
 	String code = "HOME";
-	boolean active = true;			
+	boolean active = true;	
+	boolean includeInSummary = true;
 	String color = "45FFC9";		
 	String lightColor = "45FFCC";		
 	String darkColor = "45FFCF";		
@@ -26,6 +27,7 @@ public class AccountBuilder extends AbstractBuilder<Account> {
 		obj.setName(name);
 		obj.setCode(code);
 		obj.setActive(active);
+		obj.setIncludeInSummary(includeInSummary);
 		obj.setColor(color);
 		obj.setLightColor(lightColor);
 		obj.setDarkColor(darkColor);

@@ -43,12 +43,13 @@ public class EntryDAOTest {
 	@Autowired
 	EntryHelper entryHelper;
 	
-	private static Integer accountHomeId, accountBankId, categoryCarId;
+	private Integer accountHomeId, accountBankId, categoryCarId;
 	
 	@BeforeEach
 	public void initDB() {
-		Account accountHome = accountHelper.save("Dom");
-		Account accountBank = accountHelper.save("Konto bankowe");	
+		Account accountHome = accountHelper.save("Dom", true, true);
+		Account accountBank = accountHelper.save("Konto bankowe", true, true);	
+		Account accountIkze = accountHelper.save("IKZE", true, false);	
 		accountHomeId = accountHome.getId();
 		accountBankId = accountBank.getId();
 		
@@ -60,6 +61,7 @@ public class EntryDAOTest {
 		categoryCarId = categoryCar.getId();
 		
 		entryHelper.save("Przelew na giełdę", 	date("2022-01-01"), accountBank, categoryStock, 		dec("-25 000.00"));
+		entryHelper.save("Przelew na IKE", 		date("2022-01-01"), accountIkze, categoryStock, 		dec(" -9 000.00"));
 		entryHelper.save("Odsetki z giełdy",	date("2022-01-02"), accountBank, categoryStock, 		dec("    250.00"));
 		entryHelper.save("Podatki", 			date("2022-01-05"), accountBank, categoryWork, 			dec(" -1 230.00"));
 		entryHelper.save("Wypłata", 			date("2022-01-10"), accountBank, categoryWork, 			dec(" 10 000.00"));

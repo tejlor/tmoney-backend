@@ -24,6 +24,8 @@ public class AccountDto extends AbstractDto {
 	
 	boolean active;
 	
+	boolean includeInSummary;
+	
 	@Size(max = 6)
 	@Pattern(regexp = "[A-Z0-9]{6}")
 	String color;

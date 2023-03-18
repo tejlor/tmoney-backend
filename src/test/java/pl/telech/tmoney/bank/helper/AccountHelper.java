@@ -36,4 +36,12 @@ public class AccountHelper {
 			.active(active)
 			.save(entityManager);
 	}
+	
+	public Account save(String name, boolean active, boolean includeInSummary) {
+		return new AccountBuilder()
+			.name(name)
+			.active(active)
+			.includeInSummary(includeInSummary)
+			.save(entityManager);
+	}
 }
