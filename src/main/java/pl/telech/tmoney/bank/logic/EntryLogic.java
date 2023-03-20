@@ -1,5 +1,6 @@
 package pl.telech.tmoney.bank.logic;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import pl.telech.tmoney.bank.logic.tag.EntryTagCalculator;
 import pl.telech.tmoney.bank.mapper.EntryMapper;
 import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
+import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.commons.logic.AbstractLogic;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
@@ -74,21 +76,13 @@ public class EntryLogic extends AbstractLogic<Entry> {
 	
 	public Entry create(EntryDto entryDto) {
 		Entry entry = mapper.create(entryDto);
-		replaceTagsWithValues(entry);
-		entry = saveAndFlush(entry);
-		updateBalances();
-		reload(entry);
-		return entry;
+		return saveAndRecalculate(entry);
 	}
 	
 	public Entry update(int id, EntryDto entryDto) {
 		Entry entry = loadById(id);
 		mapper.update(entry, entryDto);	
-		replaceTagsWithValues(entry);
-		entry = saveAndFlush(entry);
-		updateBalances();
-		reload(entry);
-		return entry;
+		return saveAndRecalculate(entry);
 	}
 	
 	private void replaceTagsWithValues(Entry entry) {
@@ -111,6 +105,14 @@ public class EntryLogic extends AbstractLogic<Entry> {
 		if (!TUtils.isJUnit(environment)) {
 			dao.updateBalances();
 		}
+	}
+	
+	public Entry saveAndRecalculate(Entry entry) {	
+		replaceTagsWithValues(entry);
+		entry = saveAndFlush(entry);
+		updateBalances();
+		reload(entry);
+		return entry;
 	}
 		
 }

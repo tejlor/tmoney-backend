@@ -1,5 +1,6 @@
 package pl.telech.tmoney.bank.model.dto;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -25,6 +26,9 @@ public class AccountDto extends AbstractDto {
 	boolean active;
 	
 	boolean includeInSummary;
+	
+	@Valid
+	CategoryDto balancingCategory;
 	
 	@Size(max = 6)
 	@Pattern(regexp = "[A-Z0-9]{6}")

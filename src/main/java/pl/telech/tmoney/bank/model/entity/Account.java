@@ -1,8 +1,6 @@
 package pl.telech.tmoney.bank.model.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,6 +30,10 @@ public class Account extends AbstractEntity {
 	
 	@Column(nullable = false)
 	boolean includeInSummary;	// entries should be included in summary table and balance (not for ike / ikze)
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "balancingCategoryId")
+	Category balancingCategory;	// category using to balance account
 	
 	@Column(length = 6) 
 	String color;				// color in 000000 format

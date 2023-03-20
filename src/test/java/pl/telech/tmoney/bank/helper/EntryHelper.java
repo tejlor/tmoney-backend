@@ -69,16 +69,16 @@ public class EntryHelper {
 //			.save(entityManager);
 //	}
 	
-//	public Entry save(String name, Account account, String date, String amount, String balance, String balanceOverall) {
-//		return new EntryBuilder()
-//			.name(name)
-//			.account(account)
-//			.date(LocalDate.parse(date))
-//			.amount(new BigDecimal(amount))
-//			.balance(new BigDecimal(balance))
-//			.balanceOverall(new BigDecimal(balanceOverall))
-//			.save(entityManager);
-//	}
+	@Transactional
+	public Entry save(String name, Account account, Category category, LocalDate date, BigDecimal balance) {
+		return new EntryBuilder()
+			.name(name)
+			.account(account)
+			.category(category)
+			.date(date)
+			.balance(balance)
+			.save(entityManager);
+	}
 	
 	public Entry save(String name, LocalDate date, Account account, Category category, BigDecimal amount) {
 		return new EntryBuilder()

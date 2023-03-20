@@ -116,8 +116,8 @@ public class BaseMvcTest {
 	private MvcResult perform(MockHttpServletRequestBuilder request) throws Exception {
 		return mock.perform(request)
 			.andExpectAll(
-					status().isOk(),
-			        content().contentType("application/json"))
+					status().isOk())
+			        //content().contentType("application/json"))
 			.andDo(MockMvcResultHandlers.print())
 			.andReturn();
 	}

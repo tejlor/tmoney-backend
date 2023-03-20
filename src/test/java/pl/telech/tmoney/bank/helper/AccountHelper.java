@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import pl.telech.tmoney.bank.builder.AccountBuilder;
 import pl.telech.tmoney.bank.model.entity.Account;
+import pl.telech.tmoney.bank.model.entity.Category;
 
 @Component
 @Transactional
@@ -42,6 +43,13 @@ public class AccountHelper {
 			.name(name)
 			.active(active)
 			.includeInSummary(includeInSummary)
+			.save(entityManager);
+	}
+	
+	public Account save(String name, Category balancingCategory) {
+		return new AccountBuilder()
+			.name(name)
+			.balancingCategory(balancingCategory)
 			.save(entityManager);
 	}
 }

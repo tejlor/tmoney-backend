@@ -16,6 +16,7 @@ public class AccountAssert extends EntityAssert<Account, AccountDto> {
 		addCondition("code", 				Pair.of(Account::getCode, AccountDto::getCode));
 		addCondition("active", 				Pair.of(Account::isActive, AccountDto::isActive));
 		addCondition("includeInSummary", 	Pair.of(Account::isIncludeInSummary, AccountDto::isIncludeInSummary));
+		addCondition("balancingCategory",	Pair.of(entity -> entity.getBalancingCategory(), dto -> dto.getBalancingCategory()));
 		addCondition("color", 				Pair.of(Account::getColor, AccountDto::getColor));
 		addCondition("lightColor", 			Pair.of(Account::getLightColor, AccountDto::getLightColor));
 		addCondition("darkColor", 			Pair.of(Account::getDarkColor, AccountDto::getDarkColor));

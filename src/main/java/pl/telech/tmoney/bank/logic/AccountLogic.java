@@ -17,6 +17,7 @@ import pl.telech.tmoney.bank.dao.AccountDAO;
 import pl.telech.tmoney.bank.dao.EntryDAO;
 import pl.telech.tmoney.bank.logic.validator.AccountValidator;
 import pl.telech.tmoney.bank.mapper.AccountMapper;
+import pl.telech.tmoney.bank.model.data.BalanceRequest;
 import pl.telech.tmoney.bank.model.dto.AccountDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Entry;
@@ -100,5 +101,10 @@ public class AccountLogic extends AbstractLogic<Account> {
 					return Pair.of(account, entry);
 				})
 				.collect(Collectors.toList());
+	}
+	
+	public void balanceAccount(BalanceRequest request) {
+		Account account = loadById(request.getAccountId());
+		
 	}
 }

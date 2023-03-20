@@ -14,7 +14,7 @@ import pl.telech.tmoney.commons.mapper.EntityMapper;
 import pl.telech.tmoney.commons.mapper.EntityMapperTest;
 
 @ExtendWith(SpringExtension.class)
-@Import({AccountBuilder.class, AccountMapperImpl.class})
+@Import({AccountBuilder.class, AccountMapperImpl.class, CategoryMapperImpl.class})
 public class AccountMapperTest extends EntityMapperTest<Account, AccountDto> {
 
 	@Autowired

@@ -10,7 +10,7 @@ import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.commons.mapper.EntityMapper;
 import pl.telech.tmoney.commons.mapper.EntityMapperConfig;
 
-@Mapper(config = EntityMapperConfig.class)
+@Mapper(config = EntityMapperConfig.class, uses = CategoryMapper.class)
 public interface AccountMapper extends EntityMapper<Account, AccountDto> {
 	
 	AccountDto toDto(Account entity);
@@ -22,9 +22,11 @@ public interface AccountMapper extends EntityMapper<Account, AccountDto> {
 
 	@Named("create")
 	@InheritConfiguration(name = "create")
+	@Mapping(target = "balancingCategory", qualifiedByName = "toEntity")
 	Account create(AccountDto dto);
 	
-	@Mapping(target = "code", ignore = true)
 	@InheritConfiguration(name = "update")
+	@Mapping(target = "code", ignore = true)
+	@Mapping(target = "balancingCategory", qualifiedByName = "toEntity")
 	Account update(@MappingTarget Account entity, AccountDto dto);
 }
