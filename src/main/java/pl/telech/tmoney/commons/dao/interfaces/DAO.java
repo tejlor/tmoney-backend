@@ -19,29 +19,25 @@ public interface DAO<T extends AbstractEntity> extends JpaRepository<T, Integer>
 
 	T findOne(Specification<T> ...spec);
 	
-	T findOne(Pageable page, Specification<T> ...spec);
-	
 	T findOne(String entityGraphName, Specification<T> ...spec);
-	
-	T findOne(String entityGraphName, Pageable page, Specification<T> ...spec);
 
-	List<T> findAllById();
+	List<T> findManyById();
 	
-	List<T> findAll(Specification<T> ...spec);
+	List<T> findMany(Specification<T> ...spec);
 	
-	List<T> findAll(String entityGraphName, Specification<T> ...spec);
+	List<T> findMany(String entityGraphName, Specification<T> ...spec);
 	
-	List<T> findAll(Sort sort, Specification<T> ...spec);
+	List<T> findMany(Sort sort, Specification<T> ...spec);
 	
-	List<T> findAll(Pageable page, Specification<T> ...spec);
+	List<T> findMany(Pageable page, Specification<T> ...spec);
 	
-	List<T> findAll(String entityGraphName, Sort sort, Specification<T> ...spec);
+	List<T> findMany(String entityGraphName, Sort sort, Specification<T> ...spec);
 	
-	List<T> findAll(String entityGraphName, Pageable page, Specification<T> ...spec);
+	List<T> findMany(String entityGraphName, Pageable page, Specification<T> ...spec);
 	
-	Pair<List<T>, Integer> findAllWithCount(Pageable page, Specification<T> ...spec);
+	Pair<List<T>, Integer> findManyWithCount(Pageable page, Specification<T> ...spec);
 	
-	Pair<List<T>, Integer> findAllWithCount(String entityGraphName, Pageable page, Specification<T> ...spec);
+	Pair<List<T>, Integer> findManyWithCount(String entityGraphName, Pageable page, Specification<T> ...spec);
 
 	void detach(T entity);
 

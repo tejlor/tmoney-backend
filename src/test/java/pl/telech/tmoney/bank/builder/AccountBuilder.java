@@ -3,6 +3,7 @@ package pl.telech.tmoney.bank.builder;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.telech.tmoney.bank.model.entity.Account;
+import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.commons.builder.AbstractBuilder;
 
 @Setter
@@ -11,7 +12,9 @@ public class AccountBuilder extends AbstractBuilder<Account> {
 	
 	String name = "Dom";
 	String code = "HOME";
-	boolean active = true;			
+	boolean active = true;	
+	boolean includeInSummary = true;
+	Category balancingCategory = null;
 	String color = "45FFC9";		
 	String lightColor = "45FFCC";		
 	String darkColor = "45FFCF";		
@@ -26,12 +29,14 @@ public class AccountBuilder extends AbstractBuilder<Account> {
 		obj.setName(name);
 		obj.setCode(code);
 		obj.setActive(active);
+		obj.setIncludeInSummary(includeInSummary);
 		obj.setColor(color);
 		obj.setLightColor(lightColor);
 		obj.setDarkColor(darkColor);
 		obj.setOrderNo(orderNo);
 		obj.setIcon(icon);
 		obj.setLogo(logo);
+		obj.setBalancingCategory(balancingCategory);
 		return obj;	
 	}
 }

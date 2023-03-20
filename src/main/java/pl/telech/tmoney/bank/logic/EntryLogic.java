@@ -1,5 +1,6 @@
 package pl.telech.tmoney.bank.logic;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -12,9 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import pl.telech.tmoney.bank.dao.EntryDAO;
+import pl.telech.tmoney.bank.logic.tag.EntryTagCalculator;
 import pl.telech.tmoney.bank.mapper.EntryMapper;
 import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
+import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.commons.logic.AbstractLogic;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
@@ -32,6 +35,7 @@ public class EntryLogic extends AbstractLogic<Entry> {
 	final EntryDAO dao;
 	final AccountLogic accountLogic;
 	final EntryMapper mapper;
+	final EntryTagCalculator entryTagCalculator;
 	
 	@PostConstruct
 	public void init() {
@@ -72,19 +76,17 @@ public class EntryLogic extends AbstractLogic<Entry> {
 	
 	public Entry create(EntryDto entryDto) {
 		Entry entry = mapper.create(entryDto);
-		entry = saveAndFlush(entry);
-		updateBalances();
-		reload(entry);
-		return entry;
+		return saveAndRecalculate(entry);
 	}
 	
 	public Entry update(int id, EntryDto entryDto) {
 		Entry entry = loadById(id);
 		mapper.update(entry, entryDto);	
-		entry = saveAndFlush(entry);
-		updateBalances();
-		reload(entry);
-		return entry;
+		return saveAndRecalculate(entry);
+	}
+	
+	private void replaceTagsWithValues(Entry entry) {
+		entry.setDescription(entryTagCalculator.replaceTagsWithValues(entry.getDescription(), entry.getDate()));
 	}
 	
 	public void delete(int id) {
@@ -103,6 +105,14 @@ public class EntryLogic extends AbstractLogic<Entry> {
 		if (!TUtils.isJUnit(environment)) {
 			dao.updateBalances();
 		}
+	}
+	
+	public Entry saveAndRecalculate(Entry entry) {	
+		replaceTagsWithValues(entry);
+		entry = saveAndFlush(entry);
+		updateBalances();
+		reload(entry);
+		return entry;
 	}
 		
 }

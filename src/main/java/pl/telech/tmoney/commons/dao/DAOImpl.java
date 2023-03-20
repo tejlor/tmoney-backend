@@ -2,6 +2,7 @@ package pl.telech.tmoney.commons.dao;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -22,78 +23,55 @@ import pl.telech.tmoney.commons.model.entity.AbstractEntity;
  */
 public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, Integer> implements DAO<T> {
 
-	EntityManager entityManager;
+	final EntityManager entityManager;
+	
 
 	public DAOImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager){
 		super(entityInformation, entityManager);
 		this.entityManager = entityManager;
 	}
-	
+		
 	@Override
-	@SuppressWarnings("unchecked")
 	public T findOne(Specification<T> ...spec) {
-        return findOne(null, null, spec);
+        return findOne(null, spec);
     }
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	public T findOne(String entityGraphName, Specification<T> ...spec) {
-        return findOne(entityGraphName, null, spec);
-    }
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public T findOne(Pageable page, Specification<T> ...spec) {
-        return findOne(null, page, spec);
-    }
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public T findOne(String entityGraphName, Pageable page, Specification<T> ...spec) {
-        TypedQuery<T> query = getQuery(conjunction(spec), page);
-        if(entityGraphName != null)
+        TypedQuery<T> query = getQuery(conjunction(spec), (Sort) null);
+        if (entityGraphName != null) {
         	query.setHint(EntityGraphType.FETCH.getKey(), entityManager.getEntityGraph(entityGraphName));
-        
-        if(page.isPaged()) {
-	    	query.setFirstResult((int)page.getOffset());
-	    	query.setMaxResults(page.getPageSize());
-	    }
-        
+        }          
         return query.getSingleResult();
     }
 	
 	@Override
-	public List<T> findAllById() {
-		return getQuery(null, Sort.by("id")).getResultList();
+	public List<T> findManyById() {
+		return findMany(null, Sort.by(AbstractEntity.Fields.id), (Specification<T>) null);
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
-	public List<T> findAll(Specification<T> ...spec) {
-	    return findAll(null, (Sort) null, spec);
+	public List<T> findMany(Specification<T> ...spec) {
+	    return findMany(null, (Sort) null, spec);
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
-	public List<T> findAll(Sort sort, Specification<T> ...spec) {
-		 return findAll(null, sort, spec);
+	public List<T> findMany(Sort sort, Specification<T> ...spec) {
+		 return findMany(null, sort, spec);
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
-	public List<T> findAll(Pageable page, Specification<T> ...spec) {
-		 return findAll(null, page, spec);
+	public List<T> findMany(Pageable page, Specification<T> ...spec) {
+		 return findMany(null, page, spec);
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
-	public List<T> findAll(String entityGraphName, Specification<T> ...spec) {
-		 return findAll(entityGraphName, Sort.unsorted(), spec);
+	public List<T> findMany(String entityGraphName, Specification<T> ...spec) {
+		 return findMany(entityGraphName, Sort.unsorted(), spec);
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
-	public List<T> findAll(String entityGraphName, Sort sort, Specification<T> ...spec) {
+	public List<T> findMany(String entityGraphName, Sort sort, Specification<T> ...spec) {
 	    TypedQuery<T> query = getQuery(conjunction(spec), sort);
 	    if(entityGraphName != null)
 	    	query.setHint(EntityGraphType.FETCH.getKey(), entityManager.getEntityGraph(entityGraphName));
@@ -102,8 +80,7 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
-	public List<T> findAll(String entityGraphName, Pageable page, Specification<T> ...spec) {
+	public List<T> findMany(String entityGraphName, Pageable page, Specification<T> ...spec) {
 	    TypedQuery<T> query = getQuery(conjunction(spec), page);
 	    if(entityGraphName != null)
 	    	query.setHint(EntityGraphType.FETCH.getKey(), entityManager.getEntityGraph(entityGraphName));
@@ -117,14 +94,12 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
-	public Pair<List<T>, Integer> findAllWithCount(Pageable page, Specification<T> ...spec) {
-		 return findAllWithCount(null, page, spec);
+	public Pair<List<T>, Integer> findManyWithCount(Pageable page, Specification<T> ...spec) {
+		 return findManyWithCount(null, page, spec);
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
-	public Pair<List<T>, Integer> findAllWithCount(String entityGraphName, Pageable page, Specification<T> ...spec) {
+	public Pair<List<T>, Integer> findManyWithCount(String entityGraphName, Pageable page, Specification<T> ...spec) {
 	    Specification<T> specSum = conjunction(spec);
 		TypedQuery<T> query = getQuery(specSum, page);
 	    if(entityGraphName != null)
@@ -137,9 +112,9 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
 	}
 	
 	@SafeVarargs
-	private final Specification<T> conjunction(Specification<T> ...specs){
+	private Specification<T> conjunction(Specification<T> ...specs){
 		return Arrays.stream(specs)
-			.filter(s -> s != null)
+			.filter(Objects::nonNull)
 			.reduce(Specification::and)
 			.orElse(null);
 	}

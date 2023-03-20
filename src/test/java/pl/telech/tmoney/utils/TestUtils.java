@@ -9,7 +9,7 @@ import lombok.experimental.UtilityClass;
 public class TestUtils {
 
 	public BigDecimal dec(String str) {
-		return new BigDecimal(str.replace(" ", ""));
+		return new BigDecimal(str.replace(" ", "").replace(",", "."));
 	}
 	
 	public LocalDate date(String str) {

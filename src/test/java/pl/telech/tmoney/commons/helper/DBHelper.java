@@ -21,6 +21,11 @@ public class DBHelper {
 		return entityManager.find(clazz, id);
 	}
 	
+	public <T extends AbstractEntity> List<T> loadAll(Class<T> clazz) {
+		return entityManager.createQuery("SELECT x FROM " + clazz.getSimpleName() + " x", clazz)
+				.getResultList();
+	}
+	
 	public <T extends AbstractEntity> void reload(T entity) {
 		entityManager.refresh(entity);
 	}

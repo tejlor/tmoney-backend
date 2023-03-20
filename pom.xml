@@ -3,7 +3,7 @@
 	<groupId>pl.telech.tmoney</groupId>
 	<artifactId>tmoney</artifactId>
 	<name>tmoney</name>
-	<version>3.1.0</version>
+	<version>3.2.0</version>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -13,7 +13,8 @@
 
 	<properties>
 		<java.version>11</java.version>
-		
+
+		<commons-collections.version>3.2.2</commons-collections.version>		
 		<commons-io.version>2.5</commons-io.version>
 		<itextpdf.version>5.1.2</itextpdf.version>
 		<jfreechart.version>1.0.19</jfreechart.version>
@@ -77,6 +78,11 @@
 
 		<!-- Apache Commons -->
 
+		<dependency>
+		    <groupId>commons-collections</groupId>
+		    <artifactId>commons-collections</artifactId>
+		    <version>${commons-collections.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>

@@ -38,10 +38,10 @@ function commit_version {
 	git add .
 	git ci -m "Wersja ${OPTARG}"
 	git tag ${OPTARG}
-	git push
-	git co master
-	git merge dev
 	git push --tags
+	git co master
+	git merge --ff-only --no-edit dev
+	git push
 	git co dev
 }
 

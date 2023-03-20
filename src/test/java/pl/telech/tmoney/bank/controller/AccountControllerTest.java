@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static pl.telech.tmoney.utils.TestUtils.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,16 @@ import pl.telech.tmoney.bank.asserts.AccountAssert;
 import pl.telech.tmoney.bank.asserts.EntryAssert;
 import pl.telech.tmoney.bank.builder.AccountBuilder;
 import pl.telech.tmoney.bank.helper.AccountHelper;
+import pl.telech.tmoney.bank.helper.CategoryHelper;
 import pl.telech.tmoney.bank.helper.EntryHelper;
 import pl.telech.tmoney.bank.mapper.AccountMapper;
+import pl.telech.tmoney.bank.model.data.BalanceRequest;
 import pl.telech.tmoney.bank.model.dto.AccountDto;
 import pl.telech.tmoney.bank.model.dto.AccountSummaryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
+import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
+import pl.telech.tmoney.commons.helper.DBHelper;
 import pl.telech.tmoney.commons.model.dto.TableDataDto;
 import pl.telech.tmoney.commons.model.dto.TableDataDto.TableInfoDto;
 import pl.telech.tmoney.commons.model.shared.TableParams;
@@ -32,9 +37,12 @@ class AccountControllerTest extends BaseMvcTest {
 	
 	@Autowired
 	AccountHelper accountHelper;
-	
+	@Autowired
+	CategoryHelper categoryHelper;
 	@Autowired
 	EntryHelper entryHelper;
+	@Autowired
+	DBHelper dbHelper;
 	
 	@Autowired
 	AccountMapper accountMapper;
@@ -210,5 +218,29 @@ class AccountControllerTest extends BaseMvcTest {
 		assertThat(result).hasSize(1);
 		AccountAssert.assertThatDto(result.get(0).getAccount()).isMappedFrom(account0);
 		EntryAssert.assertThatDto(result.get(0).getEntry()).isMappedFrom(entry0);
+	}
+	
+	@Test
+	public void balance() throws Exception {
+		// given
+		Category category = categoryHelper.save("Liczenie");
+		Account account = accountHelper.save("Dom", category);
+		Entry lastEntry = entryHelper.save("Zakupy", account, category, date("2022-02-15"), dec("2 546,89"));
+		BalanceRequest request = new BalanceRequest(account.getId(), date("2022-03-01"), dec("2 520,13"));
+		
+		// when
+		post(baseUrl + "/" + account.getId() + "/balance", request);
+		
+		// then
+		Optional<Entry> optionalEntry = dbHelper.loadAll(Entry.class).stream().filter(e -> !e.equals(lastEntry)).findAny();
+		assertThat(optionalEntry).isNotEmpty();
+		
+		Entry balancingEntry = optionalEntry.get();
+		assertThat(balancingEntry.getAccount()).isEqualTo(account);
+		assertThat(balancingEntry.getCategory()).isEqualTo(category);
+		assertThat(balancingEntry.getDate()).isEqualTo(request.getDate());
+		assertThat(balancingEntry.getAmount()).isEqualTo(dec("-26,76"));
+		assertThat(balancingEntry.getName()).isEqualTo(category.getDefaultName());
+		assertThat(balancingEntry.getDescription()).isEqualTo(category.getDefaultDescription());
 	}
 }

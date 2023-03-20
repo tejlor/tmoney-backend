@@ -26,7 +26,7 @@ public class Entry extends AbstractEntity {
     @Column(insertable = false, updatable = false)
     Integer accountId;
 	
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "accountId")
 	Account account;				// account
 	
@@ -46,10 +46,10 @@ public class Entry extends AbstractEntity {
 	@Column(length = 255)
 	String description;				// entry description
 	
-	@Column(nullable = false)
+	@Column
 	BigDecimal balance;				// balance in current account
 	
-	@Column(nullable = false)
+	@Column
 	BigDecimal balanceOverall;		// balance in whole portfolio
 				
 	

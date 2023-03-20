@@ -4,8 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import pl.telech.tmoney.adm.UserHelper;
 import pl.telech.tmoney.adm.asserts.UserAssert;
+import pl.telech.tmoney.adm.helper.UserHelper;
 import pl.telech.tmoney.adm.model.dto.UserDto;
 import pl.telech.tmoney.adm.model.entity.User;
 import pl.telech.tmoney.commons.mock.SecurityContextMock;

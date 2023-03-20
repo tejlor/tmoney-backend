@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 import pl.telech.tmoney.bank.logic.AccountLogic;
+import pl.telech.tmoney.bank.logic.BankLogic;
 import pl.telech.tmoney.bank.mapper.AccountMapper;
 import pl.telech.tmoney.bank.mapper.EntryMapper;
+import pl.telech.tmoney.bank.model.data.BalanceRequest;
 import pl.telech.tmoney.bank.model.dto.AccountDto;
 import pl.telech.tmoney.bank.model.dto.AccountSummaryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
@@ -32,6 +34,7 @@ public class AccountController extends AbstractController {
 	final AccountMapper mapper;
 	final EntryMapper entryMapper;
 	final AccountLogic accountLogic;
+	final BankLogic bankLogic;
 	
 	
 	/*
@@ -117,5 +120,16 @@ public class AccountController extends AbstractController {
 		
 		TUtils.assertDtoId(id, account);
 		return mapper.toDto(accountLogic.update(id, account));
+	}
+	
+	/*
+	 * Balance the account.
+	 */
+	@RequestMapping(value = "/{id:" + ID + "}/balance", method = POST)
+	public void balance(
+			@PathVariable int id,
+			@RequestBody @Valid BalanceRequest request) {
+		
+		bankLogic.balanceAccount(request);
 	}
 }

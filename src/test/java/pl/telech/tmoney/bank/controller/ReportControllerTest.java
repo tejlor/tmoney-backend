@@ -82,6 +82,4 @@ public class ReportControllerTest extends BaseMvcTest {
 		assertThat(result.getResponse().getHeaderValue(HttpHeaders.CONTENT_TYPE)).isEqualTo(MediaType.APPLICATION_PDF_VALUE);
 	}
 	
-
-	
 }
