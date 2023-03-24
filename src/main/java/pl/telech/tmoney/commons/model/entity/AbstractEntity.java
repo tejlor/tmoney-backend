@@ -16,10 +16,15 @@ import lombok.experimental.FieldNameConstants;
 @Data
 @FieldNameConstants
 @MappedSuperclass
-public abstract class AbstractEntity implements Serializable {
+public abstract class AbstractEntity implements Serializable, Comparable<AbstractEntity> {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Integer id;		// id of object
+	
+	@Override
+	public int compareTo(AbstractEntity other) {
+		return id - other.id;
+	}
 	
 }

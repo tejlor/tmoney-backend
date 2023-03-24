@@ -43,7 +43,7 @@ public class BaseMvcTest {
 	
 	@AfterEach
 	void afterEach() {
-		dbHelper.truncateDb(List.of("bank.account", "bank.category", "bank.entry"));
+		dbHelper.truncateDb(List.of("bank.account", "bank.category", "bank.entry", "bank.transfer_definition"));
 	}
 	
 	protected MvcResult get(String url) throws Exception {
@@ -116,7 +116,7 @@ public class BaseMvcTest {
 	private MvcResult perform(MockHttpServletRequestBuilder request) throws Exception {
 		return mock.perform(request)
 			.andExpectAll(
-					status().isOk())
+					status().is2xxSuccessful())
 			        //content().contentType("application/json"))
 			.andDo(MockMvcResultHandlers.print())
 			.andReturn();

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,6 +26,10 @@ public class EntryTagCalculator {
 	}
 	
 	public String replaceTagsWithValues(String text, LocalDate date) {
+		if (StringUtils.isBlank(text)) {
+			return null;
+		}
+		
 		for (var entry : map.entrySet()) {
 			String tag = String.format("[%s]", entry.getKey());
 			text = text.replace(tag, entry.getValue().apply(date));
