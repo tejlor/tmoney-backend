@@ -1,6 +1,7 @@
 package pl.telech.tmoney.commons.helper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
@@ -23,7 +24,7 @@ public class DBHelper {
 	
 	public <T extends AbstractEntity> List<T> loadAll(Class<T> clazz) {
 		return entityManager.createQuery("SELECT x FROM " + clazz.getSimpleName() + " x", clazz)
-				.getResultList();
+				.getResultList().stream().sorted().collect(Collectors.toList());
 	}
 	
 	public <T extends AbstractEntity> void reload(T entity) {
