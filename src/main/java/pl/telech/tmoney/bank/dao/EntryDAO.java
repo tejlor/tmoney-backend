@@ -35,7 +35,7 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 		return findManyWithCount(
 				tableParams.getPage(),
 				tableParams.getFilter() != null ? isLike(tableParams.getFilter()) : null,
-				accountId != null ? belongsToAccount(accountId): null
+				accountId != null ? belongsToAccount(accountId): includesInSummary()
 				);
 	}
 		

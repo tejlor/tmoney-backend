@@ -31,15 +31,15 @@ public class AccountDto extends AbstractDto {
 	CategoryDto balancingCategory;
 	
 	@Size(max = 6)
-	@Pattern(regexp = "[A-Z0-9]{6}")
+	@Pattern(regexp = "[A-F0-9]{6}")
 	String color;
 	
 	@Size(max = 6)
-	@Pattern(regexp = "[A-Z0-9]{6}")
+	@Pattern(regexp = "[A-F0-9]{6}")
 	String lightColor;
 	
 	@Size(max = 6)
-	@Pattern(regexp = "[A-Z0-9]{6}")
+	@Pattern(regexp = "[A-F0-9]{6}")
 	String darkColor;
 	
 	@Size(max = 3)
