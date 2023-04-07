@@ -27,7 +27,7 @@ public class BankLogic {
 			throw new TMoneyException("Balancing category is not defined");
 		}
 		
-		Entry lastEntry = entryLogic.loadLastByAccount(account.getId());
+		Entry lastEntry = entryLogic.loadLastByAccount(account.getId()).orElseThrow();
 		
 		var entry = new Entry();
 		entry.setAccount(account);

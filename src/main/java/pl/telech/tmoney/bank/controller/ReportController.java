@@ -41,7 +41,7 @@ public class ReportController extends AbstractController {
 	 * Generates year report.
 	 */
 	@RequestMapping(value = "/report", method = GET)
-	public ResponseEntity<byte[]> generateTable(
+	public ResponseEntity<byte[]> generateReport(
 			@RequestParam LocalDate dateFrom,
 			@RequestParam LocalDate dateTo) {
 		

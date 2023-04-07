@@ -3,6 +3,7 @@ package pl.telech.tmoney.bank.logic;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -97,7 +98,7 @@ public class EntryLogic extends AbstractLogic<Entry> {
 		updateBalances();
 	}
 	
-	public Entry loadLastByAccount(int accountId) {
+	public Optional<Entry> loadLastByAccount(int accountId) {
 		return dao.findLastByAccountBeforeDate(accountId, LocalDate.now().plusDays(1));
 	}
 	

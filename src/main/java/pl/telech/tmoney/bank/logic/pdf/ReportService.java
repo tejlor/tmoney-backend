@@ -46,7 +46,7 @@ public class ReportService {
 	}
 	
 	public FileResult generateReport(LocalDate dateFrom, LocalDate dateTo) {
-		BigDecimal initialBalance = entryDao.findLastBeforeDate(dateFrom).getBalanceOverall();
+		BigDecimal initialBalance = entryDao.findLastBeforeDate(dateFrom).map(Entry::getBalanceOverall).orElse(BigDecimal.ZERO);
 		
 		var data = ReportData.builder()
 				.dateFrom(dateFrom)
@@ -60,7 +60,7 @@ public class ReportService {
 	}
 	
 	private List<AccountReportData> calculateAccountsData(LocalDate dateFrom, LocalDate dateTo) {
-		return TStreamUtils.map(accountLogic.loadAll(true), account -> calculateAccountData(account, dateFrom, dateTo));
+		return TStreamUtils.map(accountLogic.loadWithEntries(dateFrom, dateTo), account -> calculateAccountData(account, dateFrom, dateTo));
 	}
 	
 	private AccountReportData calculateAccountData(Account account, LocalDate dateFrom, LocalDate dateTo) {
@@ -68,8 +68,8 @@ public class ReportService {
 		
 		return AccountReportData.builder()
 			.account(account)
-			.initialBalance(entryDao.findLastByAccountBeforeDate(accountId, dateFrom).getBalance())
-			.finalBalance(entryDao.findLastByAccountBeforeDate(accountId, dateTo.plusDays(1)).getBalance())
+			.initialBalance(entryDao.findLastByAccountBeforeDate(accountId, dateFrom).map(Entry::getBalance).orElse(BigDecimal.ZERO))
+			.finalBalance(entryDao.findLastByAccountBeforeDate(accountId, dateTo.plusDays(1)).get().getBalance())
 			.incomesSum(entryDao.findAccountIncome(accountId, dateFrom, dateTo))
 			.outcomesSum(entryDao.findAccountOutcome(accountId, dateFrom, dateTo))
 			.build();
@@ -78,7 +78,7 @@ public class ReportService {
 	private SummaryReportData calculateSummaryData(LocalDate dateFrom, LocalDate dateTo, BigDecimal initialBalance) {	
 		return SummaryReportData.builder()
 			.initialBalance(initialBalance)
-			.finalBalance(entryDao.findLastBeforeDate(dateTo.plusDays(1)).getBalanceOverall())
+			.finalBalance(entryDao.findLastBeforeDate(dateTo.plusDays(1)).get().getBalanceOverall())
 			.incomes(TStreamUtils.sort(entryDao.findSummaryIncomeByCategory(dateFrom, dateTo)))
 			.outcomes(TStreamUtils.sort(entryDao.findSummaryOutcomeByCategory(dateFrom, dateTo)))
 			.build();

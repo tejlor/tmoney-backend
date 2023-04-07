@@ -20,9 +20,11 @@ public class EntryTagCalculator {
 	
 	public EntryTagCalculator() {
 		map.put("miesiac", 		this::currentMonth);
-		map.put("miesiac-1", 	this::prevMonth);
+		map.put("miesiac-1", 	this::previousMonth);
 		map.put("kwartal", 		this::currentQuarter);
-		map.put("kwartal-1", 	this::prevQuarter);
+		map.put("kwartal-1", 	this::previousQuarter);
+		map.put("rok", 			this::currentYear);
+		map.put("rok-1", 		this::previousYear);
 	}
 	
 	public String replaceTagsWithValues(String text, LocalDate date) {
@@ -41,7 +43,7 @@ public class EntryTagCalculator {
 		return monthFormatter.format(date);
 	}
 	
-	private String prevMonth(LocalDate date) {
+	private String previousMonth(LocalDate date) {
 		return monthFormatter.format(date.minusMonths(1));
 	}
 	
@@ -49,8 +51,16 @@ public class EntryTagCalculator {
 		return formatQuarter(date.get(IsoFields.QUARTER_OF_YEAR));
 	}
 	
-	private String prevQuarter(LocalDate date) {
+	private String previousQuarter(LocalDate date) {
 		return formatQuarter(date.minusMonths(3).get(IsoFields.QUARTER_OF_YEAR));
+	}
+	
+	private String currentYear(LocalDate date) {
+		return String.valueOf(date.getYear());
+	}
+	
+	private String previousYear(LocalDate date) {
+		return String.valueOf(date.getYear() - 1);
 	}
 	
 	private String formatQuarter(int quarter) {

@@ -40,7 +40,7 @@ class EntryTagCalculatorTest {
 		return Stream.of(
 				Arguments.of(null, null),
 				Arguments.of(" ", null),
-				Arguments.of("[miesiac] [miesiac-1] [kwartal] [kwartal-1]", "lut sty I IV")
+				Arguments.of("[miesiac] [miesiac-1] [kwartal] [kwartal-1] [rok] [rok-1]", "lut sty I IV 2023 2022")
 				);
 	}
 	
