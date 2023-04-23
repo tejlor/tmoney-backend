@@ -23,7 +23,7 @@ import pl.telech.tmoney.bank.dao.data.EntryAmount;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.bank.model.entity.Entry.Fields;
-import pl.telech.tmoney.commons.dao.interfaces.DAO;
+import pl.telech.tmoney.commons.dao.DAO;
 import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 import pl.telech.tmoney.commons.model.shared.TableParams;
 

@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -16,6 +15,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import pl.telech.tmoney.bank.dao.data.CategoryAmount;
 import pl.telech.tmoney.bank.model.data.AccountReportData;
@@ -27,16 +27,14 @@ import pl.telech.tmoney.commons.model.shared.FileResult;
 import pl.telech.tmoney.commons.utils.TUtils;
 
 @Component
+@RequiredArgsConstructor
 public class PdfReportGenerator extends AbstractPdfGenerator {
 	   
-    @Autowired
-    NoSplitCharacter splitCharacter;
-    
-    @Autowired
-    BarLineChartGenerator chartGenerator;
+    final NoSplitCharacter splitCharacter;
+    final BarLineChartGenerator chartGenerator;
 	
 	@Value("${tmoney.version}")
-	String tmoneyVersion;
+	final String tmoneyVersion;
 	
     Font font9, font10, font10B, font12, font16B;
     BaseColor colorGray;

@@ -23,13 +23,13 @@ import pl.telech.tmoney.bank.model.dto.CategoryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
-import pl.telech.tmoney.commons.model.dto.TableDataDto;
-import pl.telech.tmoney.commons.model.dto.TableDataDto.TableInfoDto;
+import pl.telech.tmoney.commons.model.shared.TableData;
 import pl.telech.tmoney.commons.model.shared.TableParams;
+import pl.telech.tmoney.commons.model.shared.TableData.TableInfo;
 import pl.telech.tmoney.utils.BaseMvcTest;
 
 @ExtendWith(SpringExtension.class)
-public class CategoryControllerTest extends BaseMvcTest {
+class CategoryControllerTest extends BaseMvcTest {
 
 	private static final String baseUrl = "/categories";
 
@@ -104,7 +104,7 @@ public class CategoryControllerTest extends BaseMvcTest {
 		
 		// when
 		String url = String.format(baseUrl + "/table?pageNo=%d&pageSize=%d&filter=%s&sortBy=%s", 1, 2, "t", "name ASC");
-		TableDataDto<CategoryDto> result = get(url, new TypeReference<TableDataDto<CategoryDto>>() {});	
+		TableData<CategoryDto> result = get(url, new TypeReference<TableData<CategoryDto>>() {});	
 		
 		// then
 		assertThat(result).isNotNull();
@@ -115,7 +115,7 @@ public class CategoryControllerTest extends BaseMvcTest {
 		assertThat(tableParams.getFilter()).isEqualTo("t");
 		assertThat(tableParams.getSortBy()).isEqualTo("name ASC");
 		
-		TableInfoDto tableInfo = result.getTableInfo();
+		TableInfo tableInfo = result.getTableInfo();
 		assertThat(tableInfo.getPageCount()).isEqualTo(2);
 		assertThat(tableInfo.getRowCount()).isEqualTo(3);
 		assertThat(tableInfo.getRowStart()).isEqualTo(3);

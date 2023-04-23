@@ -18,16 +18,16 @@ import pl.telech.tmoney.bank.helper.AccountHelper;
 import pl.telech.tmoney.bank.helper.CategoryHelper;
 import pl.telech.tmoney.bank.helper.EntryHelper;
 import pl.telech.tmoney.bank.mapper.AccountMapper;
+import pl.telech.tmoney.bank.model.data.AccountSummaryData;
 import pl.telech.tmoney.bank.model.data.BalanceRequest;
 import pl.telech.tmoney.bank.model.dto.AccountDto;
-import pl.telech.tmoney.bank.model.dto.AccountSummaryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.commons.helper.DBHelper;
-import pl.telech.tmoney.commons.model.dto.TableDataDto;
-import pl.telech.tmoney.commons.model.dto.TableDataDto.TableInfoDto;
+import pl.telech.tmoney.commons.model.shared.TableData;
 import pl.telech.tmoney.commons.model.shared.TableParams;
+import pl.telech.tmoney.commons.model.shared.TableData.TableInfo;
 import pl.telech.tmoney.utils.BaseMvcTest;
 
 
@@ -121,7 +121,7 @@ class AccountControllerTest extends BaseMvcTest {
 		
 		// when
 		String url = String.format(baseUrl + "/table?pageNo=%d&pageSize=%d&filter=%s&sortBy=%s", 1, 2, "kon", "name ASC");
-		TableDataDto<AccountDto> result = get(url, new TypeReference<TableDataDto<AccountDto>>() {});	
+		TableData<AccountDto> result = get(url, new TypeReference<TableData<AccountDto>>() {});	
 		
 		// then
 		assertThat(result).isNotNull();
@@ -132,7 +132,7 @@ class AccountControllerTest extends BaseMvcTest {
 		assertThat(tableParams.getFilter()).isEqualTo("kon");
 		assertThat(tableParams.getSortBy()).isEqualTo("name ASC");
 		
-		TableInfoDto tableInfo = result.getTableInfo();
+		TableInfo tableInfo = result.getTableInfo();
 		assertThat(tableInfo.getPageCount()).isEqualTo(2);
 		assertThat(tableInfo.getRowCount()).isEqualTo(4);
 		assertThat(tableInfo.getRowStart()).isEqualTo(3);
@@ -179,7 +179,7 @@ class AccountControllerTest extends BaseMvcTest {
 	}
 	
 	@Test
-	public void getSummary() throws Exception {
+	void getSummary() throws Exception {
 		// given
 		Account account0 = accountHelper.save("Konto bankowe", "BANK");
 		Account account1 = accountHelper.save("Dom", "HOME");		
@@ -189,7 +189,7 @@ class AccountControllerTest extends BaseMvcTest {
 		Entry entry1 = entryHelper.save("Zakupy", date("2020-07-13"), account1);
 		
 		// when
-		List<AccountSummaryDto> result = get(baseUrl + "/summary", new TypeReference<List<AccountSummaryDto>>() {});
+		List<AccountSummaryData> result = get(baseUrl + "/summary", new TypeReference<List<AccountSummaryData>>() {});
 		
 		// then
 		assertThat(result).isNotNull();
@@ -201,7 +201,7 @@ class AccountControllerTest extends BaseMvcTest {
 	}
 	
 	@Test
-	public void getSummary_byCode() throws Exception {
+	void getSummary_byCode() throws Exception {
 		// given
 		Account account0 = accountHelper.save("Konto bankowe", "BANK");
 		Account account1 = accountHelper.save("Dom", "HOME");		
@@ -211,7 +211,7 @@ class AccountControllerTest extends BaseMvcTest {
 		entryHelper.save("Zakupy", date("2020-07-13"), account1);
 		
 		// when
-		List<AccountSummaryDto> result = get(baseUrl + "/summary/BANK", new TypeReference<List<AccountSummaryDto>>() {});
+		List<AccountSummaryData> result = get(baseUrl + "/summary/BANK", new TypeReference<List<AccountSummaryData>>() {});
 		
 		// then
 		assertThat(result).isNotNull();
@@ -221,7 +221,7 @@ class AccountControllerTest extends BaseMvcTest {
 	}
 	
 	@Test
-	public void balance() throws Exception {
+	void balance() throws Exception {
 		// given
 		Category category = categoryHelper.save("Liczenie");
 		Account account = accountHelper.save("Dom", category);

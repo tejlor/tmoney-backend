@@ -17,12 +17,12 @@ import pl.telech.tmoney.bank.logic.AccountLogic;
 import pl.telech.tmoney.bank.logic.BankLogic;
 import pl.telech.tmoney.bank.mapper.AccountMapper;
 import pl.telech.tmoney.bank.mapper.EntryMapper;
+import pl.telech.tmoney.bank.model.data.AccountSummaryData;
 import pl.telech.tmoney.bank.model.data.BalanceRequest;
 import pl.telech.tmoney.bank.model.dto.AccountDto;
-import pl.telech.tmoney.bank.model.dto.AccountSummaryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.commons.controller.AbstractController;
-import pl.telech.tmoney.commons.model.dto.TableDataDto;
+import pl.telech.tmoney.commons.model.shared.TableData;
 import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.commons.utils.TUtils;
 
@@ -71,7 +71,7 @@ public class AccountController extends AbstractController {
 	 * Returns all accounts for table.
 	 */
 	@RequestMapping(value = "/table", method = GET)
-	public TableDataDto<AccountDto> getTable(
+	public TableData<AccountDto> getTable(
 		@RequestParam(required = false) Integer pageNo,
 		@RequestParam(required = false) Integer pageSize,
 		@RequestParam(required = false) String filter,
@@ -79,7 +79,7 @@ public class AccountController extends AbstractController {
 		
 		var tableParams = new TableParams(pageNo, pageSize, filter, sortBy);		
 		Pair<List<Account>, Integer> result = accountLogic.loadTable(tableParams); 	
-		var table = new TableDataDto<AccountDto>(tableParams);
+		var table = new TableData<AccountDto>(tableParams);
 		table.setRows(mapper.toDtoList(result.getKey()));
 		table.setCount(result.getValue());		
 		return table;
@@ -89,11 +89,11 @@ public class AccountController extends AbstractController {
 	 * Returns account with last entry.
 	 */
 	@RequestMapping(value = {"/summary", "/summary/{code:" + CODE + "}"}, method = GET)
-	public List<AccountSummaryDto> getSummary(
+	public List<AccountSummaryData> getSummary(
 			@PathVariable(required = false) String code) {
 		
 		return accountLogic.getAccountSummaries(code).stream()
-				.map(pair -> new AccountSummaryDto(
+				.map(pair -> new AccountSummaryData(
 					mapper.toDto(pair.getKey()), 
 					entryMapper.toDto(pair.getValue()))
 				)

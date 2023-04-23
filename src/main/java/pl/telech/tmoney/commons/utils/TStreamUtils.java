@@ -10,13 +10,12 @@ import lombok.experimental.ExtensionMethod;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-@ExtensionMethod(Extensions.class)
+@ExtensionMethod(TExtensions.class)
 public class TStreamUtils {
 
 	public <T, R> List<R> map(Collection<T> collection, Function<T, R> mapper) {
 		return mapToList(collection, mapper);
 	}
-	
 
 	public <T, R> List<R> mapToList(Collection<T> collection, Function<T, R> mapper) {
 		return collection.stream()

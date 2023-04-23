@@ -2,7 +2,6 @@ package pl.telech.tmoney.adm.logic;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,11 +21,6 @@ import pl.telech.tmoney.commons.logic.AbstractLogic;
 @Transactional
 @RequiredArgsConstructor
 public class UserLogic extends AbstractLogic<User> implements UserDetailsService {
-
-	@Value("${tmoney.auth.clientName}")
-	String clientName;
-	@Value("${tmoney.auth.clientPass}")
-	String clientPass;
 	
 	final UserDAO dao;
 	

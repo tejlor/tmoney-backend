@@ -11,7 +11,6 @@ import lombok.Setter;
 import pl.telech.tmoney.commons.model.dto.AbstractDto;
 
 @Getter @Setter
-@NoArgsConstructor
 public class AccountDto extends AbstractDto {
 	
 	@NotBlank

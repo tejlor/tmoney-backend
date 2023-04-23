@@ -22,7 +22,7 @@ import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.utils.BaseMvcTest;
 
 
-public class ReportControllerTest extends BaseMvcTest {
+class ReportControllerTest extends BaseMvcTest {
 
 	private static final String baseUrl = "/reports";
 	

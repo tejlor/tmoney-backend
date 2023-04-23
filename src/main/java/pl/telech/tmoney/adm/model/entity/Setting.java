@@ -16,7 +16,7 @@ import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 @Entity
 @FieldNameConstants
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "setting", schema = "adm")
+@Table(schema = "adm")
 public class Setting extends AbstractEntity {
 	
 	@Column(length = 32, nullable = false)

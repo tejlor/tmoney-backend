@@ -31,7 +31,7 @@ import pl.telech.tmoney.bank.model.entity.Entry;
 @Import({AccountHelper.class, CategoryHelper.class, EntryHelper.class})
 @ActiveProfiles("junit")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class EntryDAOTest {
+class EntryDAOTest {
 
 	@Autowired
 	EntryDAO dao;
@@ -46,7 +46,7 @@ public class EntryDAOTest {
 	private Integer accountHomeId, accountBankId, categoryCarId;
 	
 	@BeforeEach
-	public void initDB() {
+	void initDB() {
 		Account accountHome = accountHelper.save("Dom", true, true);
 		Account accountBank = accountHelper.save("Konto bankowe", true, true);	
 		Account accountIkze = accountHelper.save("IKZE", true, false);	
@@ -75,7 +75,7 @@ public class EntryDAOTest {
 	}
 	
 	@Test
-	public void testFindByCategoryId() {
+	void testFindByCategoryId() {
 		// when
 		List<Entry> result = dao.findByCategoryId(categoryCarId);
 		
@@ -90,7 +90,7 @@ public class EntryDAOTest {
 	}
 	
 	@Test
-	public void testFindByAccountId() {
+	void testFindByAccountId() {
 		// when
 		List<Entry> result = dao.findByAccountId(accountHomeId);
 		
@@ -127,7 +127,7 @@ public class EntryDAOTest {
 //	}
 	
 	@Test
-	public void testFindAccountIncome() {
+	void testFindAccountIncome() {
 		// when
 		BigDecimal result = dao.findAccountIncome(accountBankId, date("2022-01-01"), date("2022-01-31"));
 		
@@ -137,7 +137,7 @@ public class EntryDAOTest {
 	}
 	
 	@Test
-	public void testFindAccountOutcome() {
+	void testFindAccountOutcome() {
 		// when
 		BigDecimal result = dao.findAccountOutcome(accountHomeId, date("2022-01-01"), date("2022-01-31"));
 		
@@ -147,7 +147,7 @@ public class EntryDAOTest {
 	}
 	
 	@Test
-	public void testFindSummaryIncomeByCategory() {
+	void testFindSummaryIncomeByCategory() {
 		// when
 		List<CategoryAmount> result = dao.findSummaryIncomeByCategory(date("2022-01-01"), date("2022-01-31"));
 		
@@ -163,7 +163,7 @@ public class EntryDAOTest {
 	}
 	
 	@Test
-	public void testFindSummaryOutcomeByCategory() {
+	void testFindSummaryOutcomeByCategory() {
 		// when
 		List<CategoryAmount> result = dao.findSummaryOutcomeByCategory(date("2022-01-01"), date("2022-01-31"));
 		
@@ -180,7 +180,7 @@ public class EntryDAOTest {
 	}
 	
 	@Test
-	public void testFindEntriesForReport() {
+	void testFindEntriesForReport() {
 		// when
 		List<EntryAmount> result = dao.findEntriesForReport(date("2022-01-01"), date("2022-01-31"));
 		

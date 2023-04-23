@@ -14,12 +14,13 @@ import java.util.function.Predicate;
 
 import javax.xml.bind.DatatypeConverter;
 
+import lombok.extern.slf4j.Slf4j;
 import pl.telech.tmoney.commons.model.dto.AbstractDto;
 import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 import pl.telech.tmoney.commons.model.exception.NotFoundException;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
 
-
+@Slf4j
 public class TUtils {
 	
 	private static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,##0.00");
@@ -156,7 +157,7 @@ public class TUtils {
 			m = MessageDigest.getInstance("MD5");
 		} 
 		catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 			return "";
 		}
         m.reset();
@@ -179,7 +180,7 @@ public class TUtils {
 			m = MessageDigest.getInstance("SHA-1");
 		}
 		catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 			return "";
 		}
         m.reset();

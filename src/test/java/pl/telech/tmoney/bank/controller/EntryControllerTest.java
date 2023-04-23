@@ -22,9 +22,9 @@ import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
-import pl.telech.tmoney.commons.model.dto.TableDataDto;
-import pl.telech.tmoney.commons.model.dto.TableDataDto.TableInfoDto;
+import pl.telech.tmoney.commons.model.shared.TableData;
 import pl.telech.tmoney.commons.model.shared.TableParams;
+import pl.telech.tmoney.commons.model.shared.TableData.TableInfo;
 import pl.telech.tmoney.utils.BaseMvcTest;
 
 class EntryControllerTest extends BaseMvcTest {
@@ -73,7 +73,7 @@ class EntryControllerTest extends BaseMvcTest {
 		
 		// when
 		String url = String.format(baseUrl + "/table/BANK?pageNo=%d&pageSize=%d&filter=%s&sortBy=%s", 1, 2, "z", "name ASC");
-		TableDataDto<EntryDto> result = get(url, new TypeReference<TableDataDto<EntryDto>>() {});	
+		TableData<EntryDto> result = get(url, new TypeReference<TableData<EntryDto>>() {});	
 		
 		// then
 		assertThat(result).isNotNull();
@@ -84,7 +84,7 @@ class EntryControllerTest extends BaseMvcTest {
 		assertThat(tableParams.getFilter()).isEqualTo("z");
 		assertThat(tableParams.getSortBy()).isEqualTo("name ASC");
 		
-		TableInfoDto tableInfo = result.getTableInfo();
+		TableInfo tableInfo = result.getTableInfo();
 		assertThat(tableInfo.getPageCount()).isEqualTo(2);
 		assertThat(tableInfo.getRowCount()).isEqualTo(4);
 		assertThat(tableInfo.getRowStart()).isEqualTo(3);
@@ -112,7 +112,7 @@ class EntryControllerTest extends BaseMvcTest {
 		
 		// when
 		String url = String.format(baseUrl + "/table?pageNo=%d&pageSize=%d&filter=%s&sortBy=%s", 1, 2, "z", "name ASC");
-		TableDataDto<EntryDto> result = get(url, new TypeReference<TableDataDto<EntryDto>>() {});	
+		TableData<EntryDto> result = get(url, new TypeReference<TableData<EntryDto>>() {});	
 		
 		// then
 		assertThat(result).isNotNull();
@@ -123,7 +123,7 @@ class EntryControllerTest extends BaseMvcTest {
 		assertThat(tableParams.getFilter()).isEqualTo("z");
 		assertThat(tableParams.getSortBy()).isEqualTo("name ASC");
 		
-		TableInfoDto tableInfo = result.getTableInfo();
+		TableInfo tableInfo = result.getTableInfo();
 		assertThat(tableInfo.getPageCount()).isEqualTo(2);
 		assertThat(tableInfo.getRowCount()).isEqualTo(4);
 		assertThat(tableInfo.getRowStart()).isEqualTo(3);

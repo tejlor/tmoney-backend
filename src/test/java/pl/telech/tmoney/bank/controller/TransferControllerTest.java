@@ -25,9 +25,9 @@ import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.bank.model.entity.TransferDefinition;
 import pl.telech.tmoney.commons.helper.DBHelper;
-import pl.telech.tmoney.commons.model.dto.TableDataDto;
-import pl.telech.tmoney.commons.model.dto.TableDataDto.TableInfoDto;
+import pl.telech.tmoney.commons.model.shared.TableData;
 import pl.telech.tmoney.commons.model.shared.TableParams;
+import pl.telech.tmoney.commons.model.shared.TableData.TableInfo;
 import pl.telech.tmoney.utils.BaseMvcTest;
 
 
@@ -73,7 +73,7 @@ class TransferControllerTest extends BaseMvcTest {
 		
 		// when
 		String url = String.format(baseUrl + "/definition/table?pageNo=%d&pageSize=%d&filter=%s&sortBy=%s", 1, 2, "zasil", "name ASC");
-		TableDataDto<TransferDefinitionDto> result = get(url, new TypeReference<TableDataDto<TransferDefinitionDto>>() {});	
+		TableData<TransferDefinitionDto> result = get(url, new TypeReference<TableData<TransferDefinitionDto>>() {});	
 		
 		// then
 		assertThat(result).isNotNull();
@@ -84,7 +84,7 @@ class TransferControllerTest extends BaseMvcTest {
 		assertThat(tableParams.getFilter()).isEqualTo("zasil");
 		assertThat(tableParams.getSortBy()).isEqualTo("name ASC");
 		
-		TableInfoDto tableInfo = result.getTableInfo();
+		TableInfo tableInfo = result.getTableInfo();
 		assertThat(tableInfo.getPageCount()).isEqualTo(2);
 		assertThat(tableInfo.getRowCount()).isEqualTo(3);
 		assertThat(tableInfo.getRowStart()).isEqualTo(3);
@@ -148,7 +148,7 @@ class TransferControllerTest extends BaseMvcTest {
 	}
 	
 	@Test
-	public void createTransfer() throws Exception {
+	void createTransfer() throws Exception {
 		// given
 		TransferDefinition definition = transferDefinitionHelper.save("Wyplata z bankomatu");
 		TransferRequest transfer = new TransferRequest(definition.getId(), date("2022-05-19"), dec("2 000.00"), "Wypłata z bankomtu", "Auchan");

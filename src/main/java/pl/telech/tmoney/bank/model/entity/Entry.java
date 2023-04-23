@@ -19,7 +19,7 @@ import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 @Entity
 @FieldNameConstants
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "entry", schema = "bank")
+@Table(schema = "bank")
 public class Entry extends AbstractEntity {
 		
 	@Setter(AccessLevel.PRIVATE)

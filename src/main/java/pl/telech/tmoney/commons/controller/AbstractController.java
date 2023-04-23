@@ -31,8 +31,7 @@ import pl.telech.tmoney.commons.utils.TUtils;
 import pl.telech.tmoney.commons.utils.aop.AppLogOmit;
 
 @Slf4j
-@RestController
-public class AbstractController {
+public abstract class AbstractController {
 	
 	@Value("${tmoney.environment}")
 	String environment;

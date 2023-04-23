@@ -1,4 +1,4 @@
-package pl.telech.tmoney.commons.model.dto;
+package pl.telech.tmoney.commons.model.shared;
 
 import java.util.List;
 
@@ -6,22 +6,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.telech.tmoney.commons.model.interfaces.Loggable;
-import pl.telech.tmoney.commons.model.shared.TableParams;
 
 /*
  * 
  */
 @Getter @Setter
 @NoArgsConstructor
-public class TableDataDto<T> implements Loggable {
+public class TableData<T> implements Loggable {
 
 	TableParams tableParams;
-	TableInfoDto tableInfo;
+	TableInfo tableInfo;
 	List<T> rows;
 	
-	public TableDataDto(TableParams tableParams) {
+	public TableData(TableParams tableParams) {
 		this.tableParams = tableParams;
-		tableInfo = new TableInfoDto();
+		tableInfo = new TableInfo();
 	}
 	
 	public void setCount(int count) {
@@ -29,7 +28,7 @@ public class TableDataDto<T> implements Loggable {
 	}
 	
 	@Getter @Setter
-	public static class TableInfoDto implements Loggable {
+	public static class TableInfo implements Loggable {
 		int pageCount;
 		int rowCount;
 		int rowStart;

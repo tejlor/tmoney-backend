@@ -1,6 +1,5 @@
 package pl.telech.tmoney.bank.logic;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +17,6 @@ import pl.telech.tmoney.bank.logic.tag.EntryTagCalculator;
 import pl.telech.tmoney.bank.mapper.EntryMapper;
 import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
-import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.commons.logic.AbstractLogic;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
@@ -31,7 +29,7 @@ import pl.telech.tmoney.commons.utils.TUtils;
 public class EntryLogic extends AbstractLogic<Entry> {
 	
 	@Value("${tmoney.environment}")
-	String environment;
+	final String environment;
 
 	final EntryDAO dao;
 	final AccountLogic accountLogic;

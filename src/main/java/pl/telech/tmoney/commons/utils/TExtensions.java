@@ -9,21 +9,21 @@ import java.util.stream.Stream;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class Extensions {
+public class TExtensions {
 
-	public <T> T orElse(T obj, T other) {
+	public static <T> T orElse(T obj, T other) {
 		return obj != null ? obj : other;
 	}
 	
-	public <T> T orElse(T obj, Supplier<T> func) {
+	public static <T> T orElse(T obj, Supplier<T> func) {
 		return obj != null ? obj : func.get();
 	}
 
-	public <T> List<T> list(Stream<T> stream) {
+	public static <T> List<T> list(Stream<T> stream) {
 		return stream.collect(Collectors.toList());
 	}
 	
-	public <T> Set<T> set(Stream<T> stream) {
+	public static <T> Set<T> set(Stream<T> stream) {
 		return stream.collect(Collectors.toSet());
 	}
 }

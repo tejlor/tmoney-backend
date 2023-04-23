@@ -30,7 +30,7 @@ import pl.telech.tmoney.commons.utils.Sha1PasswordEncoder;
  */
 @Configuration
 @EnableWebSecurity
-public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
+class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Value("${tmoney.environment}")
 	String environment;
