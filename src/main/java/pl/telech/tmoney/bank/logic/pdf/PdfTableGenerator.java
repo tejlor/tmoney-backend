@@ -4,8 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -22,17 +20,15 @@ import pl.telech.tmoney.commons.model.shared.FileResult;
 import pl.telech.tmoney.commons.utils.TUtils;
 
 @Component
-public class PdfTableGenerator extends AbstractPdfGenerator {
-		
-	@Value("${tmoney.version}")
-	String tmoneyVersion;
+class PdfTableGenerator extends AbstractPdfGenerator {
+
+	final String tmoneyVersion;
 	
-    Font font10, font10B, font10red, font10green;
+    final Font font10, font10B, font10red, font10green;
     
-    
-    @PostConstruct
-	protected void init() {
-    	super.init();
+	protected PdfTableGenerator(@Value("${tmoney.version}") String tmoneyVersion) {
+		this.tmoneyVersion = tmoneyVersion;
+		
         font10 = new Font(baseFont, 10);
         font10B = new Font(baseFont, 10, Font.BOLD);
         font10red = new Font(baseFont, 10, Font.NORMAL, new BaseColor(200, 0, 0));

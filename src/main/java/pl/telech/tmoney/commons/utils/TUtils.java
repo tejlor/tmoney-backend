@@ -14,6 +14,7 @@ import java.util.function.Predicate;
 
 import javax.xml.bind.DatatypeConverter;
 
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import pl.telech.tmoney.commons.model.dto.AbstractDto;
 import pl.telech.tmoney.commons.model.entity.AbstractEntity;
@@ -21,6 +22,7 @@ import pl.telech.tmoney.commons.model.exception.NotFoundException;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
 
 @Slf4j
+@UtilityClass
 public class TUtils {
 	
 	private static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,##0.00");

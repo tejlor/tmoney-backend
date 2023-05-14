@@ -11,12 +11,12 @@ import lombok.experimental.FieldDefaults;
 
 
 @FieldDefaults(level = AccessLevel.PROTECTED)
-public class AbstractPdfGenerator {
+class AbstractPdfGenerator {
 
-	BaseFont baseFont;
+	final BaseFont baseFont;
 	
 	@SneakyThrows({DocumentException.class, IOException.class})
-	protected void init() {
+	protected AbstractPdfGenerator() {
 		baseFont = BaseFont.createFont("fonts/tahoma.ttf", BaseFont.CP1250, true);
 	}
 }

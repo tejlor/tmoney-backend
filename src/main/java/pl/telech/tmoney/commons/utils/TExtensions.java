@@ -11,11 +11,11 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class TExtensions {
 
-	public static <T> T orElse(T obj, T other) {
+	public static <T> T or(T obj, T other) {
 		return obj != null ? obj : other;
 	}
 	
-	public static <T> T orElse(T obj, Supplier<T> func) {
+	public static <T> T or(T obj, Supplier<T> func) {
 		return obj != null ? obj : func.get();
 	}
 

@@ -15,7 +15,7 @@ public class CategoryAmount implements Comparable<CategoryAmount> {
 	BigDecimal amount;
 	
 	/*
-	 * Order by amount descending
+	 * Order by amount descending.
 	 */
 	@Override
 	public int compareTo(CategoryAmount other) {

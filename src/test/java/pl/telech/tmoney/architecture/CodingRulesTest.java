@@ -28,6 +28,8 @@ import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.library.GeneralCodingRules;
 
+import pl.telech.tmoney.TMoneyApplication;
+
 
 @AnalyzeClasses(packages = "pl.telech.tmoney", importOptions = ImportOption.DoNotIncludeTests.class)
 class CodingRulesTest {
@@ -48,20 +50,15 @@ class CodingRulesTest {
     @ArchTest
     ArchRule doNotUseFieldInjection = GeneralCodingRules.NO_CLASSES_SHOULD_USE_FIELD_INJECTION;
     
-	
-    @ArchIgnore
 	@ArchTest
 	ArchRule layerDependenciesMustBeRespected = 
-		layeredArchitecture().consideringAllDependencies()
+		layeredArchitecture().consideringOnlyDependenciesInLayers()
 			.layer("Controllers").definedBy("pl.telech.tmoney.*.controller..")
 			.layer("Logic").definedBy("pl.telech.tmoney.*.logic..")
 	        .layer("Dao").definedBy("pl.telech.tmoney.*.dao..")
-
 	        .whereLayer("Controllers").mayNotBeAccessedByAnyLayer()
 	        .whereLayer("Logic").mayOnlyBeAccessedByLayers("Controllers")
 	        .whereLayer("Dao").mayOnlyBeAccessedByLayers("Logic");
-	        
-	        //.ignoreDependency(SomeMediator.class, ServiceViolatingLayerRules.class);
 	
 
     @ArchTest
@@ -72,7 +69,6 @@ class CodingRulesTest {
 	ArchRule no_bypass_of_proxy_logic_cache =
 	        no_classes_should_directly_call_other_methods_declared_in_the_same_class_that_are_annotated_with(Cacheable.class);
 	
-	@ArchIgnore
 	@ArchTest
 	ArchRule beansShouldHaveFinalfields = 
 	    	fields()
@@ -87,11 +83,11 @@ class CodingRulesTest {
 	    		.that().areAnnotatedWith(Configuration.class)
 	    			.should().bePackagePrivate();
 	
-	@ArchIgnore
 	@ArchTest
 	ArchRule utilityClassShouldHavePrivateConstructor = 
 	    	classes()
-	    		.that(haveOnlyStaticMethods())
+	    		.that().doNotHaveSimpleName("TMoneyApplication")
+	    		.and(haveOnlyStaticMethods())
 	    			.should().haveOnlyPrivateConstructors();
 	
 	@ArchTest

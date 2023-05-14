@@ -4,8 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -15,7 +13,6 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import pl.telech.tmoney.bank.dao.data.CategoryAmount;
 import pl.telech.tmoney.bank.model.data.AccountReportData;
@@ -27,23 +24,21 @@ import pl.telech.tmoney.commons.model.shared.FileResult;
 import pl.telech.tmoney.commons.utils.TUtils;
 
 @Component
-@RequiredArgsConstructor
-public class PdfReportGenerator extends AbstractPdfGenerator {
+class PdfReportGenerator extends AbstractPdfGenerator {
 	   
     final NoSplitCharacter splitCharacter;
     final BarLineChartGenerator chartGenerator;
-	
-	@Value("${tmoney.version}")
 	final String tmoneyVersion;
 	
-    Font font9, font10, font10B, font12, font16B;
-    BaseColor colorGray;
-    PdfPCell[] headerCells;
+    final Font font9, font10, font10B, font12, font16B;
+    final BaseColor colorGray;
+    final PdfPCell[] headerCells;
     
-    
-    @PostConstruct
-	protected void init() {
-    	super.init();
+	protected PdfReportGenerator(NoSplitCharacter splitCharacter, BarLineChartGenerator chartGenerator, @Value("${tmoney.version}") String tmoneyVersion) {
+		this.splitCharacter = splitCharacter;
+		this.chartGenerator = chartGenerator;
+		this.tmoneyVersion = tmoneyVersion;
+		
     	font9 = new Font(baseFont, 9);
         font10 = new Font(baseFont, 10);
         font10B = new Font(baseFont, 10, Font.BOLD);
@@ -105,8 +100,9 @@ public class PdfReportGenerator extends AbstractPdfGenerator {
         
         doc.add(pdfTable);
 
-        createList(doc, "Dochody:", data.getSummaryData().getIncomes());
+        createList(doc, "Przychody:", data.getSummaryData().getIncomes());
         createList(doc, "Straty:", data.getSummaryData().getOutcomes());
+        createList(doc, "Bilans:", data.getSummaryData().getProfits());
 
         createChart(doc, data.getChartData());
     }
@@ -136,9 +132,9 @@ public class PdfReportGenerator extends AbstractPdfGenerator {
 
         pdfTable.addCell(createValueCell(TUtils.formatCurrency(data.getInitialBalance())));
         pdfTable.addCell(createValueCell(TUtils.formatCurrency(data.getFinalBalance())));
-        pdfTable.addCell(createValueCell(TUtils.formatCurrency(data.calcIncomesSum())));
-        pdfTable.addCell(createValueCell(TUtils.formatCurrency(data.calcOutcomesSum())));
-        pdfTable.addCell(createValueCell(TUtils.formatCurrency(data.calcBalance())));
+        pdfTable.addCell(createValueCell(TUtils.formatCurrency(data.getIncomesSum())));
+        pdfTable.addCell(createValueCell(TUtils.formatCurrency(data.getOutcomesSum())));
+        pdfTable.addCell(createValueCell(TUtils.formatCurrency(data.getProfitsSum())));
     }
 
     private void createList(Document doc, String title, List<CategoryAmount> data) throws DocumentException {
