@@ -7,7 +7,7 @@ import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import pl.telech.tmoney.commons.dao.interfaces.DAO;
+import pl.telech.tmoney.commons.dao.DAO;
 import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 
 @RequiredArgsConstructor

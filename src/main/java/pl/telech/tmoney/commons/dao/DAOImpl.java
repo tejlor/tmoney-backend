@@ -15,7 +15,6 @@ import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
-import pl.telech.tmoney.commons.dao.interfaces.DAO;
 import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 
 /*

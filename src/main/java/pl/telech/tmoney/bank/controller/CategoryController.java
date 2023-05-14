@@ -17,7 +17,7 @@ import pl.telech.tmoney.bank.mapper.CategoryMapper;
 import pl.telech.tmoney.bank.model.dto.CategoryDto;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.commons.controller.AbstractController;
-import pl.telech.tmoney.commons.model.dto.TableDataDto;
+import pl.telech.tmoney.commons.model.shared.TableData;
 import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.commons.utils.TUtils;
 
@@ -52,7 +52,7 @@ public class CategoryController extends AbstractController {
 	 * Returns all categories for table.
 	 */
 	@RequestMapping(value = "/table", method = GET)
-	public TableDataDto<CategoryDto> getTable(
+	public TableData<CategoryDto> getTable(
 		@RequestParam(required = false) Integer pageNo,
 		@RequestParam(required = false) Integer pageSize,
 		@RequestParam(required = false) String filter,
@@ -60,7 +60,7 @@ public class CategoryController extends AbstractController {
 		
 		var tableParams = new TableParams(pageNo, pageSize, filter, sortBy);		
 		Pair<List<Category>, Integer> result = categoryLogic.loadTable(tableParams); 	
-		var table = new TableDataDto<CategoryDto>(tableParams);
+		var table = new TableData<CategoryDto>(tableParams);
 		table.setRows(mapper.toDtoList(result.getKey()));
 		table.setCount(result.getValue());		
 		return table;

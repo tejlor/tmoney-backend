@@ -3,6 +3,7 @@ package pl.telech.tmoney.bank.dao;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.criteria.Join;
 
@@ -22,7 +23,7 @@ import pl.telech.tmoney.bank.dao.data.EntryAmount;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.bank.model.entity.Entry.Fields;
-import pl.telech.tmoney.commons.dao.interfaces.DAO;
+import pl.telech.tmoney.commons.dao.DAO;
 import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 import pl.telech.tmoney.commons.model.shared.TableParams;
 
@@ -35,7 +36,7 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 		return findManyWithCount(
 				tableParams.getPage(),
 				tableParams.getFilter() != null ? isLike(tableParams.getFilter()) : null,
-				accountId != null ? belongsToAccount(accountId): null
+				accountId != null ? belongsToAccount(accountId): includesInSummary()
 				);
 	}
 		
@@ -46,34 +47,34 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 				);
 	}
 	
-	default Entry findLastBeforeDate(LocalDate date) {
+	default Optional<Entry> findLastBeforeDate(LocalDate date) {
 		List<Entry> result = findMany(PageRequest.of(0, 1, SortDesc),
 				isBefore(date)
 		);
 		
 		return CollectionUtils.isNotEmpty(result) && result.size() == 1 
-				? result.get(0)
-				: null;
+				? Optional.of(result.get(0))
+				: Optional.empty();
 	}
 	
-	default Entry findLastByAccountBeforeDate(int accountId, LocalDate date) {
+	default Optional<Entry> findLastByAccountBeforeDate(int accountId, LocalDate date) {
 		List<Entry> result = findMany(PageRequest.of(0, 1, SortDesc),
 				belongsToAccount(accountId),
 				isBefore(date)
 		);
 		return CollectionUtils.isNotEmpty(result) && result.size() == 1 
-				? result.get(0)
-				: null;
+				? Optional.of(result.get(0))
+				: Optional.empty();
 	}
 		
-	@Query("SELECT SUM(e.amount) "
+	@Query("SELECT COALESCE(SUM(e.amount), 0) "
 		 + "FROM Entry e "
 		 + "WHERE e.accountId = :accountId "
 		 	+ "AND e.date BETWEEN :dateFrom AND :dateTo "
 		 	+ "AND e.amount > 0")
 	BigDecimal findAccountIncome(@Param("accountId") int accountId, @Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo);
 	
-	@Query("SELECT -SUM(e.amount) "
+	@Query("SELECT COALESCE(-SUM(e.amount), 0) "
 		 + "FROM Entry e "
 		 + "WHERE e.accountId = :accountId "
 		 	+ "AND e.date BETWEEN :dateFrom AND :dateTo "

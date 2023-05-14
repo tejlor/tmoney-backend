@@ -1,4 +1,4 @@
-package pl.telech.tmoney.commons.dao.interfaces;
+package pl.telech.tmoney.commons.dao;
 
 import java.util.List;
 

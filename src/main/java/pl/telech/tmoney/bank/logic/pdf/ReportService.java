@@ -3,6 +3,7 @@ package pl.telech.tmoney.bank.logic.pdf;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.ExtensionMethod;
 import pl.telech.tmoney.bank.dao.EntryDAO;
+import pl.telech.tmoney.bank.dao.data.CategoryAmount;
 import pl.telech.tmoney.bank.dao.data.EntryAmount;
 import pl.telech.tmoney.bank.logic.AccountLogic;
 import pl.telech.tmoney.bank.logic.EntryLogic;
@@ -19,12 +22,14 @@ import pl.telech.tmoney.bank.model.data.*;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.commons.model.shared.FileResult;
+import pl.telech.tmoney.commons.utils.TExtensions;
 import pl.telech.tmoney.commons.utils.TStreamUtils;
 import pl.telech.tmoney.commons.utils.TUtils;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
+@ExtensionMethod(TExtensions.class)
 public class ReportService {
 
 	final EntryDAO entryDao;
@@ -46,7 +51,7 @@ public class ReportService {
 	}
 	
 	public FileResult generateReport(LocalDate dateFrom, LocalDate dateTo) {
-		BigDecimal initialBalance = entryDao.findLastBeforeDate(dateFrom).getBalanceOverall();
+		BigDecimal initialBalance = entryDao.findLastBeforeDate(dateFrom).map(Entry::getBalanceOverall).orElse(BigDecimal.ZERO);
 		
 		var data = ReportData.builder()
 				.dateFrom(dateFrom)
@@ -60,7 +65,7 @@ public class ReportService {
 	}
 	
 	private List<AccountReportData> calculateAccountsData(LocalDate dateFrom, LocalDate dateTo) {
-		return TStreamUtils.map(accountLogic.loadAll(true), account -> calculateAccountData(account, dateFrom, dateTo));
+		return TStreamUtils.map(accountLogic.loadWithEntries(dateFrom, dateTo), account -> calculateAccountData(account, dateFrom, dateTo));
 	}
 	
 	private AccountReportData calculateAccountData(Account account, LocalDate dateFrom, LocalDate dateTo) {
@@ -68,20 +73,42 @@ public class ReportService {
 		
 		return AccountReportData.builder()
 			.account(account)
-			.initialBalance(entryDao.findLastByAccountBeforeDate(accountId, dateFrom).getBalance())
-			.finalBalance(entryDao.findLastByAccountBeforeDate(accountId, dateTo.plusDays(1)).getBalance())
+			.initialBalance(entryDao.findLastByAccountBeforeDate(accountId, dateFrom).map(Entry::getBalance).orElse(BigDecimal.ZERO))
+			.finalBalance(entryDao.findLastByAccountBeforeDate(accountId, dateTo.plusDays(1)).get().getBalance())
 			.incomesSum(entryDao.findAccountIncome(accountId, dateFrom, dateTo))
 			.outcomesSum(entryDao.findAccountOutcome(accountId, dateFrom, dateTo))
 			.build();
 	}
 	
 	private SummaryReportData calculateSummaryData(LocalDate dateFrom, LocalDate dateTo, BigDecimal initialBalance) {	
+		List<CategoryAmount> incomes = TStreamUtils.sort(entryDao.findSummaryIncomeByCategory(dateFrom, dateTo));
+		List<CategoryAmount> outcomes = TStreamUtils.sort(entryDao.findSummaryOutcomeByCategory(dateFrom, dateTo));
+		BigDecimal incomesSum = TUtils.sum(incomes, CategoryAmount::getAmount);
+		BigDecimal outcomesSum = TUtils.sum(outcomes, CategoryAmount::getAmount);
+		
+		Map<String, BigDecimal> map = new HashMap<>(); 
+		incomes.forEach(in -> 
+			map.put(in.getCategoryName(), in.getAmount()));
+		
+		outcomes.forEach(out -> {
+			map.compute(out.getCategoryName(), (key, value) -> value != null ? value.subtract(out.getAmount()) : out.getAmount().negate());
+		});
+		
+		List<CategoryAmount> profits = map.entrySet().stream()
+				.map(entry -> new CategoryAmount(entry.getKey(), entry.getValue()))
+				.sorted()
+				.list();
+		
 		return SummaryReportData.builder()
-			.initialBalance(initialBalance)
-			.finalBalance(entryDao.findLastBeforeDate(dateTo.plusDays(1)).getBalanceOverall())
-			.incomes(TStreamUtils.sort(entryDao.findSummaryIncomeByCategory(dateFrom, dateTo)))
-			.outcomes(TStreamUtils.sort(entryDao.findSummaryOutcomeByCategory(dateFrom, dateTo)))
-			.build();
+				.initialBalance(initialBalance)
+				.finalBalance(entryDao.findLastBeforeDate(dateTo.plusDays(1)).get().getBalanceOverall())
+				.incomes(incomes)
+				.outcomes(outcomes)
+				.profits(profits)
+				.incomesSum(incomesSum)
+				.outcomesSum(outcomesSum)
+				.profitsSum(incomesSum.subtract(outcomesSum))
+				.build();
 	}
 	
 	private ChartData calculateChartData(LocalDate dateFrom, LocalDate dateTo, BigDecimal initialBalance) {

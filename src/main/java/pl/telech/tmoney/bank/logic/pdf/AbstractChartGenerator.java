@@ -12,10 +12,10 @@ import lombok.experimental.FieldDefaults;
 
 
 @FieldDefaults(level = AccessLevel.PROTECTED)
-public class AbstractChartGenerator {
+class AbstractChartGenerator {
 	
 	@SneakyThrows({FontFormatException.class, IOException.class})
-	protected void init() {
+	protected AbstractChartGenerator() {
 		InputStream fontStream = getClass().getClassLoader().getResourceAsStream("fonts/tahoma.ttf");
 		GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT, fontStream));
 	}

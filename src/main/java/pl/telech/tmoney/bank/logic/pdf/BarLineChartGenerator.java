@@ -9,8 +9,6 @@ import java.text.DecimalFormat;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-import javax.annotation.PostConstruct;
-
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
@@ -30,18 +28,14 @@ import pl.telech.tmoney.bank.model.data.ChartData;
 import pl.telech.tmoney.bank.model.data.MonthData;
 
 @Component
-public class BarLineChartGenerator extends AbstractChartGenerator {
+class BarLineChartGenerator extends AbstractChartGenerator {
 
-	Font monthFont, barFont, lineFont;
-	Color colorGreen, colorRed, colorBlue;
-	DecimalFormat decShortFormat, decLongFormat, decCurrFormat;
-	CategoryItemLabelGenerator shortLabelGenerator, longLabelGenerator;
+	final Font monthFont, barFont, lineFont;
+	final Color colorGreen, colorRed, colorBlue;
+	final DecimalFormat decShortFormat, decLongFormat, decCurrFormat;
+	final CategoryItemLabelGenerator shortLabelGenerator, longLabelGenerator;
 	
-
-	@PostConstruct
-	public void init() {
-		super.init();
-
+	public BarLineChartGenerator() {
 		monthFont = new Font("Tahoma", Font.PLAIN, 16);
 		barFont = new Font("Tahoma", Font.BOLD, 10);
 		lineFont = new Font("Tahoma", Font.BOLD, 14);

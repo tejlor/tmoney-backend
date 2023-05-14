@@ -23,7 +23,7 @@ import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 @Entity
 @FieldNameConstants
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "user", schema = "adm")
+@Table(schema = "adm")
 public class User extends AbstractEntity implements UserDetails {
 			
 	@Column(length = 32, nullable = false)

@@ -3,7 +3,7 @@
 	<groupId>pl.telech.tmoney</groupId>
 	<artifactId>tmoney</artifactId>
 	<name>tmoney</name>
-	<version>3.3.0</version>
+	<version>3.4.0</version>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -13,7 +13,7 @@
 
 	<properties>
 		<java.version>11</java.version>
-
+		<archunit-junit5.version>1.0.1</archunit-junit5.version>
 		<commons-collections.version>3.2.2</commons-collections.version>		
 		<commons-io.version>2.5</commons-io.version>
 		<itextpdf.version>5.1.2</itextpdf.version>
@@ -77,7 +77,6 @@
 		</dependency>
 
 		<!-- Apache Commons -->
-
 		<dependency>
 		    <groupId>commons-collections</groupId>
 		    <artifactId>commons-collections</artifactId>
@@ -127,6 +126,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+		    <groupId>com.tngtech.archunit</groupId>
+		    <artifactId>archunit-junit5</artifactId>
+		    <version>${archunit-junit5.version}</version>
+		    <scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
 			<scope>test</scope>
@@ -171,6 +176,9 @@
 			                -Amapstruct.defaultComponentModel=spring
 			            </arg>
 			            <arg>
+			                -Amapstruct.defaultInjectionStrategy=constructor
+			            </arg>
+			             <arg>
 			                -Amapstruct.disableBuilders=true
 			            </arg>
 			        </compilerArgs>

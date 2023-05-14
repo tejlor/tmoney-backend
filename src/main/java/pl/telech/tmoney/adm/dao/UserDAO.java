@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import pl.telech.tmoney.adm.model.entity.User;
 import pl.telech.tmoney.adm.model.entity.User.Fields;
-import pl.telech.tmoney.commons.dao.interfaces.DAO;
+import pl.telech.tmoney.commons.dao.DAO;
 import pl.telech.tmoney.commons.model.shared.TableParams;
 
 

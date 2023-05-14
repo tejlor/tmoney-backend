@@ -15,7 +15,7 @@ import pl.telech.tmoney.commons.mapper.EntityMapperTest;
 
 @ExtendWith(SpringExtension.class)
 @Import({SettingBuilder.class, SettingMapperImpl.class})
-public class SettingMapperTest extends EntityMapperTest<Setting, SettingDto> {
+class SettingMapperTest extends EntityMapperTest<Setting, SettingDto> {
 
 	@Autowired
 	SettingBuilder builder;

@@ -24,7 +24,7 @@ import pl.telech.tmoney.adm.logic.UserLogic;
  */
 @Configuration
 @EnableAuthorizationServer
-public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
+class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
 	@Value("${tmoney.auth.clientName}")
 	String clientName;

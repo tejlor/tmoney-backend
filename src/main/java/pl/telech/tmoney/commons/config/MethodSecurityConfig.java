@@ -9,6 +9,6 @@ import org.springframework.security.config.annotation.method.configuration.Globa
  */
 @Configuration
 @EnableGlobalMethodSecurity(jsr250Enabled = true)
-public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
+class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
 
 }

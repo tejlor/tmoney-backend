@@ -2,6 +2,7 @@ package pl.telech.tmoney.bank.logic;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -66,6 +67,10 @@ public class AccountLogic extends AbstractLogic<Account> {
 		return dao.findAll(active);
 	}
 	
+	public List<Account> loadWithEntries(LocalDate dateFrom, LocalDate dateTo) {
+		return dao.findWithEntries(dateFrom, dateTo);
+	}
+	
 	public Account create(AccountDto accountDto) {
 		Account newAccount = mapper.create(accountDto);
 		
@@ -103,8 +108,8 @@ public class AccountLogic extends AbstractLogic<Account> {
 		return accountCodes.stream()
 				.map(code -> {
 					var account = dao.findByCode(code);
-					Entry entry = entryDao.findLastByAccountBeforeDate(account.getId(), LocalDate.now().plusDays(1));
-					return Pair.of(account, entry);
+					Optional<Entry> entry = entryDao.findLastByAccountBeforeDate(account.getId(), LocalDate.now().plusDays(1));
+					return Pair.of(account, entry.orElse(null));
 				})
 				.collect(Collectors.toList());
 	}

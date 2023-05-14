@@ -14,7 +14,7 @@ import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 @Entity
 @FieldNameConstants
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "transfer_definition", schema = "bank")
+@Table(schema = "bank")
 public class TransferDefinition extends AbstractEntity {
 			
 	@ManyToOne(optional = false)

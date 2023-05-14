@@ -21,7 +21,7 @@ import pl.telech.tmoney.bank.model.data.TransferRequest;
 import pl.telech.tmoney.bank.model.dto.TransferDefinitionDto;
 import pl.telech.tmoney.bank.model.entity.TransferDefinition;
 import pl.telech.tmoney.commons.controller.AbstractController;
-import pl.telech.tmoney.commons.model.dto.TableDataDto;
+import pl.telech.tmoney.commons.model.shared.TableData;
 import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.commons.utils.TUtils;
 
@@ -49,7 +49,7 @@ public class TransferController extends AbstractController {
 	 * Returns all accounts for table.
 	 */
 	@RequestMapping(value = "/definition/table", method = GET)
-	public TableDataDto<TransferDefinitionDto> getTable(
+	public TableData<TransferDefinitionDto> getTable(
 		@RequestParam(required = false) Integer pageNo,
 		@RequestParam(required = false) Integer pageSize,
 		@RequestParam(required = false) String filter,
@@ -57,7 +57,7 @@ public class TransferController extends AbstractController {
 		
 		var tableParams = new TableParams(pageNo, pageSize, filter, sortBy);		
 		Pair<List<TransferDefinition>, Integer> result = transferDefinitionLogic.loadTable(tableParams); 	
-		var table = new TableDataDto<TransferDefinitionDto>(tableParams);
+		var table = new TableData<TransferDefinitionDto>(tableParams);
 		table.setRows(mapper.toDtoList(result.getKey()));
 		table.setCount(result.getValue());		
 		return table;

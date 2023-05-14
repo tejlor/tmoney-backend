@@ -17,7 +17,7 @@ import pl.telech.tmoney.bank.mapper.EntryMapper;
 import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.commons.controller.AbstractController;
-import pl.telech.tmoney.commons.model.dto.TableDataDto;
+import pl.telech.tmoney.commons.model.shared.TableData;
 import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.commons.utils.TUtils;
 
@@ -43,7 +43,7 @@ public class EntryController extends AbstractController {
 	 * Returns children of element for table.
 	 */
 	@RequestMapping(value = {"/table", "/table/{accountCode:" + CODE + "}"}, method = GET)
-	public TableDataDto<EntryDto> getTable(
+	public TableData<EntryDto> getTable(
 		@PathVariable(required = false) String accountCode,
 		@RequestParam(required = false) Integer pageNo,
 		@RequestParam(required = false) Integer pageSize,
@@ -52,7 +52,7 @@ public class EntryController extends AbstractController {
 		
 		var tableParams = new TableParams(pageNo, pageSize, filter, sortBy);		
 		Pair<List<Entry>, Integer> result = entryLogic.loadAll(accountCode, tableParams); 	
-		var table = new TableDataDto<EntryDto>(tableParams);
+		var table = new TableData<EntryDto>(tableParams);
 		table.setRows(mapper.toDtoList(result.getKey()));
 		table.setCount(result.getValue());		
 		return table;

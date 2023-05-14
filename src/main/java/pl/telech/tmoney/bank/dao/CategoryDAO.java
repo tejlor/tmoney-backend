@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Category.Fields;
-import pl.telech.tmoney.commons.dao.interfaces.DAO;
+import pl.telech.tmoney.commons.dao.DAO;
 import pl.telech.tmoney.commons.model.shared.TableParams;
 
 

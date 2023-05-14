@@ -22,7 +22,7 @@ public abstract class EntityMapperTest<E extends AbstractEntity, T extends Abstr
 	protected abstract Class<?> getAssertionsClass();
 	
 	@Test
-	public void testToDto() throws Exception {
+	void testToDto() throws Exception {
 		// given
 		E entity = getBuilder().id(1).build();
 
@@ -36,7 +36,7 @@ public abstract class EntityMapperTest<E extends AbstractEntity, T extends Abstr
 	}
 	
 	@Test
-	public void testToDtoList() throws Exception {
+	void testToDtoList() throws Exception {
 		// given
 		List<E> list = List.of(getBuilder().id(1).build());
 
@@ -51,7 +51,7 @@ public abstract class EntityMapperTest<E extends AbstractEntity, T extends Abstr
 	}
 	
 	@Test
-	public void testToEntity() throws Exception {
+	void testToEntity() throws Exception {
 		// given
 		T dto = getMapper().toDto(getBuilder().id(1).build());
 
@@ -65,7 +65,7 @@ public abstract class EntityMapperTest<E extends AbstractEntity, T extends Abstr
 	}
 	
 	@Test
-	public void testCreate() throws Exception {
+	void testCreate() throws Exception {
 		// given
 		T dto = getMapper().toDto(getBuilder().id(1).build());
 
@@ -79,7 +79,7 @@ public abstract class EntityMapperTest<E extends AbstractEntity, T extends Abstr
 	}
 
 	@Test
-	public void testUpdate() throws Exception {
+	void testUpdate() throws Exception {
 		// given
 		T dto = getMapper().toDto(getBuilder().id(1).build());
 		prepareDtoForUpdateTest(dto);

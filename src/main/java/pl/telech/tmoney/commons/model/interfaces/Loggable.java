@@ -6,15 +6,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import pl.telech.tmoney.commons.utils.TConstants;
 
 /*
  * Interface for dto objects which contents should be logged.
  */
 public interface Loggable {
-
+	
 	public default String toFullString(int depth) {
-		if(depth == 3) {
+		if (depth == 3) {
 			return TConstants.INDENT[depth] + "...\n";
 		}
 		StringBuilder sb = new StringBuilder();
@@ -59,7 +60,7 @@ public interface Loggable {
 				}
 			}
 			catch (IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
+				// nothing
 			}
 		}
 

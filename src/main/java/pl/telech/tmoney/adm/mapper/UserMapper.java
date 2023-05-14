@@ -10,15 +10,13 @@ import org.mapstruct.Named;
 
 import pl.telech.tmoney.adm.model.dto.UserDto;
 import pl.telech.tmoney.adm.model.entity.User;
-import pl.telech.tmoney.bank.model.dto.AccountDto;
-import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.commons.mapper.EntityMapper;
 import pl.telech.tmoney.commons.mapper.EntityMapperConfig;
 
 @Mapper(config = EntityMapperConfig.class)
 public interface UserMapper extends EntityMapper<User, UserDto> {
 	
-AccountDto toDto(Account entity);
+	UserDto toDto(User entity);
 	
 	List<UserDto> toDtoList(Collection<User> entities);
 	
