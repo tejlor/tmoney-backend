@@ -8,9 +8,12 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Errors;
 
 import lombok.RequiredArgsConstructor;
 import pl.telech.tmoney.bank.dao.CategoryDAO;
+import pl.telech.tmoney.bank.logic.validator.CategoryValidator;
 import pl.telech.tmoney.bank.mapper.CategoryMapper;
 import pl.telech.tmoney.bank.model.dto.CategoryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
@@ -18,6 +21,7 @@ import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.commons.logic.AbstractLogic;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
+import pl.telech.tmoney.commons.model.exception.ValidationException;
 import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.commons.utils.TUtils;
 
@@ -30,6 +34,7 @@ public class CategoryLogic extends AbstractLogic<Category> {
 	final CategoryMapper mapper;
 	final AccountLogic accountLogic;
 	final EntryLogic entryLogic;
+	final CategoryValidator validator;
 	
 	
 	@PostConstruct
@@ -49,12 +54,27 @@ public class CategoryLogic extends AbstractLogic<Category> {
 	}
 		
 	public Category create(CategoryDto categoryDto) {		
-		return save(mapper.create(categoryDto));
+		Category newCategory = mapper.create(categoryDto);
+		
+		Errors errors = new BeanPropertyBindingResult(newCategory, "Konto");
+		validator.validate(newCategory, errors);
+		if (errors.hasErrors()) {
+			throw new ValidationException(errors.getAllErrors());
+		}
+		
+		return save(newCategory);
 	}
 	
 	public Category update(int id, CategoryDto categoryDto) {
 		Category category = loadById(id);
 		mapper.update(category, categoryDto);
+		
+		Errors errors = new BeanPropertyBindingResult(category, "Konto");
+		validator.validate(category, errors);
+		if (errors.hasErrors()) {
+			throw new ValidationException(errors.getAllErrors());
+		}
+		
 		return save(category);
 	}
 	

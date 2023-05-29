@@ -2,6 +2,7 @@ package pl.telech.tmoney.bank.model.dto;
 
 import java.math.BigDecimal;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Getter;
@@ -16,8 +17,10 @@ public class CategoryDto extends AbstractDto implements Comparable<CategoryDto> 
 	@Size(max = 100)
 	String name;	
 	
+	@NotNull
 	Integer account;			
 	
+	@NotNull
 	Boolean report;
 	
 	@Size(max = 100)
@@ -27,6 +30,7 @@ public class CategoryDto extends AbstractDto implements Comparable<CategoryDto> 
 	
 	@Size(max = 255)
 	String defaultDescription;	
+	
 
 	@Override
 	public int compareTo(CategoryDto other) {

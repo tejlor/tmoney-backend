@@ -47,6 +47,13 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 				);
 	}
 	
+	default List<Entry> findByAccountIdAndDate(int accountId, LocalDate date){
+		return findMany(
+				belongsToAccount(accountId),
+				hasDate(date)
+				);
+	}
+	
 	default Optional<Entry> findLastBeforeDate(LocalDate date) {
 		List<Entry> result = findMany(PageRequest.of(0, 1, SortDesc),
 				isBefore(date)
@@ -140,6 +147,12 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 	private Specification<Entry> isBefore(LocalDate date) {
         return (entry, cq, cb) -> {
         	return cb.lessThan(entry.get(Fields.date), date);
+        };
+	}
+	
+	private Specification<Entry> hasDate(LocalDate date) {
+        return (entry, cq, cb) -> {
+        	return cb.equal(entry.get(Fields.date), date);
         };
 	}
 	

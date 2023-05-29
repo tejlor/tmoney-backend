@@ -139,7 +139,7 @@ class PdfReportGenerator extends AbstractPdfGenerator {
 
     private void createList(Document doc, String title, List<CategoryAmount> data) throws DocumentException {
         var titleP = new Paragraph(title, font10B);
-        titleP.setSpacingBefore(5);	
+        titleP.setSpacingBefore(8);	
     	doc.add(titleP);
 
         var p = new Paragraph();
@@ -183,12 +183,13 @@ class PdfReportGenerator extends AbstractPdfGenerator {
     
     @SneakyThrows({BadElementException.class, IOException.class})
     private void createChart(Document doc, ChartData data) throws DocumentException {
+     	doc.add(new Paragraph(" ", font10)); // margin
+
     	byte[] chartBytes = chartGenerator.renderChart(data);
-    	
     	var image = Image.getInstance(chartBytes);
     	image.scaleAbsolute(530, 300);
     	image.setAlignment(Element.ALIGN_CENTER);
-    	
+    	image.setSpacingBefore(10);
     	doc.add(image);
     }
 

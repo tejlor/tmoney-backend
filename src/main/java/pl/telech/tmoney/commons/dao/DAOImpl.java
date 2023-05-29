@@ -51,7 +51,7 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
 	
 	@Override
 	public List<T> findMany(Specification<T> ...spec) {
-	    return findMany(null, (Sort) null, spec);
+	    return findMany(null, Sort.unsorted(), spec);
 	}
 	
 	@Override

@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.geom.Ellipse2D;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -33,7 +34,8 @@ class BarLineChartGenerator extends AbstractChartGenerator {
 	final Font monthFont, barFont, lineFont;
 	final Color colorGreen, colorRed, colorBlue;
 	final DecimalFormat decShortFormat, decLongFormat, decCurrFormat;
-	final CategoryItemLabelGenerator shortLabelGenerator, longLabelGenerator;
+	final CategoryItemLabelGenerator shortLabelGenerator, longLabelGenerator;	
+	
 	
 	public BarLineChartGenerator() {
 		monthFont = new Font("Tahoma", Font.PLAIN, 16);
@@ -86,8 +88,8 @@ class BarLineChartGenerator extends AbstractChartGenerator {
 		plot.setRenderer(1, createLineRenderer());
 
 		plot.setDomainAxis(createCategoryAxis());
-		plot.setRangeAxis(0, createLeftAxis());
-		plot.setRangeAxis(1, createRightAxis());
+		plot.setRangeAxis(0, createLeftAxis(max(movementsDataSet)));
+		plot.setRangeAxis(1, createRightAxis(max(balanceDataSet)));
 
 		plot.mapDatasetToRangeAxis(0, 0);
 		plot.mapDatasetToRangeAxis(1, 1);
@@ -96,6 +98,19 @@ class BarLineChartGenerator extends AbstractChartGenerator {
 		plot.setDomainGridlinesVisible(true);
 
 		return plot;
+	}
+	
+	private double max(DefaultCategoryDataset dataset) {
+		double max = 0; 
+		for (int r = 0; r < dataset.getRowCount(); r++) {
+			for (int c = 0; c < dataset.getColumnCount(); c++) {
+				double value = dataset.getValue(r, c).doubleValue();
+				if (value > max) {
+					max = value;
+				}
+			}
+		}
+		return max;
 	}
 	
 	private BarRenderer createBarRenderer() {
@@ -135,20 +150,20 @@ class BarLineChartGenerator extends AbstractChartGenerator {
 		return axis;
 	}
 	
-	private NumberAxis createLeftAxis() {
+	private NumberAxis createLeftAxis(double maxValue) {
 		var axis = new NumberAxis();
 		axis.setTickLabelFont(monthFont);
 		axis.setNumberFormatOverride(decCurrFormat);
-		axis.setRange(-5000, 65_000);
+		axis.setRange(-5_000, Math.ceil(maxValue * 1.5 / 5_000) * 5_000); // scale is 1.5 greater then maximimum value, rounded to 5k
 		return axis;
 	}
 	
-	private NumberAxis createRightAxis() {
+	private NumberAxis createRightAxis(double maxValue) {
 		var axis = new NumberAxis();
 		axis.setTickLabelFont(monthFont);
 		axis.setTickLabelPaint(colorBlue);
 		axis.setNumberFormatOverride(decCurrFormat);
-		axis.setRange(0, 600_000);
+		axis.setRange(0, Math.ceil(maxValue * 1.1 / 50_000) * 50_000); // scale is 1.1 greater then maximimum value, rounded to 50k
 		return axis;
 	}
 }
