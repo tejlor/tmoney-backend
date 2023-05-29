@@ -3,9 +3,7 @@ package pl.telech.tmoney.bank.model.data;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,13 +18,14 @@ public class TransferRequest {
 	int transferDefinitionId;
 	
 	@NotNull
+	@PastOrPresent
 	LocalDate date;
 	
 	@NotNull
 	@Positive
 	BigDecimal amount;
 	
-	@NotBlank
+	@Size(min = 1, max = 255)
 	String name;
 	
 	String description;
