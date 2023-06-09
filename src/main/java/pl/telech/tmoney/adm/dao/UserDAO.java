@@ -27,7 +27,7 @@ public interface UserDAO extends DAO<User>, JpaSpecificationExecutor<User> {
 	
 	// ######################### Specifications #########################################################################################################
 		
-	private Specification<User> isLike(String filter){
+	default Specification<User> isLike(String filter){
         return (element, cq, cb) -> {
         	return cb.or(
         		cb.like(cb.lower(element.get(Fields.firstName)), "%" + filter + "%"), 

@@ -1,4 +1,4 @@
-package pl.telech.tmoney.adm.controller;
+package pl.telech.tmoney.adm.controller.domain;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -11,12 +11,13 @@ import lombok.RequiredArgsConstructor;
 import pl.telech.tmoney.adm.logic.SettingLogic;
 import pl.telech.tmoney.adm.mapper.SettingMapper;
 import pl.telech.tmoney.adm.model.dto.SettingDto;
-import pl.telech.tmoney.commons.controller.AbstractController;
+import pl.telech.tmoney.adm.model.entity.Setting;
+import pl.telech.tmoney.commons.controller.domain.AbstractDomainController;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/settings")
-public class SettingController extends AbstractController {
+public class SettingController extends AbstractDomainController<Setting, SettingDto> {
 
 	final SettingMapper mapper;
 	final SettingLogic settingLogic;

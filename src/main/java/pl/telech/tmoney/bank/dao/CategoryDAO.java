@@ -32,7 +32,7 @@ public interface CategoryDAO extends DAO<Category>, JpaSpecificationExecutor<Cat
 	// ######################### Specifications #########################################################################################################
 		
 	
-	private Specification<Category> isLike(String filter) {
+	default Specification<Category> isLike(String filter) {
         return (category, cq, cb) -> {
         	return cb.or(
             		cb.like(cb.lower(category.get(Fields.name)), "%" + filter + "%"), 

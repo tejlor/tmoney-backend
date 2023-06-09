@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import pl.telech.tmoney.bank.logic.BankLogic;
 import pl.telech.tmoney.bank.model.data.TransferRequest;
-import pl.telech.tmoney.commons.controller.AbstractController;
+import pl.telech.tmoney.commons.controller.domain.AbstractDomainController;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/transfers")
-public class TransferController extends AbstractController {
+public class TransferController {
 
 	final BankLogic bankLogic;
 	

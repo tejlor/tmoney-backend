@@ -1,23 +1,27 @@
 package pl.telech.tmoney.adm.logic;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.telech.tmoney.adm.dao.SettingDAO;
+import pl.telech.tmoney.adm.model.dto.SettingDto;
 import pl.telech.tmoney.adm.model.entity.Setting;
-import pl.telech.tmoney.commons.logic.AbstractLogic;
+import pl.telech.tmoney.commons.logic.AbstractDomainLogic;
+import pl.telech.tmoney.commons.model.shared.TableParams;
 
 @Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class SettingLogic extends AbstractLogic<Setting> {
+public class SettingLogic extends AbstractDomainLogic<Setting, SettingDto> {
 	
 	final SettingDAO dao;
 	
@@ -80,6 +84,13 @@ public class SettingLogic extends AbstractLogic<Setting> {
 			return null;
 		
 		return setting.getValue();
+	}
+
+
+	@Override
+	public Pair<List<Setting>, Integer> loadTable(TableParams params) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

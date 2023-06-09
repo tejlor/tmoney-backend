@@ -1,4 +1,4 @@
-package pl.telech.tmoney.bank.controller;
+package pl.telech.tmoney.bank.controller.domain;
 
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -16,7 +16,7 @@ import pl.telech.tmoney.bank.logic.EntryLogic;
 import pl.telech.tmoney.bank.mapper.EntryMapper;
 import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Entry;
-import pl.telech.tmoney.commons.controller.AbstractController;
+import pl.telech.tmoney.commons.controller.domain.AbstractDomainController;
 import pl.telech.tmoney.commons.model.shared.TableData;
 import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.commons.utils.TUtils;
@@ -24,20 +24,11 @@ import pl.telech.tmoney.commons.utils.TUtils;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/entries")
-public class EntryController extends AbstractController {
+public class EntryController extends AbstractDomainController<Entry, EntryDto> {
 
 	final EntryMapper mapper;
 	final EntryLogic entryLogic;
 		
-	/*
-	 * Returns entry by id.
-	 */
-	@RequestMapping(value = "/{id:" + ID + "}", method = GET)
-	public EntryDto getById(
-			@PathVariable int id) {
-		
-		return mapper.toDto(entryLogic.loadById(id));
-	}
 	
 	/*
 	 * Returns children of element for table.
@@ -56,28 +47,6 @@ public class EntryController extends AbstractController {
 		table.setRows(mapper.toDtoList(result.getKey()));
 		table.setCount(result.getValue());		
 		return table;
-	}
-	
-	/*
-	 * Creates new entry.
-	 */
-	@RequestMapping(value = "", method = POST)
-	public EntryDto create(
-			@RequestBody EntryDto entry) {
-		
-		return mapper.toDto(entryLogic.create(entry));
-	}
-	
-	/*
-	 * Updates entry.
-	 */
-	@RequestMapping(value = "/{id:" + ID + "}", method = PUT)
-	public EntryDto update(
-			@PathVariable int id,
-			@RequestBody EntryDto entry) {
-		
-		TUtils.assertDtoId(id, entry);
-		return mapper.toDto(entryLogic.update(id, entry));
 	}
 	
 	/*

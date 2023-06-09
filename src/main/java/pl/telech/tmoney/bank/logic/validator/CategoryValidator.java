@@ -8,10 +8,11 @@ import org.springframework.validation.Errors;
 
 import lombok.RequiredArgsConstructor;
 import pl.telech.tmoney.bank.model.entity.Category;
+import pl.telech.tmoney.commons.logic.validator.DomainValidator;
 
 @Component
 @RequiredArgsConstructor
-public class CategoryValidator {
+public class CategoryValidator implements DomainValidator<Category> {
 
 	final ValidationDataProvider dataProvider;
 	
@@ -19,8 +20,7 @@ public class CategoryValidator {
 	@CacheEvict(cacheNames = ValidationDataProvider.OTHER_CATEGORIES, allEntries = true)
 	public void validate(Category category, Errors errors) {
 		nameMustBeUniqe(category, errors);
-	}
-	
+	}	
 	
 	private void nameMustBeUniqe(Category category, Errors errors) {
 		boolean isDuplicate = dataProvider.getOtherCategories(category).stream()

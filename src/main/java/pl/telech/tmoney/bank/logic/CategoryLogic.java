@@ -19,7 +19,7 @@ import pl.telech.tmoney.bank.model.dto.CategoryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
-import pl.telech.tmoney.commons.logic.AbstractLogic;
+import pl.telech.tmoney.commons.logic.AbstractDomainLogic;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
 import pl.telech.tmoney.commons.model.exception.ValidationException;
 import pl.telech.tmoney.commons.model.shared.TableParams;
@@ -28,7 +28,7 @@ import pl.telech.tmoney.commons.utils.TUtils;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class CategoryLogic extends AbstractLogic<Category> {
+public class CategoryLogic extends AbstractDomainLogic<Category, CategoryDto> {
 	
 	final CategoryDAO dao;
 	final CategoryMapper mapper;

@@ -122,7 +122,7 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 		
 	// ######################### Specifications #########################################################################################################
 		
-	private Specification<Entry> isLike(String filter) {
+	default Specification<Entry> isLike(String filter) {
         return (entry, cq, cb) -> {
         	return cb.or(
         		cb.like(cb.lower(entry.get(Fields.name)), "%" + filter + "%"), 

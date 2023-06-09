@@ -9,10 +9,11 @@ import org.springframework.validation.Errors;
 
 import lombok.RequiredArgsConstructor;
 import pl.telech.tmoney.bank.model.entity.Account;
+import pl.telech.tmoney.commons.logic.validator.DomainValidator;
 
 @Component
 @RequiredArgsConstructor
-public class AccountValidator {
+public class AccountValidator implements DomainValidator<Account> {
 
 	final ValidationDataProvider dataProvider;
 	

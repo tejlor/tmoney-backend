@@ -1,7 +1,10 @@
 package pl.telech.tmoney.adm.logic;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,14 +16,16 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.telech.tmoney.adm.dao.UserDAO;
+import pl.telech.tmoney.adm.model.dto.UserDto;
 import pl.telech.tmoney.adm.model.entity.User;
-import pl.telech.tmoney.commons.logic.AbstractLogic;
+import pl.telech.tmoney.commons.logic.AbstractDomainLogic;
+import pl.telech.tmoney.commons.model.shared.TableParams;
 
 @Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class UserLogic extends AbstractLogic<User> implements UserDetailsService {
+public class UserLogic extends AbstractDomainLogic<User, UserDto> implements UserDetailsService {
 	
 	final UserDAO dao;
 	
@@ -73,6 +78,12 @@ public class UserLogic extends AbstractLogic<User> implements UserDetailsService
 		
 		log.debug("load " + user.toString());
 		return user;
+	}
+
+	@Override
+	public Pair<List<User>, Integer> loadTable(TableParams params) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	// #################################### PRIVATE ###################################################################################

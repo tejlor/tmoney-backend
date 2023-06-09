@@ -3,44 +3,43 @@ package pl.telech.tmoney.bank.dao;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-import pl.telech.tmoney.bank.dao.data.CategoryAmount;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Account.Fields;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.commons.dao.DAO;
-import pl.telech.tmoney.commons.model.shared.TableParams;
+import pl.telech.tmoney.commons.dao.DAOImpl;
 
-
-public interface AccountDAO extends DAO<Account>, JpaSpecificationExecutor<Account> {
+@Repository
+public class AccountDAO extends DAOImpl<Account> {
 		
-	Account findByCode(String code);
+	public AccountDAO(JpaEntityInformation<Account, ?> entityInformation, EntityManager entityManager) {
+		super(entityInformation, entityManager);
+		
+	}
+
+	public Account findByCode(String code) {
+		return findOne(
+				hasCode(code)).get();
+	}
 	
-	default List<Account> findWithEntries(@Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo) {
+	public List<Account> findWithEntries(@Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo) {
 		return findMany(BY_ORDER_NO,
 				hasEntries(dateFrom, dateTo));
 	}
 	
-	default List<Account> findAll(boolean onlyActive) {
+	public List<Account> findAll(boolean onlyActive) {
 		return findMany(BY_ORDER_NO, 
 				onlyActive ? isActive() : null);
-	}
-	
-	default Pair<List<Account>, Integer> findTable(TableParams tableParams) {
-		return findManyWithCount(
-				null,
-				tableParams.getPage(),
-				tableParams.getFilter() != null ? isLike(tableParams.getFilter()) : null
-				);
 	}
 	
 	// ######################### Specifications ################################################################################################
@@ -48,6 +47,12 @@ public interface AccountDAO extends DAO<Account>, JpaSpecificationExecutor<Accou
 	private Specification<Account> isActive() {
         return (account, cq, cb) -> {
         	return cb.equal(account.get(Fields.active), true);
+        };
+	}
+	
+	private Specification<Account> hasCode(String code) {
+        return (account, cq, cb) -> {
+        	return cb.equal(account.get(Fields.code), code);
         };
 	}
 	
@@ -62,7 +67,7 @@ public interface AccountDAO extends DAO<Account>, JpaSpecificationExecutor<Accou
         };
 	}
 	
-	private Specification<Account> isLike(String filter) {
+	public Specification<Account> isLike(String filter) {
         return (account, cq, cb) -> {
         	return cb.or(
             		cb.like(cb.lower(account.get(Fields.name)), "%" + filter + "%"), 

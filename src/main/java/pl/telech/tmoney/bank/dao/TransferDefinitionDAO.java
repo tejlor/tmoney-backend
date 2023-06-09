@@ -25,7 +25,7 @@ public interface TransferDefinitionDAO extends DAO<TransferDefinition>, JpaSpeci
 	
 	// ######################### Specifications ################################################################################################
 		
-	private Specification<TransferDefinition> isLike(String filter) {
+	default Specification<TransferDefinition> isLike(String filter) {
         return (def, cq, cb) -> {
         	return cb.or(
             		cb.like(cb.lower(def.get(Fields.name)), "%" + filter + "%"), 

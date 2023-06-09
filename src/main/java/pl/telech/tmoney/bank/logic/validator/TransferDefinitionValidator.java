@@ -8,11 +8,12 @@ import org.springframework.validation.Errors;
 
 import lombok.RequiredArgsConstructor;
 import pl.telech.tmoney.bank.model.entity.TransferDefinition;
+import pl.telech.tmoney.commons.logic.validator.DomainValidator;
 
 @Component
 @RequiredArgsConstructor
-public class TransferDefinitionValidator {
-
+public class TransferDefinitionValidator implements DomainValidator<TransferDefinition> {
+ 
 	final ValidationDataProvider dataProvider;
 	
 	

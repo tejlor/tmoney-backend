@@ -17,13 +17,13 @@ import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
 
-import pl.telech.tmoney.commons.controller.AbstractController;
+import pl.telech.tmoney.commons.controller.domain.AbstractDomainController;
 
 
 @AnalyzeClasses(packages = "pl.telech.tmoney", importOptions = ImportOption.DoNotIncludeTests.class)
 class ControllerTest {
 
-	private static final String packageName = "pl.telech.tmoney.*.controller";
+	private static final String packageName = "pl.telech.tmoney.*.controller.domain";
 	
 	@ArchTest
     void check(JavaClasses allClasses) {
@@ -32,7 +32,7 @@ class ControllerTest {
     		.and().doNotHaveModifier(JavaModifier.ABSTRACT)
     		.and().areNotInnerClasses()
 			    .should().haveSimpleNameEndingWith("Controller")
-				.andShould().beAssignableTo(AbstractController.class)
+				.andShould().beAssignableTo(AbstractDomainController.class)
 				.andShould().beAnnotatedWith(RestController.class)
 				.andShould(beAnnotatedWithRequestMapping())
 				.andShould(beAnnotatedWithRequiredArgsConstructor())
@@ -45,8 +45,7 @@ class ControllerTest {
     void checkOthers(JavaClasses allClasses) {
 		noClasses()
     		.that().resideOutsideOfPackage(packageName)
-				.should().haveSimpleNameEndingWith("Controller")
-				.andShould().beAnnotatedWith(RestController.class)
+				.should().beAssignableTo(AbstractDomainController.class)
 		.check(allClasses);
 	}
 	

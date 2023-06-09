@@ -21,7 +21,7 @@ import pl.telech.tmoney.bank.mapper.EntryMapper;
 import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Entry;
-import pl.telech.tmoney.commons.logic.AbstractLogic;
+import pl.telech.tmoney.commons.logic.AbstractDomainLogic;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
 import pl.telech.tmoney.commons.model.exception.ValidationException;
 import pl.telech.tmoney.commons.model.shared.TableParams;
@@ -30,7 +30,7 @@ import pl.telech.tmoney.commons.utils.TUtils;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class EntryLogic extends AbstractLogic<Entry> {
+public class EntryLogic extends AbstractDomainLogic<Entry, EntryDto> {
 	
 	@Value("${tmoney.environment}")
 	final String environment;
@@ -44,7 +44,9 @@ public class EntryLogic extends AbstractLogic<Entry> {
 	
 	@PostConstruct
 	public void init() {
-		super.dao = this.dao;
+		super.dao = dao;
+		super.mapper = mapper;
+		super.validator = validator;
 	}
 	
 	public List<Entry> loadAll(String accountCode) {
@@ -79,31 +81,6 @@ public class EntryLogic extends AbstractLogic<Entry> {
 		return dao.findByCategoryId(categoryId);
 	}
 	
-	public Entry create(EntryDto entryDto) {
-		Entry entry = mapper.create(entryDto);
-		
-		Errors errors = new BeanPropertyBindingResult(entry, "Konto");
-		validator.validate(entry, errors);
-		if (errors.hasErrors()) {
-			throw new ValidationException(errors.getAllErrors());
-		}
-		
-		return saveAndRecalculate(entry);
-	}
-	
-	public Entry update(int id, EntryDto entryDto) {
-		Entry entry = loadById(id);
-		mapper.update(entry, entryDto);	
-		
-		Errors errors = new BeanPropertyBindingResult(entry, "Konto");
-		validator.validate(entry, errors);
-		if (errors.hasErrors()) {
-			throw new ValidationException(errors.getAllErrors());
-		}
-		
-		return saveAndRecalculate(entry);
-	}
-	
 	private void replaceTagsWithValues(Entry entry) {
 		entry.setDescription(entryTagCalculator.replaceTagsWithValues(entry.getDescription(), entry.getDate()));
 	}
@@ -132,6 +109,12 @@ public class EntryLogic extends AbstractLogic<Entry> {
 		updateBalances();
 		reload(entry);
 		return entry;
+	}
+
+	@Override
+	public Pair<List<Entry>, Integer> loadTable(TableParams params) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 		
 }

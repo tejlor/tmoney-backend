@@ -3,6 +3,7 @@ package pl.telech.tmoney.commons.dao;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -16,28 +17,29 @@ import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 import pl.telech.tmoney.commons.model.entity.AbstractEntity;
+import pl.telech.tmoney.commons.model.shared.TableParams;
 
 /*
  * Base implementation of all repository classes. Adds some methods helpful in using specifications and entity graphs. 
  */
-public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, Integer> implements DAO<T> {
+public class DAOImpl<E extends AbstractEntity> extends SimpleJpaRepository<E, Integer> implements DAO<E> {
 
 	final EntityManager entityManager;
 	
 
-	public DAOImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager){
+	public DAOImpl(JpaEntityInformation<E, ?> entityInformation, EntityManager entityManager){
 		super(entityInformation, entityManager);
 		this.entityManager = entityManager;
 	}
 		
 	@Override
-	public T findOne(Specification<T> ...spec) {
+	public E findOne(Specification<E> ...spec) {
         return findOne(null, spec);
     }
 	
 	@Override
-	public T findOne(String entityGraphName, Specification<T> ...spec) {
-        TypedQuery<T> query = getQuery(conjunction(spec), (Sort) null);
+	public E findOne(String entityGraphName, Specification<E> ...spec) {
+        TypedQuery<E> query = getQuery(conjunction(spec), (Sort) null);
         if (entityGraphName != null) {
         	query.setHint(EntityGraphType.FETCH.getKey(), entityManager.getEntityGraph(entityGraphName));
         }          
@@ -45,33 +47,33 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
     }
 	
 	@Override
-	public List<T> findManyById() {
-		return findMany(null, Sort.by(AbstractEntity.Fields.id), (Specification<T>) null);
+	public List<E> findManyById() {
+		return findMany(null, Sort.by(AbstractEntity.Fields.id), (Specification<E>) null);
 	}
 	
 	@Override
-	public List<T> findMany(Specification<T> ...spec) {
+	public List<E> findMany(Specification<E> ...spec) {
 	    return findMany(null, Sort.unsorted(), spec);
 	}
 	
 	@Override
-	public List<T> findMany(Sort sort, Specification<T> ...spec) {
+	public List<E> findMany(Sort sort, Specification<E> ...spec) {
 		 return findMany(null, sort, spec);
 	}
 	
 	@Override
-	public List<T> findMany(Pageable page, Specification<T> ...spec) {
+	public List<E> findMany(Pageable page, Specification<E> ...spec) {
 		 return findMany(null, page, spec);
 	}
 	
 	@Override
-	public List<T> findMany(String entityGraphName, Specification<T> ...spec) {
+	public List<E> findMany(String entityGraphName, Specification<E> ...spec) {
 		 return findMany(entityGraphName, Sort.unsorted(), spec);
 	}
 	
 	@Override
-	public List<T> findMany(String entityGraphName, Sort sort, Specification<T> ...spec) {
-	    TypedQuery<T> query = getQuery(conjunction(spec), sort);
+	public List<E> findMany(String entityGraphName, Sort sort, Specification<E> ...spec) {
+	    TypedQuery<E> query = getQuery(conjunction(spec), sort);
 	    if(entityGraphName != null)
 	    	query.setHint(EntityGraphType.FETCH.getKey(), entityManager.getEntityGraph(entityGraphName));
 	    
@@ -79,8 +81,8 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
 	}
 	
 	@Override
-	public List<T> findMany(String entityGraphName, Pageable page, Specification<T> ...spec) {
-	    TypedQuery<T> query = getQuery(conjunction(spec), page);
+	public List<E> findMany(String entityGraphName, Pageable page, Specification<E> ...spec) {
+	    TypedQuery<E> query = getQuery(conjunction(spec), page);
 	    if(entityGraphName != null)
 	    	query.setHint(EntityGraphType.FETCH.getKey(), entityManager.getEntityGraph(entityGraphName));
 	    
@@ -93,15 +95,24 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
 	}
 	
 	@Override
-	public Pair<List<T>, Integer> findManyWithCount(Pageable page, Specification<T> ...spec) {
+	public Pair<List<E>, Integer> findTable(TableParams tableParams, Function<String, Specification<E>> isLike){
+		return findManyWithCount(
+				null,
+				tableParams.getPage(),
+				tableParams.getFilter() != null ? isLike.apply(tableParams.getFilter()) : null
+				);
+	}
+	
+	@Override
+	public Pair<List<E>, Integer> findManyWithCount(Pageable page, Specification<E> ...spec) {
 		 return findManyWithCount(null, page, spec);
 	}
 	
 	@Override
-	public Pair<List<T>, Integer> findManyWithCount(String entityGraphName, Pageable page, Specification<T> ...spec) {
-	    Specification<T> specSum = conjunction(spec);
-		TypedQuery<T> query = getQuery(specSum, page);
-	    if(entityGraphName != null)
+	public Pair<List<E>, Integer> findManyWithCount(String entityGraphName, Pageable page, Specification<E> ...spec) {
+	    Specification<E> specSum = conjunction(spec);
+		TypedQuery<E> query = getQuery(specSum, page);
+	    if (entityGraphName != null)
 	    	query.setHint(EntityGraphType.FETCH.getKey(), entityManager.getEntityGraph(entityGraphName));
 	    
 	    query.setFirstResult((int)page.getOffset());
@@ -111,7 +122,7 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
 	}
 	
 	@SafeVarargs
-	private Specification<T> conjunction(Specification<T> ...specs){
+	private Specification<E> conjunction(Specification<E> ...specs){
 		return Arrays.stream(specs)
 			.filter(Objects::nonNull)
 			.reduce(Specification::and)
@@ -119,12 +130,20 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
 	}
 	
 	@Override
-	public void detach(T entity) {
+	public void detach(E entity) {
         entityManager.detach(entity);
     }
 	
 	@Override
-	public void reload(T entity) {
+	public void reload(E entity) {
         entityManager.refresh(entity);
     }
+	
+	@Override
+	public Specification<E> isLike(String filter) {
+        return (account, cq, cb) -> {
+        	return null;
+        };
+	}
+	
 }

@@ -6,10 +6,11 @@ import org.springframework.validation.Errors;
 
 import lombok.RequiredArgsConstructor;
 import pl.telech.tmoney.bank.model.entity.Entry;
+import pl.telech.tmoney.commons.logic.validator.DomainValidator;
 
 @Component
 @RequiredArgsConstructor
-public class EntryValidator {
+public class EntryValidator implements DomainValidator<Entry> {
 
 	final ValidationDataProvider dataProvider;
 	
@@ -18,7 +19,6 @@ public class EntryValidator {
 	public void validate(Entry entry, Errors errors) {
 		nameAndDateMustBeUniqe(entry, errors);
 	}
-	
 	
 	private void nameAndDateMustBeUniqe(Entry entry, Errors errors) {
 		boolean isDuplicate = dataProvider.getOtherAccountEntries(entry).stream()
