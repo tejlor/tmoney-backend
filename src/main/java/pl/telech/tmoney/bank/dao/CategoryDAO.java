@@ -18,11 +18,10 @@ import pl.telech.tmoney.commons.model.shared.TableParams;
 public interface CategoryDAO extends DAO<Category>, JpaSpecificationExecutor<Category> {
 	
 	default Pair<List<Category>, Integer> findTable(TableParams tableParams){
-		return findManyWithCount(
-				null,
-				tableParams.getPage(),
-				tableParams.getFilter() != null ? isLike(tableParams.getFilter()) : null
-				);
+		return where(tableParams.getFilter() != null ? isLike(tableParams.getFilter()) : null)
+				.orderBy(tableParams.getSort())
+				.withPage(tableParams.getPage())
+				.findManyWithCount();
 	}
 	
 	@Modifying

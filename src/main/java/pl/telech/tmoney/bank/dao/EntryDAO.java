@@ -33,31 +33,29 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 	List<Entry> findByCategoryId(int id);
 	
 	default Pair<List<Entry>, Integer> findTableByAccountId(Integer accountId, TableParams tableParams){
-		return findManyWithCount(
-				tableParams.getPage(),
-				tableParams.getFilter() != null ? isLike(tableParams.getFilter()) : null,
-				accountId != null ? belongsToAccount(accountId): includesInSummary()
-				);
+		return where(tableParams.getFilter() != null ? isLike(tableParams.getFilter()) : null)
+				.and(accountId != null ? belongsToAccount(accountId): includesInSummary())
+				.orderBy(tableParams.getSort())
+				.withPage(tableParams.getPage())
+				.findManyWithCount();
 	}
 		
 	default List<Entry> findByAccountId(Integer accountId){
-		return findMany(
-				SortAsc,
-				accountId != null ? belongsToAccount(accountId): includesInSummary()
-				);
+		return where(accountId != null ? belongsToAccount(accountId): includesInSummary())
+				.orderBy(SortAsc)
+				.findMany();
 	}
 	
 	default List<Entry> findByAccountIdAndDate(int accountId, LocalDate date){
-		return findMany(
-				belongsToAccount(accountId),
-				hasDate(date)
-				);
+		return where(belongsToAccount(accountId))
+				.and(hasDate(date))
+				.findMany();
 	}
 	
 	default Optional<Entry> findLastBeforeDate(LocalDate date) {
-		List<Entry> result = findMany(PageRequest.of(0, 1, SortDesc),
-				isBefore(date)
-		);
+		List<Entry> result = where(isBefore(date))
+				.withPage(PageRequest.of(0, 1, SortDesc))
+				.findMany();
 		
 		return CollectionUtils.isNotEmpty(result) && result.size() == 1 
 				? Optional.of(result.get(0))
@@ -65,10 +63,12 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 	}
 	
 	default Optional<Entry> findLastByAccountBeforeDate(int accountId, LocalDate date) {
-		List<Entry> result = findMany(PageRequest.of(0, 1, SortDesc),
-				belongsToAccount(accountId),
-				isBefore(date)
-		);
+		List<Entry> result = where(belongsToAccount(accountId))
+				.and(isBefore(date))
+				.orderBy(SortDesc)
+				.withPage(PageRequest.of(0, 1))
+				.findMany();
+
 		return CollectionUtils.isNotEmpty(result) && result.size() == 1 
 				? Optional.of(result.get(0))
 				: Optional.empty();

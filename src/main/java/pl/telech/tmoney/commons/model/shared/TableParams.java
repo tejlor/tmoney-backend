@@ -63,6 +63,6 @@ public class TableParams implements Loggable {
 	
 	@JsonIgnore
 	public Pageable getPage() {
-		return PageRequest.of(pageNo, pageSize, getSort());
+		return PageRequest.of(pageNo, pageSize);
 	}
 }

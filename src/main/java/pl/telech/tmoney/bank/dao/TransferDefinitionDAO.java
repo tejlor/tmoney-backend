@@ -16,11 +16,10 @@ public interface TransferDefinitionDAO extends DAO<TransferDefinition>, JpaSpeci
 		
 	
 	default Pair<List<TransferDefinition>, Integer> findTable(TableParams tableParams) {
-		return findManyWithCount(
-				null,
-				tableParams.getPage(),
-				tableParams.getFilter() != null ? isLike(tableParams.getFilter()) : null
-				);
+		return where(tableParams.getFilter() != null ? isLike(tableParams.getFilter()) : null)
+				.orderBy(tableParams.getSort())
+				.withPage(tableParams.getPage())
+				.findManyWithCount();
 	}
 	
 	// ######################### Specifications ################################################################################################
