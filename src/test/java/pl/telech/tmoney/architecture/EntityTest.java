@@ -123,9 +123,10 @@ class EntityTest {
 			private void checkJpaAnnotations(JavaField field, ConditionEvents events) {
 				Optional<Column> columnAnnotation = field.tryGetAnnotationOfType(Column.class);
 				Optional<ManyToOne> manyToOneAnnotation = field.tryGetAnnotationOfType(ManyToOne.class);
-				Optional<OneToMany> oneToManyAnnotation = field.tryGetAnnotationOfType(OneToMany.class);		
+				Optional<OneToMany> oneToManyAnnotation = field.tryGetAnnotationOfType(OneToMany.class);
+				Optional<ManyToMany> manyToManyAnnotation = field.tryGetAnnotationOfType(ManyToMany.class);
 
-				if (columnAnnotation.isEmpty() && manyToOneAnnotation.isEmpty() && oneToManyAnnotation.isEmpty()) {
+				if (columnAnnotation.isEmpty() && manyToOneAnnotation.isEmpty() && oneToManyAnnotation.isEmpty() && manyToManyAnnotation.isEmpty()) {
 					events.add(SimpleConditionEvent.violated(field, "Field " + field.getFullName() + " has no JPA annotations"));
 				}	
 			}

@@ -1,5 +1,7 @@
 package pl.telech.tmoney.bank.helper;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import pl.telech.tmoney.bank.builder.CategoryBuilder;
+import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;
 
 @Component
@@ -30,10 +33,10 @@ public class CategoryHelper {
 			.save(entityManager);
 	}
 	
-	public Category save(String name, int account) {
+	public Category save(String name, Account account) {
 		return new CategoryBuilder()
 			.name(name)
-			.account(account)
+			.accounts(List.of(account))
 			.save(entityManager);
 	}
 

@@ -1,10 +1,9 @@
 package pl.telech.tmoney.bank.model.entity;
 
 import java.math.BigDecimal;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,13 +18,23 @@ import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 @FieldNameConstants
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(schema = "bank")
+@NamedEntityGraph(
+	name = "Category.all",
+	attributeNodes = {
+	    @NamedAttributeNode("accounts")
+	})
 public class Category extends AbstractEntity {
 		
 	@Column(length = 100, nullable = false)
 	String name;				// category name
 	
-	@Column(nullable = false)
-	Integer account;			// m2m accounts
+	@ManyToMany
+	@JoinTable(
+		schema = "bank",
+		name = "category_to_account", 
+		joinColumns = @JoinColumn(name = "category_id"), 
+		inverseJoinColumns = @JoinColumn(name = "account_id"))
+	List<Account> accounts;		// m2m accounts
 	
 	@Column(nullable = false)
 	Boolean report;				// if entries should be inculed in reports

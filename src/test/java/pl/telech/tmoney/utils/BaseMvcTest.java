@@ -1,6 +1,5 @@
 package pl.telech.tmoney.utils;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.StandardCharsets;
@@ -43,7 +42,7 @@ public class BaseMvcTest {
 	
 	@AfterEach
 	void afterEach() {
-		dbHelper.truncateDb(List.of("bank.account", "bank.category", "bank.entry", "bank.transfer_definition"));
+		dbHelper.truncateDb(List.of("bank.account", "bank.category", "bank.entry", "bank.transfer_definition", "bank.category_to_account"));
 	}
 	
 	protected MvcResult get(String url) throws Exception {

@@ -48,9 +48,7 @@ public class CategoryLogic extends AbstractLogic<Category> {
 	
 	public List<Category> loadByAccountCode(String accountCode) {
 		Account account = accountLogic.loadByCode(accountCode);
-		return loadAll().stream()
-			.filter(a -> (a.getAccount() & 1 << account.getId()) != 0)
-			.collect(Collectors.toList());
+		return dao.findByAccountId(account.getId());
 	}
 		
 	public Category create(CategoryDto categoryDto) {		

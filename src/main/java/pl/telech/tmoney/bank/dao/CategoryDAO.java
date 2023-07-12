@@ -2,6 +2,8 @@ package pl.telech.tmoney.bank.dao;
 
 import java.util.List;
 
+import javax.persistence.criteria.Join;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -9,7 +11,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;
+import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.bank.model.entity.Category.Fields;
 import pl.telech.tmoney.commons.dao.DAO;
 import pl.telech.tmoney.commons.model.shared.TableParams;
@@ -22,6 +26,11 @@ public interface CategoryDAO extends DAO<Category>, JpaSpecificationExecutor<Cat
 				.orderBy(tableParams.getSort())
 				.withPage(tableParams.getPage())
 				.findManyWithCount();
+	}
+	
+	default List<Category> findByAccountId(int accountId) {
+		return where(hasAccount(accountId))
+				.findMany();
 	}
 	
 	@Modifying
@@ -38,6 +47,13 @@ public interface CategoryDAO extends DAO<Category>, JpaSpecificationExecutor<Cat
             		cb.like(cb.lower(category.get(Fields.defaultName)), "%" + filter + "%"),
             		cb.like(cb.lower(category.get(Fields.defaultDescription)), "%" + filter + "%")
             	);
+        };
+	}
+	
+	private Specification<Category> hasAccount(int accountId) {
+        return (category, cq, cb) -> {
+        	Join<Category, Account> account = category.join(Fields.accounts);
+        	return cb.equal(account.get("id"), accountId);
         };
 	}
 	
