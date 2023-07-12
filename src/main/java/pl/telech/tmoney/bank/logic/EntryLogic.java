@@ -10,16 +10,20 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Errors;
 
 import lombok.RequiredArgsConstructor;
 import pl.telech.tmoney.bank.dao.EntryDAO;
 import pl.telech.tmoney.bank.logic.tag.EntryTagCalculator;
+import pl.telech.tmoney.bank.logic.validator.EntryValidator;
 import pl.telech.tmoney.bank.mapper.EntryMapper;
 import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Entry;
 import pl.telech.tmoney.commons.logic.AbstractLogic;
 import pl.telech.tmoney.commons.model.exception.TMoneyException;
+import pl.telech.tmoney.commons.model.exception.ValidationException;
 import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.commons.utils.TUtils;
 
@@ -35,6 +39,8 @@ public class EntryLogic extends AbstractLogic<Entry> {
 	final AccountLogic accountLogic;
 	final EntryMapper mapper;
 	final EntryTagCalculator entryTagCalculator;
+	final EntryValidator validator;
+	
 	
 	@PostConstruct
 	public void init() {
@@ -75,12 +81,26 @@ public class EntryLogic extends AbstractLogic<Entry> {
 	
 	public Entry create(EntryDto entryDto) {
 		Entry entry = mapper.create(entryDto);
+		
+		Errors errors = new BeanPropertyBindingResult(entry, "Konto");
+		validator.validate(entry, errors);
+		if (errors.hasErrors()) {
+			throw new ValidationException(errors.getAllErrors());
+		}
+		
 		return saveAndRecalculate(entry);
 	}
 	
 	public Entry update(int id, EntryDto entryDto) {
 		Entry entry = loadById(id);
 		mapper.update(entry, entryDto);	
+		
+		Errors errors = new BeanPropertyBindingResult(entry, "Konto");
+		validator.validate(entry, errors);
+		if (errors.hasErrors()) {
+			throw new ValidationException(errors.getAllErrors());
+		}
+		
 		return saveAndRecalculate(entry);
 	}
 	

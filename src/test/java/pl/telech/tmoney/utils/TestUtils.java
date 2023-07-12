@@ -8,11 +8,11 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class TestUtils {
 
-	public BigDecimal dec(String str) {
+	public static BigDecimal dec(String str) {
 		return new BigDecimal(str.replace(" ", "").replace(",", "."));
 	}
 	
-	public LocalDate date(String str) {
+	public static LocalDate date(String str) {
 		return LocalDate.parse(str);
 	}
 }

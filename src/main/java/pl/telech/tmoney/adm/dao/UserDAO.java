@@ -18,11 +18,9 @@ public interface UserDAO extends DAO<User>, JpaSpecificationExecutor<User> {
 	
 	@SuppressWarnings("unchecked")
 	default Pair<List<User>, Integer> findAll(TableParams tableParams){
-		return findManyWithCount(
-				null,
-				tableParams.getPage(),
-				tableParams.getFilter() != null ? isLike(tableParams.getFilter()) : null
-				);
+		return where(tableParams.getFilter() != null ? isLike(tableParams.getFilter()) : null)
+				.withPage(tableParams.getPage())
+				.findManyWithCount();
 	}
 	
 	// ######################### Specifications #########################################################################################################

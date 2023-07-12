@@ -3,8 +3,10 @@ package pl.telech.tmoney.bank.asserts;
 import org.apache.commons.lang3.tuple.Pair;
 
 import pl.telech.tmoney.bank.model.dto.CategoryDto;
+import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.commons.asserts.EntityAssert;
+import pl.telech.tmoney.commons.utils.TStreamUtils;
 
 public class CategoryAssert extends EntityAssert<Category, CategoryDto> {
 	
@@ -12,7 +14,7 @@ public class CategoryAssert extends EntityAssert<Category, CategoryDto> {
 		super(result);
 		
 		addCondition("name", 				Pair.of(Category::getName, CategoryDto::getName));	
-		addCondition("account", 			Pair.of(Category::getAccount, CategoryDto::getAccount));	
+		addCondition("accounts", 			Pair.of(cat -> TStreamUtils.map(cat.getAccounts(), Account::getId), CategoryDto::getAccountIds));	
 		addCondition("report", 				Pair.of(Category::getReport, CategoryDto::getReport));	
 		addCondition("defaultName", 		Pair.of(Category::getDefaultName, CategoryDto::getDefaultName));	
 		addCondition("defaultAmount", 		Pair.of(Category::getDefaultAmount, CategoryDto::getDefaultAmount));	

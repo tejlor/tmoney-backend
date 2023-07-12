@@ -106,12 +106,12 @@ public class TableHeaderFooterEventHelper extends PdfPageEventHelper {
     private void addGeneraterdInText(PdfWriter writer, Document doc) {
     	ColumnText.showTextAligned(writer.getDirectContent(), Element.ALIGN_LEFT, 
             new Phrase(String.format("Wygenerowano w programie TMoney %s (%s)", version, dateTime), font8gray), 
-            doc.leftMargin(), doc.bottom() - 20, 0);
+            doc.leftMargin(), doc.bottom(), 0);
     }
     
     private void addPageNo(PdfWriter writer, Document doc) {
     	 ColumnText.showTextAligned(writer.getDirectContent(), Element.ALIGN_RIGHT, 
              new Phrase(String.format("str. %d", doc.getPageNumber()), font8gray), 
-             doc.right(), doc.bottom() - 20, 0);
+             doc.right(), doc.bottom(), 0);
     }
 }

@@ -54,7 +54,6 @@ class CategoryControllerTest extends BaseMvcTest {
 		CategoryDto responseDto = get(baseUrl + "/" + category.getId(), CategoryDto.class);
 		
 		// then
-		System.out.print(responseDto.getDefaultName());
 		CategoryAssert.assertThatDto(responseDto)
 			.isMappedFrom(category);
 	}
@@ -78,9 +77,9 @@ class CategoryControllerTest extends BaseMvcTest {
 	void getByAccountCode() throws Exception {
 		// given
 		Account account = accountHelper.save("Konto bankowe", "BANK");
-		Category category0 = categoryHelper.save("Samochód", 1 << account.getId());
-		Category category1 = categoryHelper.save("Zakupy", 1 << account.getId());
-		categoryHelper.save("Praca", 1 << (account.getId() + 1));
+		Category category0 = categoryHelper.save("Samochód", account);
+		Category category1 = categoryHelper.save("Zakupy", account);
+		categoryHelper.save("Praca");
 		
 		// when
 		List<CategoryDto> result = get(baseUrl + "/account/" + account.getCode(), new TypeReference<List<CategoryDto>>() {});
@@ -129,7 +128,8 @@ class CategoryControllerTest extends BaseMvcTest {
 	@Test
 	void create() throws Exception {	
 		// given
-		Category category = new CategoryBuilder().name("Zakupy").build();
+		Account account = accountHelper.save("Dom");
+		Category category = new CategoryBuilder().name("Zakupy").accounts(List.of(account)).build();
 		CategoryDto requestDto = categoryMapper.toDto(category);
 		
 		// when

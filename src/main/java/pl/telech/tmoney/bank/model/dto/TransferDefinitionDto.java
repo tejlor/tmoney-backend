@@ -23,7 +23,7 @@ public class TransferDefinitionDto extends AbstractDto {
 	CategoryDto category;
 	
 	@NotBlank
-	@Size(max = 100)
+	@Size(min = 1, max = 100)
 	String name;						 
 	
 	@Size(max = 255)

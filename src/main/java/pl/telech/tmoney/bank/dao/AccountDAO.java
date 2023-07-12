@@ -10,10 +10,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import pl.telech.tmoney.bank.dao.data.CategoryAmount;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Account.Fields;
 import pl.telech.tmoney.bank.model.entity.Entry;
@@ -26,21 +24,22 @@ public interface AccountDAO extends DAO<Account>, JpaSpecificationExecutor<Accou
 	Account findByCode(String code);
 	
 	default List<Account> findWithEntries(@Param("dateFrom") LocalDate dateFrom, @Param("dateTo") LocalDate dateTo) {
-		return findMany(BY_ORDER_NO,
-				hasEntries(dateFrom, dateTo));
+		return where(hasEntries(dateFrom, dateTo))
+				.orderBy(BY_ORDER_NO)
+				.findMany();
 	}
 	
 	default List<Account> findAll(boolean onlyActive) {
-		return findMany(BY_ORDER_NO, 
-				onlyActive ? isActive() : null);
+		return where(onlyActive ? isActive() : null)
+				.orderBy(BY_ORDER_NO)
+				.findMany();
 	}
 	
 	default Pair<List<Account>, Integer> findTable(TableParams tableParams) {
-		return findManyWithCount(
-				null,
-				tableParams.getPage(),
-				tableParams.getFilter() != null ? isLike(tableParams.getFilter()) : null
-				);
+		return where(tableParams.getFilter() != null ? isLike(tableParams.getFilter()) : null)
+				.orderBy(tableParams.getSort())
+				.withPage(tableParams.getPage())
+				.findManyWithCount();
 	}
 	
 	// ######################### Specifications ################################################################################################
