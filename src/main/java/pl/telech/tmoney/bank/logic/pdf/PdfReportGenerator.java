@@ -70,7 +70,7 @@ class PdfReportGenerator extends AbstractPdfGenerator {
     
     private byte[] createFile(ReportData data) throws DocumentException, IOException {   	
         var doc = new Document(PageSize.A4);
-        doc.setMargins(30, 30, 20, 30);
+        doc.setMargins(30, 30, 20, 50);
         
     	var out = new ByteArrayOutputStream();
         var writer = PdfWriter.getInstance(doc, out);
