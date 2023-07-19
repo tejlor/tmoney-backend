@@ -113,17 +113,28 @@ public class BaseMvcTest {
 	}
 	
 	private MvcResult perform(MockHttpServletRequestBuilder request) throws Exception {
-		return mock.perform(request)
+		System.out.println("===== Start mock request");
+		
+		MvcResult result = mock.perform(request)
 			.andExpectAll(
 					status().is2xxSuccessful())
 			        //content().contentType("application/json"))
-			.andDo(MockMvcResultHandlers.print())
 			.andReturn();
+		
+		System.out.println("===== End mock request");
+		
+		return result;
 	}
 	
 	private MvcResult performDelete(MockHttpServletRequestBuilder request) throws Exception {
-		return mock.perform(request)
+		System.out.println("===== Start mock request");
+		
+		MvcResult result = mock.perform(request)
 			.andReturn();
+		
+		System.out.println("===== End mock request");
+		
+		return result;
 	}
 	
 	private <T> T parseResponse(MvcResult result, Class<T> responseClass) throws Exception {

@@ -31,7 +31,7 @@ public class Account extends AbstractEntity {
 	@Column(nullable = false)
 	boolean includeInSummary;	// entries should be included in summary table and balance (not for ike / ikze)
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
     @JoinColumn(name = "balancingCategoryId")
 	Category balancingCategory;	// category using to balance account
 	

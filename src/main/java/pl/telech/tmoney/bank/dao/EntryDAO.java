@@ -67,6 +67,7 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 				.and(isBefore(date))
 				.orderBy(SortDesc)
 				.withPage(PageRequest.of(0, 1))
+				.withGraph("Entry.category")
 				.findMany();
 
 		return CollectionUtils.isNotEmpty(result) && result.size() == 1 
