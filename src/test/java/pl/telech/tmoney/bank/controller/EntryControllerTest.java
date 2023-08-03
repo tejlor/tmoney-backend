@@ -1,6 +1,7 @@
 package pl.telech.tmoney.bank.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static pl.telech.tmoney.utils.TestUtils.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
+import pl.telech.tmoney.bank.model.entity.Entry.Fields;
 import pl.telech.tmoney.commons.model.shared.TableData;
 import pl.telech.tmoney.commons.model.shared.TableParams;
 import pl.telech.tmoney.commons.model.shared.TableData.TableInfo;
@@ -191,6 +193,23 @@ class EntryControllerTest extends BaseMvcTest {
 	@Test
 	void updateBalances() {	
 		
+	}
+	
+	@Test
+	void parseTransactions() throws Exception {
+		// given
+		entryHelper.save("Lakier samochodowy", "9e5da6d9aa74caaa7f339d709294921c");
+		
+		// when 
+		List<EntryDto> responseDto = postFile(baseUrl + "/transactions", "data/transactions.csv", new TypeReference<List<EntryDto>>() {});	
+		
+		// then
+		assertThat(responseDto).hasSize(2);
+		assertThat(responseDto)
+			.extracting(Fields.date, Fields.name, Fields.amount)
+			.contains(
+					tuple(date("2023-07-16"), "Zapłata za inFakt", dec("-180,00")),
+					tuple(date("2023-07-17"), "PEOPLEVIBE Zapłata za fakturę", dec("15570,23")));
 	}
 		
 }

@@ -26,6 +26,7 @@ public class EntryBuilder extends AbstractBuilder<Entry> {
 	String description = "sklep Morele";			
 	BigDecimal balance = dec("1.00");			
 	BigDecimal balanceOverall = dec("10.00");	
+	String externalId = null;
 	
 	@Override
 	public Entry build() {
@@ -39,6 +40,7 @@ public class EntryBuilder extends AbstractBuilder<Entry> {
 		obj.setDescription(description);
 		obj.setBalance(balance);
 		obj.setBalanceOverall(balanceOverall);
+		obj.setExternalId(externalId);
 		return obj;	
 	}
 

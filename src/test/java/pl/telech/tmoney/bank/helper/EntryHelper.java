@@ -34,6 +34,14 @@ public class EntryHelper {
 	}
 	
 	@Transactional
+	public Entry save(String name, String externalId) {
+		return new EntryBuilder()
+			.name(name)
+			.externalId(externalId)
+			.save(entityManager);
+	}
+	
+	@Transactional
 	public Entry save(String name, Category category) {
 		return new EntryBuilder()
 			.name(name)

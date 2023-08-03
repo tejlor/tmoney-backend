@@ -120,6 +120,10 @@ public class EntryLogic extends AbstractLogic<Entry> {
 		return dao.findLastByAccountBeforeDate(accountId, LocalDate.now().plusDays(1));
 	}
 	
+	public List<Entry> loadByExternalIds(List<String> ids) {
+		return dao.findByExternalIdIn(ids);
+	}
+	
 	public void updateBalances() {
 		if (!TUtils.isJUnit(environment)) {
 			dao.updateBalances();

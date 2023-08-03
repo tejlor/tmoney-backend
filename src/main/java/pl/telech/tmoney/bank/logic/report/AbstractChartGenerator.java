@@ -1,4 +1,4 @@
-package pl.telech.tmoney.bank.logic.pdf;
+package pl.telech.tmoney.bank.logic.report;
 
 import java.awt.Font;
 import java.awt.FontFormatException;

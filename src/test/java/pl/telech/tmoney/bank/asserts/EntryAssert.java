@@ -22,8 +22,9 @@ public class EntryAssert extends EntityAssert<Entry, EntryDto> {
 		addCondition("description", Pair.of(Entry::getDescription, EntryDto::getDescription));	
 		addCondition("balance", Pair.of(Entry::getBalance, EntryDto::getBalance));
 		addCondition("balanceOverall", Pair.of(Entry::getBalanceOverall, EntryDto::getBalanceOverall));
+		addCondition("externalId", Pair.of(Entry::getExternalId, EntryDto::getExternalId));
 		
-		addUpdateSkipFields("accountId", "account", "balance", "balanceOverall");
+		addUpdateSkipFields("accountId", "account", "balance", "balanceOverall", "externalId");
 	}
 	
 	public static EntryAssert assertThatDto(EntryDto result) {

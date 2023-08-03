@@ -52,7 +52,9 @@ public class Entry extends AbstractEntity {
 	
 	@Column
 	BigDecimal balanceOverall;		// balance in whole portfolio
-				
+	
+	@Column(length = 50)
+	String externalId;				// id in external system (electronic banking)			
 	
 	public void setAccount(Account account) {
 		this.account = account;
