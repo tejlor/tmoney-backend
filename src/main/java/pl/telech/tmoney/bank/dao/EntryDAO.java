@@ -32,6 +32,8 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 	
 	List<Entry> findByCategoryId(int id);
 	
+	List<Entry> findByExternalIdIn(List<String> ids);
+	
 	default Pair<List<Entry>, Integer> findTableByAccountId(Integer accountId, TableParams tableParams){
 		return where(tableParams.getFilter() != null ? isLike(tableParams.getFilter()) : null)
 				.and(accountId != null ? belongsToAccount(accountId): includesInSummary())
@@ -67,13 +69,14 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 				.and(isBefore(date))
 				.orderBy(SortDesc)
 				.withPage(PageRequest.of(0, 1))
+				.withGraph("Entry.category")
 				.findMany();
 
 		return CollectionUtils.isNotEmpty(result) && result.size() == 1 
 				? Optional.of(result.get(0))
 				: Optional.empty();
 	}
-		
+	
 	@Query("SELECT COALESCE(SUM(e.amount), 0) "
 		 + "FROM Entry e "
 		 + "WHERE e.accountId = :accountId "

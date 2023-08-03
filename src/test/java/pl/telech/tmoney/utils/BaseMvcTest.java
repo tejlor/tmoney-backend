@@ -2,6 +2,8 @@ package pl.telech.tmoney.utils;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -10,12 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.util.ResourceUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -77,6 +80,16 @@ public class BaseMvcTest {
 		return perform(request);
 	}
 	
+	protected MvcResult postFile(String url, String fileUrl) throws Exception {
+		File file = ResourceUtils.getFile("classpath:" + fileUrl);	
+		var multipartFile = new MockMultipartFile("file", null, "application/vnd.ms-excel", new FileInputStream(file));
+		
+		var request = MockMvcRequestBuilders.multipart(url)
+				.file(multipartFile);
+		
+		return perform(request);
+	}
+	
 	protected <T> T post(String url, Object requestDto, Class<T> responseClass) throws Exception {
 		MvcResult result = post(url, requestDto);
 		return parseResponse(result, responseClass);
@@ -84,6 +97,11 @@ public class BaseMvcTest {
 	
 	protected <T> T post(String url, Object requestDto, TypeReference<T> responseClass) throws Exception {
 		MvcResult result = post(url, requestDto);
+		return parseResponse(result, responseClass);
+	}
+	
+	protected <T> T postFile(String url, String fileUrl, TypeReference<T> responseClass) throws Exception {
+		MvcResult result = postFile(url, fileUrl);
 		return parseResponse(result, responseClass);
 	}
 	
@@ -113,17 +131,28 @@ public class BaseMvcTest {
 	}
 	
 	private MvcResult perform(MockHttpServletRequestBuilder request) throws Exception {
-		return mock.perform(request)
+		System.out.println("===== Start mock request");
+		
+		MvcResult result = mock.perform(request)
 			.andExpectAll(
 					status().is2xxSuccessful())
 			        //content().contentType("application/json"))
-			.andDo(MockMvcResultHandlers.print())
 			.andReturn();
+		
+		System.out.println("===== End mock request");
+		
+		return result;
 	}
 	
 	private MvcResult performDelete(MockHttpServletRequestBuilder request) throws Exception {
-		return mock.perform(request)
+		System.out.println("===== Start mock request");
+		
+		MvcResult result = mock.perform(request)
 			.andReturn();
+		
+		System.out.println("===== End mock request");
+		
+		return result;
 	}
 	
 	private <T> T parseResponse(MvcResult result, Class<T> responseClass) throws Exception {

@@ -7,11 +7,16 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
+import pl.telech.tmoney.bank.logic.BankLogic;
 import pl.telech.tmoney.bank.logic.EntryLogic;
 import pl.telech.tmoney.bank.mapper.EntryMapper;
 import pl.telech.tmoney.bank.model.dto.EntryDto;
@@ -28,6 +33,7 @@ public class EntryController extends AbstractController {
 
 	final EntryMapper mapper;
 	final EntryLogic entryLogic;
+	final BankLogic bankLogic;
 		
 	/*
 	 * Returns entry by id.
@@ -89,6 +95,16 @@ public class EntryController extends AbstractController {
 			@PathVariable int id) {
 		
 		entryLogic.delete(id);
+	}
+	
+	/*
+	 * Parse transactions file
+	 */
+	@RequestMapping(value = "/transactions", method = POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public List<EntryDto> parseTransactions(
+			@RequestPart @NotNull MultipartFile file) {
+		
+		return mapper.toDtoList(bankLogic.parseTransactionsFile(file));
 	}
 	
 	/*

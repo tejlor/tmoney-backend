@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import pl.telech.tmoney.bank.logic.pdf.ReportService;
+import pl.telech.tmoney.bank.logic.report.ReportService;
 import pl.telech.tmoney.commons.controller.AbstractController;
 import pl.telech.tmoney.commons.model.shared.FileResult;
 

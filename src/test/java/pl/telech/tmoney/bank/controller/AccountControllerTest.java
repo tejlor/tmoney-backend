@@ -95,8 +95,7 @@ class AccountControllerTest extends BaseMvcTest {
 		// given
 		Account account0 = accountHelper.save("Konto bankowe", true);	
 		Account account1 = accountHelper.save("Dom", true);
-		@SuppressWarnings("unused")
-		Account account2 = accountHelper.save("IKE", false);
+		accountHelper.save("IKE", false);
 		
 		// when
 		String url = String.format(baseUrl + "?active=%s", true);

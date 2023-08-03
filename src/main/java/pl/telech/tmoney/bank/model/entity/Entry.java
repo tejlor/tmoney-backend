@@ -20,20 +20,21 @@ import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 @FieldNameConstants
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(schema = "bank")
+@NamedEntityGraph(name = "Entry.category", attributeNodes = {@NamedAttributeNode("category")})
 public class Entry extends AbstractEntity {
 		
 	@Setter(AccessLevel.PRIVATE)
     @Column(insertable = false, updatable = false)
     Integer accountId;
 	
-	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@ManyToOne(optional = false)
     @JoinColumn(name = "accountId")
 	Account account;				// account
 	
 	@Column(nullable = false)
 	LocalDate date;					// entry date
 		
-	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@ManyToOne(optional = false)
     @JoinColumn(name = "categoryId")
 	Category category;				// category
 	
@@ -51,7 +52,9 @@ public class Entry extends AbstractEntity {
 	
 	@Column
 	BigDecimal balanceOverall;		// balance in whole portfolio
-				
+	
+	@Column(length = 50)
+	String externalId;				// id in external system (electronic banking)			
 	
 	public void setAccount(Account account) {
 		this.account = account;

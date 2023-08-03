@@ -38,4 +38,7 @@ public class EntryDto extends AbstractDto {
 	BigDecimal balance;
 	
 	BigDecimal balanceOverall;
+	
+	@Size(max = 50)
+	String externalId;
 }
