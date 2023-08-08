@@ -2,6 +2,7 @@ package pl.telech.tmoney.bank.logic.transaction;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -29,20 +30,21 @@ public class CategoryResolver {
 	private static final List<Pair<String, Integer>> patterns = List.of(
 			Pair.of("IKE", IKE),
 			Pair.of("IKZE", IKZE),
-			Pair.of("LIDL|HERT", SHOPPING_FOOD),
-			Pair.of("SHELL|ORLEN", PETROL),
-			Pair.of("SPOTIFY|ALLEGRO", GADGETS),
-			Pair.of("PEOPLEVIBE", WORK_INCOME),
+			Pair.of("Lidl|Hert|KARTĄ", SHOPPING_FOOD),
+			Pair.of("Shell|Orlen", PETROL),
+			Pair.of("Spotify|Allegro|Blik", GADGETS),
+			Pair.of("Faktura", WORK_INCOME),
 			Pair.of("Bricomarche", SHOPPING_OTHER),
-			Pair.of("T-MOBILE", INTERNET),
-			Pair.of("VAT7K|PIT-5", US_TAXES),
+			Pair.of("T\\-Mobile", INTERNET),
+			Pair.of("VAT7K|PIT\\-5", US_TAXES),
 			Pair.of("składki", ZUS_TAXES),
 			Pair.of("RL/LS", CAR)
 	);
 	
 	public static Optional<Integer> resolve(Entry entry) {
 		for (var pair : patterns) {
-			if (entry.getName().matches(pair.getKey())) {
+			Pattern p = Pattern.compile(pair.getKey(), Pattern.CASE_INSENSITIVE);
+			if (p.matcher(entry.getName()).find()) {
 				return Optional.of(pair.getValue());
 			}
 		}
