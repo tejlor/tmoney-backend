@@ -45,6 +45,7 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 	default List<Entry> findByAccountId(Integer accountId){
 		return where(accountId != null ? belongsToAccount(accountId): includesInSummary())
 				.orderBy(SortAsc)
+				.withGraph("Entry.category")
 				.findMany();
 	}
 	

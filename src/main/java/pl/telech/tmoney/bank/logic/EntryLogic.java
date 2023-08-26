@@ -47,6 +47,10 @@ public class EntryLogic extends AbstractLogic<Entry> {
 		super.dao = this.dao;
 	}
 	
+	public List<Entry> loadAll(Integer accountId) {	
+		return dao.findByAccountId(accountId);
+	}
+	
 	public List<Entry> loadAll(String accountCode) {
 		Integer accountId = null;
 		
