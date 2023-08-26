@@ -46,7 +46,7 @@ public class ReportService {
 				? accountLogic.loadByCode(accountCode) 
 				: accountLogic.getSummaryAccount();
 		
-		List<Entry> entries = entryLogic.loadAll(accountCode);
+		List<Entry> entries = entryLogic.loadAll(account.getId());
 		return pdfTableGenerator.generateFile(account, entries);
 	}
 	
