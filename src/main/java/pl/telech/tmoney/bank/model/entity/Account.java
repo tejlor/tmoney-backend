@@ -16,9 +16,7 @@ import pl.telech.tmoney.commons.model.entity.AbstractEntity;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(schema = "bank")
 public class Account extends AbstractEntity {
-	
-	public static final String SUMMARY_CODE = "SUMMARY";
-	
+		
 	@Column(length = 10, nullable = false)
 	String code;				// technical code
 	
