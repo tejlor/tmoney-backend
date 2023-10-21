@@ -74,6 +74,18 @@ class AccountControllerTest extends BaseMvcTest {
 	}
 	
 	@Test
+	void getByCode_summary() throws Exception {		
+		// when
+		AccountDto responseDto = get(baseUrl + "/SUMMARY", AccountDto.class);
+		
+		// then	
+		assertThat(responseDto.getCode()).isEqualTo("SUMMARY");
+		assertThat(responseDto.getName()).isEqualTo("Podsumowanie");
+		assertThat(responseDto.getIcon()).isNotBlank();
+		assertThat(responseDto.getLogo()).isNotBlank();
+	}
+	
+	@Test
 	void getAll() throws Exception {	
 		// given
 		Account account0 = accountHelper.save("Konto bankowe", true);	
@@ -192,11 +204,16 @@ class AccountControllerTest extends BaseMvcTest {
 		
 		// then
 		assertThat(result).isNotNull();
-		assertThat(result).hasSize(2);
+		assertThat(result).hasSize(3);
+		
 		AccountAssert.assertThatDto(result.get(0).getAccount()).isMappedFrom(account0);
-		AccountAssert.assertThatDto(result.get(1).getAccount()).isMappedFrom(account1);
 		EntryAssert.assertThatDto(result.get(0).getEntry()).isMappedFrom(entry0);
+		
+		AccountAssert.assertThatDto(result.get(1).getAccount()).isMappedFrom(account1);
 		EntryAssert.assertThatDto(result.get(1).getEntry()).isMappedFrom(entry1);
+		
+		assertThat(result.get(2).getAccount().getCode().equals("SUMMARY"));
+		EntryAssert.assertThatDto(result.get(2).getEntry()).isMappedFrom(entry1);
 	}
 	
 	@Test

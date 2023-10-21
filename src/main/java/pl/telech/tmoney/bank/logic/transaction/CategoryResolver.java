@@ -30,7 +30,7 @@ public class CategoryResolver {
 	private static final List<Pair<String, Integer>> patterns = List.of(
 			Pair.of("IKE", IKE),
 			Pair.of("IKZE", IKZE),
-			Pair.of("Lidl|Hert|KARTĄ", SHOPPING_FOOD),
+			Pair.of("Lidl|Hert", SHOPPING_FOOD),
 			Pair.of("Shell|Orlen", PETROL),
 			Pair.of("Spotify|Allegro|Blik", GADGETS),
 			Pair.of("Faktura", WORK_INCOME),
@@ -38,7 +38,8 @@ public class CategoryResolver {
 			Pair.of("T\\-Mobile", INTERNET),
 			Pair.of("VAT7K|PIT\\-5", US_TAXES),
 			Pair.of("składki", ZUS_TAXES),
-			Pair.of("RL/LS", CAR)
+			Pair.of("RL/LS", CAR),
+			Pair.of("KARTĄ", SHOPPING_FOOD)
 	);
 	
 	public static Optional<Integer> resolve(Entry entry) {

@@ -73,7 +73,7 @@ public class BackupMailer {
 	}
 	
 	private List<File> generateTablePdfs() {
-		return accountLogic.loadAll(true).stream()
+		return accountLogic.loadAllActiveWithSummary().stream()
 			.map(this::generateTableFile)
 			.list();
 	}
@@ -103,7 +103,10 @@ public class BackupMailer {
 		zipParameters.setEncryptFiles(true);
 		zipParameters.setEncryptionMethod(EncryptionMethod.AES);
 
-		ZipFile zipFile = new ZipFile(tempDir + File.separator + "backup.zip", zipPassword.toCharArray());
+		String zipPath = tempDir + File.separator + "backup.zip";
+		deleteTempFile(zipPath);
+		
+		ZipFile zipFile = new ZipFile(zipPath, zipPassword.toCharArray());
 		try {
 			zipFile.addFiles(files, zipParameters);
 			zipFile.close();
@@ -112,6 +115,13 @@ public class BackupMailer {
 			throw new TMoneyException("Cannot create zip file", e);
 		}
 		return zipFile.getFile();
+	}
+	
+	private void deleteTempFile(String filePath) {
+		File tempFile = new File(filePath);
+		if (tempFile.exists()) {
+			tempFile.delete();
+		}
 	}
 	
 	private void sendMail(File zip) {

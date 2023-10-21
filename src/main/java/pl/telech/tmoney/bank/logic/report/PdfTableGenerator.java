@@ -59,7 +59,7 @@ class PdfTableGenerator extends AbstractPdfGenerator {
         writer.setPageEvent(new TableHeaderFooterEventHelper(account, tmoneyVersion));
         doc.open();
         
-        createTable(doc, entries, account.getCode().equals(Account.SUMMARY_CODE));
+        createTable(doc, entries, account.getCode().equals("SUMMARY"));
         doc.close();
         
         return out.toByteArray();
