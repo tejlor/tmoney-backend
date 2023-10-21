@@ -71,6 +71,12 @@ public class AccountLogic extends AbstractLogic<Account> {
 		return dao.findAll(active);
 	}
 	
+	public List<Account> loadAllActiveWithSummary() {
+		List<Account> result = dao.findAll(true);
+		result.add(getSummaryAccount());
+		return result;
+	}
+	
 	public List<Account> loadWithEntries(LocalDate dateFrom, LocalDate dateTo) {
 		return dao.findWithEntries(dateFrom, dateTo);
 	}

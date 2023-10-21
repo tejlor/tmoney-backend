@@ -62,7 +62,7 @@ class BackupMailerTest {
 		FileResult pdfTable = new FileResult("Bank.pdf", "pdf", new byte[10]);
 		FileUtils.write(new File("/tmp/tmoney-backup-" + LocalDate.now() + ".sql"), "sql", Charset.defaultCharset());
 		
-		when(accountLogic.loadAll(true)).thenReturn(List.of(account));
+		when(accountLogic.loadAllActiveWithSummary()).thenReturn(List.of(account));
 		when(reportService.generateTable(account.getCode())).thenReturn(pdfTable);
 		when(mailSender.createMimeMessage()).thenReturn(new MimeMessage((Session)null));
 		
