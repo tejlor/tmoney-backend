@@ -12,11 +12,11 @@ function start {
 		exit
 	fi
 
-	java -jar target/tmoney.jar --spring.profiles.active=dev
+	java -jar application/target/tmoney.jar --spring.profiles.active=dev
 }
 
 function prod {
-	java -jar target/tmoney.jar --spring.profiles.active=prod
+	java -jar application/target/tmoney.jar --spring.profiles.active=prod
 }
 
 function test {
@@ -30,7 +30,9 @@ function version {
 	commit_version 
 	cd ../tmoney-backend
 	git co dev
+	cd application
 	mvn versions:set -DnewVersion=${OPTARG}
+	cd ..
 	commit_version
 }
 
