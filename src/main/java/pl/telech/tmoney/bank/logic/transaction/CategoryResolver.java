@@ -36,7 +36,7 @@ public class CategoryResolver {
 			Pair.of("Faktura", WORK_INCOME),
 			Pair.of("Bricomarche", SHOPPING_OTHER),
 			Pair.of("T\\-Mobile", INTERNET),
-			Pair.of("VAT7K|PIT\\-5", US_TAXES),
+			Pair.of("VAT\\-7|PIT\\-2", US_TAXES),
 			Pair.of("składki", ZUS_TAXES),
 			Pair.of("RL/LS", CAR),
 			Pair.of("KARTĄ", SHOPPING_FOOD)

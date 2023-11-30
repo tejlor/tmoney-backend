@@ -34,6 +34,9 @@ public interface CategoryMapper extends EntityMapper<Category, CategoryDto> {
 	Category update(@MappingTarget Category entity, CategoryDto dto);
 	
 	default List<Integer> mapAccounts(List<Account> accounts) {
+		if (accounts == null) {
+			return List.of();
+		}
 		return accounts.stream().map(Account::getId).collect(Collectors.toList());
 	}
 	

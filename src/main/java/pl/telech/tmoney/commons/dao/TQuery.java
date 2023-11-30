@@ -1,25 +1,17 @@
 package pl.telech.tmoney.commons.dao;
 
-import static org.springframework.data.jpa.repository.query.QueryUtils.toOrders;
-
-import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
-import org.springframework.lang.Nullable;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
