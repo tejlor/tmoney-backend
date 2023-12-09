@@ -57,7 +57,8 @@ public interface EntryDAO extends DAO<Entry>, JpaSpecificationExecutor<Entry> {
 	
 	default Optional<Entry> findLastBeforeDate(LocalDate date) {
 		List<Entry> result = where(isBefore(date))
-				.withPage(PageRequest.of(0, 1, SortDesc))
+				.withPage(PageRequest.of(0, 1))
+				.orderBy(SortDesc)
 				.findMany();
 		
 		return CollectionUtils.isNotEmpty(result) && result.size() == 1 
