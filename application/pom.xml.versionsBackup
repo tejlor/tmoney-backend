@@ -3,7 +3,7 @@
 	<groupId>pl.telech</groupId>
 	<artifactId>tmoney</artifactId>
 	<name>tmoney</name>
-	<version>3.7.6</version>
+	<version>3.7.5</version>
 	<packaging>jar</packaging>
 
 	<parent>
