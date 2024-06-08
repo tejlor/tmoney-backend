@@ -26,6 +26,7 @@ public class CategoryController extends AbstractController {
 	
 	@AutoMethod(type = Type.GET_BY_ID)
 	@AutoMethod(type = Type.GET_TABLE)
+	@AutoMethod(type = Type.GET_ALL)
 	@AutoMethod(type = Type.UPDATE)
 	@AutoMethod(type = Type.CREATE)
 	private void init() {}
@@ -37,16 +38,7 @@ public class CategoryController extends AbstractController {
 	public List<CategoryDto> getByAccountCode(
 			@PathVariable String code) {
 		
-		return sort(mapper.toDtoList(logic.loadByAccountCode(code)));
-	}
-	
-	/*
-	 * Returns all categories.
-	 */
-	@RequestMapping(value = "", method = GET)
-	public List<CategoryDto> getAll() {
-		
-		return sort(mapper.toDtoList(logic.loadAll()));
+		return mapper.toDtoList(logic.loadByAccountCode(code));
 	}
 	
 	/*

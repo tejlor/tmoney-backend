@@ -37,7 +37,7 @@ public class BankLogic {
 	final TransactionsFileParser transactionsFileParser;
 	
 	
-	public void balanceAccount(BalanceRequest request) {
+	public Entry balanceAccount(BalanceRequest request) {
 		Account account = accountLogic.loadById(request.getAccountId());
 		Category category = account.getBalancingCategory();	
 		if (category == null) {
@@ -53,7 +53,7 @@ public class BankLogic {
 		entry.setDate(request.getDate());
 		entry.setAmount(request.getBalance().subtract(lastEntry.getBalance()));
 		entry.setDescription(category.getDefaultDescription());	
-		entryLogic.saveAndRecalculate(entry);	
+		return entryLogic.saveAndRecalculate(entry);	
 	}
 	
 	public void createTransfer(TransferRequest request) {

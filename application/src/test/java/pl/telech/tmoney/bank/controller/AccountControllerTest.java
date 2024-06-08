@@ -22,6 +22,7 @@ import pl.telech.tmoney.bank.mapper.AccountMapper;
 import pl.telech.tmoney.bank.model.data.AccountSummaryData;
 import pl.telech.tmoney.bank.model.data.BalanceRequest;
 import pl.telech.tmoney.bank.model.dto.AccountDto;
+import pl.telech.tmoney.bank.model.dto.EntryDto;
 import pl.telech.tmoney.bank.model.entity.Account;
 import pl.telech.tmoney.bank.model.entity.Category;
 import pl.telech.tmoney.bank.model.entity.Entry;
@@ -194,7 +195,8 @@ class AccountControllerTest extends BaseMvcTest {
 	void getSummary() throws Exception {
 		// given
 		Account account0 = accountHelper.save("Konto bankowe", "BANK");
-		Account account1 = accountHelper.save("Dom", "HOME");		
+		Account account1 = accountHelper.save("Dom", "HOME");	
+		Account account2 = accountHelper.save("Giełda", "STOCK");	
 		entryHelper.save("Zakupy", date("2020-05-12"), account0);
 		entryHelper.save("Fryzjer", date("2020-07-12"), account1);
 		Entry entry0 = entryHelper.save("ZUS", date("2020-05-13"), account0);
@@ -205,7 +207,7 @@ class AccountControllerTest extends BaseMvcTest {
 		
 		// then
 		assertThat(result).isNotNull();
-		assertThat(result).hasSize(3);
+		assertThat(result).hasSize(4);
 		
 		AccountAssert.assertThatDto(result.get(0).getAccount()).isMappedFrom(account0);
 		EntryAssert.assertThatDto(result.get(0).getEntry()).isMappedFrom(entry0);
@@ -213,8 +215,11 @@ class AccountControllerTest extends BaseMvcTest {
 		AccountAssert.assertThatDto(result.get(1).getAccount()).isMappedFrom(account1);
 		EntryAssert.assertThatDto(result.get(1).getEntry()).isMappedFrom(entry1);
 		
-		assertThat(result.get(2).getAccount().getCode().equals("SUMMARY"));
-		EntryAssert.assertThatDto(result.get(2).getEntry()).isMappedFrom(entry1);
+		AccountAssert.assertThatDto(result.get(2).getAccount()).isMappedFrom(account2);
+		assertThat(result.get(2).getEntry()).isNull();
+		
+		assertThat(result.get(3).getAccount().getCode().equals("SUMMARY"));
+		EntryAssert.assertThatDto(result.get(3).getEntry()).isMappedFrom(entry1);
 	}
 	
 	@Test
@@ -246,7 +251,7 @@ class AccountControllerTest extends BaseMvcTest {
 		BalanceRequest request = new BalanceRequest(account.getId(), date("2022-03-01"), dec("2 520,13"));
 		
 		// when
-		post(baseUrl + "/" + account.getId() + "/balance", request);
+		EntryDto result = post(baseUrl + "/" + account.getId() + "/balance", request, EntryDto.class);
 		
 		// then
 		Optional<Entry> optionalEntry = dbHelper.loadAll(Entry.class).stream().filter(e -> !e.equals(lastEntry)).findAny();
@@ -259,5 +264,7 @@ class AccountControllerTest extends BaseMvcTest {
 		assertThat(balancingEntry.getAmount()).isEqualTo(dec("-26,76"));
 		assertThat(balancingEntry.getName()).isEqualTo(category.getDefaultName());
 		assertThat(balancingEntry.getDescription()).isEqualTo(category.getDefaultDescription());
+		
+		EntryAssert.assertThatDto(result).isMappedFrom(balancingEntry);
 	}
 }

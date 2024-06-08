@@ -1,6 +1,7 @@
 package pl.telech.tmoney.utils;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,21 +48,7 @@ public class BaseMvcTest {
 	void afterEach() {
 		dbHelper.truncateDb(List.of("bank.account", "bank.category", "bank.entry", "bank.transfer_definition", "bank.category_to_account"));
 	}
-	
-	protected MvcResult get(String url) throws Exception {
-		var request = MockMvcRequestBuilders.get(url)
-				.contentType(MediaType.APPLICATION_JSON);
 		
-		return perform(request);
-	}
-	
-	protected MvcResult get2(String url) throws Exception {
-		var request = MockMvcRequestBuilders.get(url)
-				.contentType(MediaType.APPLICATION_JSON);
-		
-		return performDelete(request);
-	}
-	
 	protected <T> T get(String url, Class<T> responseClass) throws Exception {
 		MvcResult result = get(url);
 		return parseResponse(result, responseClass);
@@ -72,7 +59,25 @@ public class BaseMvcTest {
 		return parseResponse(result, responseClass);
 	}
 	
+	private MvcResult get(String url) throws Exception {
+		var request = MockMvcRequestBuilders.get(url).contentType(MediaType.APPLICATION_JSON);		
+		return performAndReturn(request);
+	}
+	
+	protected MvcResult getResult(String url) throws Exception {
+		var request = MockMvcRequestBuilders.get(url).contentType(MediaType.APPLICATION_JSON);		
+		return perform(request);
+	}
+	
 	protected MvcResult post(String url, Object requestDto) throws Exception {
+		var request = MockMvcRequestBuilders.post(url)
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(objectMapper.writeValueAsString(requestDto));
+		
+		return performAndReturn(request);
+	}
+	
+	protected MvcResult postResult(String url, Object requestDto) throws Exception {
 		var request = MockMvcRequestBuilders.post(url)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(objectMapper.writeValueAsString(requestDto));
@@ -82,12 +87,10 @@ public class BaseMvcTest {
 	
 	protected MvcResult postFile(String url, String fileUrl) throws Exception {
 		File file = ResourceUtils.getFile("classpath:" + fileUrl);	
-		var multipartFile = new MockMultipartFile("file", null, "application/vnd.ms-excel", new FileInputStream(file));
+		var multipartFile = new MockMultipartFile("file", null, "application/vnd.ms-excel", new FileInputStream(file));	
+		var request = MockMvcRequestBuilders.multipart(url).file(multipartFile);
 		
-		var request = MockMvcRequestBuilders.multipart(url)
-				.file(multipartFile);
-		
-		return perform(request);
+		return performAndReturn(request);
 	}
 	
 	protected <T> T post(String url, Object requestDto, Class<T> responseClass) throws Exception {
@@ -110,7 +113,7 @@ public class BaseMvcTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(requestDto));
 		
-		return perform(request);
+		return performAndReturn(request);
 	}
 	
 	protected <T> T put(String url, Object requestDto, Class<T> responseClass) throws Exception {
@@ -127,16 +130,16 @@ public class BaseMvcTest {
 		var request = MockMvcRequestBuilders.delete(url)
 				.contentType(MediaType.APPLICATION_JSON);
 		
-		return performDelete(request);
+		return perform(request);
 	}
 	
-	private MvcResult perform(MockHttpServletRequestBuilder request) throws Exception {
+	private MvcResult performAndReturn(MockHttpServletRequestBuilder request) throws Exception {
 		System.out.println("===== Start mock request");
 		
 		MvcResult result = mock.perform(request)
 			.andExpectAll(
-					status().is2xxSuccessful())
-			        //content().contentType("application/json"))
+					status().is2xxSuccessful(),
+			        content().contentType("application/json"))
 			.andReturn();
 		
 		System.out.println("===== End mock request");
@@ -144,7 +147,7 @@ public class BaseMvcTest {
 		return result;
 	}
 	
-	private MvcResult performDelete(MockHttpServletRequestBuilder request) throws Exception {
+	private MvcResult perform(MockHttpServletRequestBuilder request) throws Exception {
 		System.out.println("===== Start mock request");
 		
 		MvcResult result = mock.perform(request)

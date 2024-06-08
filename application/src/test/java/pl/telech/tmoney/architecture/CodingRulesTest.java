@@ -4,7 +4,6 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.fields;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 import static com.tngtech.archunit.library.ProxyRules.no_classes_should_directly_call_other_methods_declared_in_the_same_class_that_are_annotated_with;
-import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
 
 import java.util.logging.Logger;
 
@@ -20,7 +19,6 @@ import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaModifier;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
-import com.tngtech.archunit.junit.ArchIgnore;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.library.GeneralCodingRules;
@@ -40,10 +38,6 @@ class CodingRulesTest {
 
     @ArchTest
     ArchRule doNotUseJodaTime = GeneralCodingRules.NO_CLASSES_SHOULD_USE_JODATIME;
-
-    @ArchIgnore
-    @ArchTest
-    ArchRule doNotUseFieldInjection = GeneralCodingRules.NO_CLASSES_SHOULD_USE_FIELD_INJECTION;
     
 	@ArchTest
 	ArchRule layerDependenciesMustBeRespected = 
@@ -93,14 +87,7 @@ class CodingRulesTest {
 	    			.should().bePrivate()
 	    			.andShould().beFinal()
 	    			.andShould().beStatic();
-	
-	@ArchIgnore
-	@ArchTest
-	ArchRule codeShouldBeFreeOfCycles = 
-			slices()
-				.matching("pl.telech.tmoney.(*)..")
-						.should().beFreeOfCycles();
-		
+			
 	
 	private DescribedPredicate<JavaClass> haveOnlyStaticMethods() {
 		return new DescribedPredicate<>("with all method static") {

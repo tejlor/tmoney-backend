@@ -34,7 +34,7 @@ class TransferControllerTest extends BaseMvcTest {
 		TransferRequest transfer = new TransferRequest(definition.getId(), date("2022-05-19"), dec("2 000.00"), "Wypłata z bankomtu", "Auchan");
 		
 		// when
-		post(baseUrl, transfer);
+		postResult(baseUrl, transfer);
 		
 		// then
 		List<Entry> entries = dbHelper.loadAll(Entry.class);

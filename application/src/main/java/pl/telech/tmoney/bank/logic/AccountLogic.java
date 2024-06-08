@@ -125,7 +125,7 @@ public class AccountLogic extends AbstractLogic<Account> {
 		
 		if (accountCodes.size() > 1) {
 			Entry lastEntry = result.stream()
-				        .filter(as -> as.getKey().isIncludeInSummary())
+				        .filter(as -> as.getKey().isIncludeInSummary() && as.getValue() != null)
 				        .map(as -> as.getValue())
 				        .max(Comparator.comparing(entry -> entry.getDate() + ":" + entry.getId()))
 				        .get();

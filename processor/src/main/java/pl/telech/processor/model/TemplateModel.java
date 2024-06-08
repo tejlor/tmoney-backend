@@ -17,6 +17,6 @@ public class TemplateModel {
 	String moduleName;
 	String path;
 	String type;
-	List<String> methods;
+	List<Method> methods;
 
 }

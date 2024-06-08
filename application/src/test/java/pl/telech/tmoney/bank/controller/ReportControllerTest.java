@@ -40,7 +40,7 @@ class ReportControllerTest extends BaseMvcTest {
 		entryHelper.save("Czapka N", account);
 		
 		// when
-		MvcResult result = get2(baseUrl + "/table/BANK");
+		MvcResult result = getResult(baseUrl + "/table/BANK");
 		
 		// then
 		assertThat(result).isNotNull();
@@ -66,7 +66,7 @@ class ReportControllerTest extends BaseMvcTest {
 		
 		
 		// when
-		MvcResult result = get2(baseUrl + "/table");
+		MvcResult result = getResult(baseUrl + "/table");
 		
 		// then
 		assertThat(result).isNotNull();
@@ -91,7 +91,7 @@ class ReportControllerTest extends BaseMvcTest {
 		entryHelper.save("Czapka N", date("2022-01-01"), accountBank);		
 		
 		// when
-		MvcResult result = get2(baseUrl + "/report?dateFrom=2022-01-01&dateTo=2025-12-31");
+		MvcResult result = getResult(baseUrl + "/report?dateFrom=2022-01-01&dateTo=2025-12-31");
 		
 		// then
 		assertThat(result).isNotNull();

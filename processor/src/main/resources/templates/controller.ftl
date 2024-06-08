@@ -30,21 +30,21 @@ public class ${type}BaseController extends AbstractController {
 	final ${type}Logic logic;
 
 	<#list methods as method>
-		<#switch method>
+		<#switch method.name>
 			<#case 'GET_BY_ID'>
-				<@getById />
+				<@getById/>
 				<#break>
 			<#case 'GET_BY_CODE'>
-				<@getByCode />
+				<@getByCode/>
 				<#break>		
 			<#case 'GET_ALL'>
-				<@getAll />
+				<@getAll method.args/>
 				<#break>		
 			<#case 'GET_TABLE'>
-				<@getTable />
+				<@getTable/>
 				<#break>		
 			<#case 'CREATE'>
-				<@create />
+				<@create/>
 				<#break>		
 			<#case 'UPDATE'>
 				<@update />
@@ -76,11 +76,14 @@ public class ${type}BaseController extends AbstractController {
 
 </#macro>
 
-<#macro getAll>
+<#macro getAll args>
 	@RequestMapping(value = "", method = GET)
-	public List<${type}Dto> getAll() {
-		
-		return mapper.toDtoList(logic.loadAll());
+	public List<${type}Dto> getAll(
+		<#list args as arg>
+			@RequestParam(defaultValue = "${arg.defaultValue}") ${arg.type} ${arg.name}<#sep>,</#sep>
+		</#list>
+	) {	
+		return mapper.toDtoList(logic.loadAll(<#list args as arg>${arg.name}<#sep>, </#sep></#list>));
 	}
 
 </#macro>

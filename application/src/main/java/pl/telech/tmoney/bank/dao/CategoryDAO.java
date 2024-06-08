@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.criteria.Join;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -20,6 +21,12 @@ import pl.telech.tmoney.commons.model.shared.TableParams;
 
 public interface CategoryDAO extends DAO<Category>, JpaSpecificationExecutor<Category> {
 	
+	default List<Category> findAll() {
+		return where()
+				.orderBy(SortAsc)
+				.findMany();
+	}
+	
 	default Pair<List<Category>, Integer> findTable(TableParams tableParams){
 		return where(tableParams.getFilter() != null ? isLike(tableParams.getFilter()) : null)
 				.orderBy(tableParams.getSort())
@@ -29,6 +36,7 @@ public interface CategoryDAO extends DAO<Category>, JpaSpecificationExecutor<Cat
 	
 	default List<Category> findByAccountId(int accountId) {
 		return where(hasAccount(accountId))
+				.orderBy(SortAsc)
 				.findMany();
 	}
 	
@@ -55,5 +63,7 @@ public interface CategoryDAO extends DAO<Category>, JpaSpecificationExecutor<Cat
         	return cb.equal(account.get("id"), accountId);
         };
 	}
+	
+	static final Sort SortAsc = Sort.by(Fields.name);	
 	
 }

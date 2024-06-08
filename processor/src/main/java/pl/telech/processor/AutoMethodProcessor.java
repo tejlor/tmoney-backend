@@ -24,6 +24,8 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import pl.telech.processor.annotation.AutoMethod;
+import pl.telech.processor.model.Method;
+import pl.telech.processor.model.Argument;
 import pl.telech.processor.model.TemplateModel;
 
 @SupportedAnnotationTypes({"pl.telech.processor.annotation.AutoMethod", "pl.telech.processor.annotation.AutoMethod.List"})
@@ -104,9 +106,15 @@ public class AutoMethodProcessor extends AbstractProcessor {
 		return classFullName.substring(classFullName.lastIndexOf('.') + 1, classFullName.lastIndexOf("Controller"));
 	}
 	
-	private List<String> getMethods(AutoMethod[] annotations) {
+	private List<Method> getMethods(AutoMethod[] annotations) {
 		return Arrays.stream(annotations)
-				.map(annotation -> annotation.type().toString())
+				.map(annotation -> 
+					Method.builder()
+							.name(annotation.type().toString())
+							.args(Arrays.stream(annotation.args())
+									.map(arg -> new Argument(arg.name(), arg.type(), arg.defaultValue()))
+									.collect(Collectors.toList()))
+							.build())
 				.collect(Collectors.toList());
 	}
 	

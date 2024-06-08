@@ -6,10 +6,6 @@
 	<version>1.0.0</version>
 	<packaging>pom</packaging>
 
-	<properties>
-		<java.version>11</java.version>
-	</properties>
-
 	<modules>
 		<module>processor</module>
 		<module>application</module>
